@@ -30,7 +30,7 @@ export default function Login(props) {
             <form onSubmit={handleSubmit(onSubmit)}>
                 <h3>Login</h3>
                 <div className="fg">
-                    <input type="text" name="username" placeholder="username" ref={register({ required: true })} autoFocus />
+                    <input type="text" name="email" placeholder="email" ref={register({ required: true })} autoFocus />
                     {errors.username && <span>*</span>}
                 </div>
                 <div className="fg">

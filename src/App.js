@@ -36,7 +36,7 @@ function App() {
         {/* <Route path="/login" render={() => <Login />} /> */}
 
         <PrivateRoute path="/">
-          <onlAcademy />
+          <OnlineAcademy />
         </PrivateRoute>
       </Switch>
     </Router>
