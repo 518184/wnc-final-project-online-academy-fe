@@ -2,8 +2,13 @@ import React from "react";
 import "../../components/header/headerPrimary.css";
 import ShoppingCartOutlinedIcon from "@material-ui/icons/ShoppingCartOutlined";
 import SearchOutlinedIcon from "@material-ui/icons/SearchOutlined";
+import { Link } from "react-router-dom";
 
 function HeaderPrimary() {
+  const btnLoginIn_Clicked = function() {
+
+  }
+
   return (
     <div className="headerPrimary">
       <div className="left part">
@@ -30,7 +35,7 @@ function HeaderPrimary() {
         <div className="cartDiv">
           <ShoppingCartOutlinedIcon className="icon" />
         </div>
-        <div className="login button">Log In</div>
+        <button className="login button"><Link to="/login">Log In</Link></button>
         <div className="signup button">Sign up</div>
       </div>
     </div>

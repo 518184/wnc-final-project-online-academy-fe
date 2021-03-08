@@ -7,14 +7,17 @@ import {
 } from 'react-router-dom';
 import Login from './views/login';
 import OnlineAcademy from './views/onlineAcademy';
+import OnlineAcademySignIn from "./views/onlineAcademySignIn";
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 
 function App() {
   function PrivateRoute({ children, ...rest }) {
     const renderChildren = function ({ location }) {
-      return localStorage.todoApp_accessToken ? children : (
+      return localStorage.account_accessToken ? children : (
         <Redirect
           to={{
-            pathname: '/login',
+            pathname: '/home',
             state: { from: location }
           }}
         />
@@ -29,6 +32,9 @@ function App() {
   return (
     <Router>
       <Switch>
+        <Route path="/home">
+          <OnlineAcademy />
+        </Route>
         <Route path="/login">
           <Login />
         </Route>
@@ -36,7 +42,7 @@ function App() {
         {/* <Route path="/login" render={() => <Login />} /> */}
 
         <PrivateRoute path="/">
-          <OnlineAcademy />
+          <OnlineAcademySignIn />
         </PrivateRoute>
       </Switch>
     </Router>
