@@ -3,14 +3,7 @@ import { useForm } from 'react-hook-form';
 import { useHistory, useLocation } from 'react-router-dom';
 import { axiosInstance, parseJwt } from '../utils';
 import { Link } from 'react-router-dom';
-import {
-Container,
-Row,
-Col,
-Card,
-Form,
-Button
-} from 'react-bootstrap';
+import { Container, Row, Col, Card, Form, Button, DropdownButton, Dropdown } from 'react-bootstrap';
 
 export default function Login(props) {
     const { register, handleSubmit, watch, errors } = useForm();
@@ -39,42 +32,30 @@ export default function Login(props) {
     }
 
     return (
-        // <div className="container">
-        //     <form onSubmit={handleSubmit(onSubmit)}>
-        //         <h3>Login</h3>
-        //         <div className="fg">
-        //             <input type="text" name="email" placeholder="email" ref={register({ required: true })} autoFocus />
-        //             {errors.username && <span>*</span>}
-        //         </div>
-        //         <div className="fg">
-        //             <input type="password" name="password" placeholder="password" ref={register({ required: true })} />
-        //             {errors.password && <span>*</span>}
-        //         </div>
-        //         <div className="fg mt-3">
-        //             <button type="submit">Login</button>
-        //         </div>
-        //     </form>
-        // </div>
       <Container>
         <br></br>
         <Row>
-          <Col><Button variant="danger" size="lg" onClick={BackToHome_Clicked}>Back</Button></Col>
+          <Col></Col>
           <Col xs={6}>
             <Card>
               <Card.Body>
-              <Form onSubmit={handleSubmit(onSubmit)}>
-                  <Form.Group controlId="formBasicEmail">
-                    <Form.Label>Email:</Form.Label>
-                    <Form.Control type="email" name="email" placeholder="Enter email" ref={register({ required: true })} autoFocus />
-                  </Form.Group>
+                <Form onSubmit={handleSubmit(onSubmit)}>
+                    <Form.Group controlId="formBasicEmail">
+                      <Form.Label>Email:</Form.Label>
+                      <Form.Control type="email" name="email" placeholder="Enter email" ref={register({ required: true })} autoFocus />
+                    </Form.Group>
 
-                  <Form.Group controlId="formBasicPassword">
-                    <Form.Label>Password</Form.Label>
-                  <Form.Control type="password" name="password" placeholder="Password" ref={register({ required: true })} />
-                  </Form.Group>
-                  <Button variant="primary" type="submit">Login</Button>
+                    <Form.Group controlId="formBasicPassword">
+                      <Form.Label>Password</Form.Label>
+                      <Form.Control type="password" name="password" placeholder="Password" ref={register({ required: true })} />
+                    </Form.Group>
+          
                 </Form>
               </Card.Body>
+              <Card.Footer>
+                  <Button className="float-right py-2" variant="primary" type="submit">Login</Button>
+                  <Button className="float-right mr-3 py-2" variant="danger" onClick={BackToHome_Clicked}>Cancel</Button>
+              </Card.Footer>
             </Card>
           </Col>
           <Col></Col>

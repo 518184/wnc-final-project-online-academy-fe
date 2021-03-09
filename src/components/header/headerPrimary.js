@@ -3,7 +3,9 @@ import "../../components/header/headerPrimary.css";
 import ShoppingCartOutlinedIcon from "@material-ui/icons/ShoppingCartOutlined";
 import SearchOutlinedIcon from "@material-ui/icons/SearchOutlined";
 import { Link } from "react-router-dom";
-
+import {
+  Button
+} from 'react-bootstrap';
 function HeaderPrimary() {
   const btnLoginIn_Clicked = function() {
 
@@ -35,8 +37,8 @@ function HeaderPrimary() {
         <div className="cartDiv">
           <ShoppingCartOutlinedIcon className="icon" />
         </div>
-        <button className="login button"><Link to="/login">Log In</Link></button>
-        <div className="signup button"><Link to="/signup">Sign up</Link></div>
+        <Link to="/login" style={{ textDecoration: 'none' }}><div className="login button">Log In</div></Link>
+        <Link to="/signup" style={{ textDecoration: 'none' }}><div className="signup button">Sign Up</div></Link>
       </div>
     </div>
   );
