@@ -22,7 +22,7 @@ function HomeContent() {
             <BecomeInstructor />
             <TrustedCompanies />
             <UdemyForBusiness />
-            <VideoAdDiv />
+            {/* <VideoAdDiv /> */}
         </div>
     );
 }

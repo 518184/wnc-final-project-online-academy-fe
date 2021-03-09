@@ -6,6 +6,7 @@ import {
   Redirect
 } from 'react-router-dom';
 import Login from './views/login';
+import Signup from './views/signup';
 import OnlineAcademy from './views/onlineAcademy';
 import OnlineAcademySignIn from "./views/onlineAcademySignIn";
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -37,6 +38,9 @@ function App() {
         </Route>
         <Route path="/login">
           <Login />
+        </Route>
+        <Route path="/signup">
+          <Signup />
         </Route>
 
         {/* <Route path="/login" render={() => <Login />} /> */}

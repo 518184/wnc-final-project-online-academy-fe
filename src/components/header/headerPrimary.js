@@ -36,7 +36,7 @@ function HeaderPrimary() {
           <ShoppingCartOutlinedIcon className="icon" />
         </div>
         <button className="login button"><Link to="/login">Log In</Link></button>
-        <div className="signup button">Sign up</div>
+        <div className="signup button"><Link to="/signup">Sign up</Link></div>
       </div>
     </div>
   );
