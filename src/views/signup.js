@@ -9,7 +9,8 @@ import {
     Col,
     Card,
     Form,
-    Button
+    Button,
+    Select
 } from 'react-bootstrap';
 
 export default function Login(props) {
@@ -18,11 +19,11 @@ export default function Login(props) {
     const location = useLocation();
     const { from } = location.state || { from: { pathname: '/' } };
     const onSubmit = async function (data) {
-        if (data.password === data.confirmPassword)  {
+        console.log(data);
+        if (data.password === data.confirmPassword) {
             try {
-                console.log(data);
+                data.type = parseInt(data.type);
                 delete data.confirmPassword;
-                data.type = 2;
                 const res = await axiosInstance.post('/users', data);
                 console.log(res);
                 // if (res.data.authenticated) {
@@ -72,8 +73,16 @@ export default function Login(props) {
                                     <Form.Label>Confirm Password</Form.Label>
                                     <Form.Control type="password" name="confirmPassword" placeholder="Confirm Password" ref={register({ required: true })} />
                                 </Form.Group>
+
+                                <Form.Group controlId="formBasicType">
+                                    <Form.Label>Account Type</Form.Label>
+                                    <Form.Control as="select" name="type" ref={register({ required: true })} >
+                                        <option value="1">Student</option>
+                                        <option value="2">Teacher</option>
+                                    </Form.Control>
+                                </Form.Group>
                                 <Button variant="primary" type="submit">Sign up</Button>
-                                <Button variant="danger"  onClick={cancelButton_Clicked}>Cancel</Button>
+                                <Button variant="danger" onClick={cancelButton_Clicked}>Cancel</Button>
                             </Form>
                         </Card.Body>
                     </Card>
