@@ -9,6 +9,7 @@ import Login from './views/login';
 import Signup from './views/signup';
 import OnlineAcademy from './views/onlineAcademy';
 import OnlineAcademySignIn from "./views/onlineAcademySignIn";
+import AdminAcademy from "./views/admin";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 
@@ -41,6 +42,9 @@ function App() {
         </Route>
         <Route path="/signup">
           <Signup />
+        </Route>
+        <Route path="/admin">
+          <AdminAcademy />
         </Route>
 
         {/* <Route path="/login" render={() => <Login />} /> */}

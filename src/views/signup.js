@@ -13,10 +13,8 @@ import {
     Form,
     Button
 } from 'react-bootstrap';
-import { useScrollTrigger } from '@material-ui/core';
-import { SettingsInputComponent } from '@material-ui/icons';
 
-export default function Login(props) {
+export default function Signup(props) {
     const { register, handleSubmit, watch, errors } = useForm();
     const history = useHistory();
     const location = useLocation();
