@@ -12,8 +12,8 @@ const loading = (
 const TheLayout = React.lazy(() => import('../components/admin/containers/TheLayout'));
 
 // Pages
-//const Login = React.lazy(() => import('../components/admin/views/pages/login/Login'));
-//const Register = React.lazy(() => import('../components/admin/views/pages/register/Register'));
+// const Login = React.lazy(() => import('../components/admin/views/pages/login/Login'));
+// const Register = React.lazy(() => import('../components/admin/views/pages/register/Register'));
 const Page404 = React.lazy(() => import('../components/admin/views/pages/page404/Page404'));
 const Page500 = React.lazy(() => import('../components/admin/views/pages/page500/Page500'));
 

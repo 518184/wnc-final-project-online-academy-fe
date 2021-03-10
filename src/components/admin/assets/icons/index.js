@@ -132,7 +132,6 @@ import {
 
 export const icons = Object.assign({}, {
   sygnet,
-  logo,
   logoNegative
 }, {
   cilAlignCenter,
