@@ -1,42 +1,98 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useForm } from 'react-hook-form';
 import { useHistory, useLocation } from 'react-router-dom';
 import { axiosInstance, parseJwt } from '../utils';
 import { Link } from 'react-router-dom';
+import Popup from "reactjs-popup";
+import swal from 'sweetalert';
 import {
     Container,
     Row,
     Col,
     Card,
     Form,
-    Button,
-    Select
+    Button
 } from 'react-bootstrap';
+import { useScrollTrigger } from '@material-ui/core';
+import { SettingsInputComponent } from '@material-ui/icons';
 
 export default function Login(props) {
     const { register, handleSubmit, watch, errors } = useForm();
     const history = useHistory();
     const location = useLocation();
     const { from } = location.state || { from: { pathname: '/' } };
+    const [open, setOpen] = useState(false);
+    const [account, setAccount] = useState();
     const onSubmit = async function (data) {
-        console.log(data);
-        if (data.password === data.confirmPassword) {
+        if (data.password != null && data.password === data.confirmPassword) {
             try {
                 data.type = parseInt(data.type);
                 delete data.confirmPassword;
                 const res = await axiosInstance.post('/users', data);
-                console.log(res);
-                // if (res.data.authenticated) {
-                //     localStorage.account_accessToken = res.data.accessToken;
-                //     localStorage.account_ID = parseJwt(res.data.accessToken).userId;
-                //     localStorage.account_email = data.email;
-                //     // history.push(from.pathname);
-                //     history.replace(from);
-                // } else {
-                //     alert('Invalid login.');
-                // }
+                if (res.status === 201) {
+                    setOpen(true);
+                    const res = await axiosInstance.post('/auth', data);
+                    if (res.data.authenticated) {
+                        setAccount(res.data);
+                        localStorage.account_accessToken = res.data.accessToken;
+                        localStorage.account_ID = parseJwt(res.data.accessToken).userId;
+                        localStorage.account_email = data.email;
+                        //axiosInstance.defaults.headers.post['x-access-token'] = res.data.accessToken;
+                    }
+                    else {
+                        alert('Invalid login.');
+                    }
+                } else if (res.status === 400) {
+                    alert(res.message);
+                } else {
+                    alert('Invalid login.');
+                }
             } catch (err) {
                 console.log(err.response.data);
+            }
+        }
+    }
+    const onSubmitOTPConfirm = async function (data) {
+        if (data.otp != null) {
+            try {
+                console.log(data);
+                var acc = {otp:data.otp};
+                console.log(acc);
+                const res = await axiosInstance.post('/users/otp/validate', acc, {headers: {'x-access-token': localStorage.account_accessToken}});
+                if (res.status === 200) {
+                    swal({
+                        title: "Account is active",
+                        text: "You can purchase course",
+                        icon: "success",
+                        button: "Go Home"
+                    }).then((value) => {
+                        if (value) {
+                            cancelButton_Clicked();
+                        }
+                    });
+                } else {
+                    swal({
+                        title: "Invalid Code",
+                        text: "Please try again",
+                        icon: "warning",
+                        button: "OK",
+                        dangerMode: false,
+                        timer: 1000
+                    }).then((value) => {
+                        if (value) {
+                            setOpen(true);
+                        }
+                    });
+                }
+            } catch (err) {
+                console.log(err.response.data);
+                swal({
+                    title: "Invalid Code",
+                    text: "Please try again",
+                    icon: "warning",
+                    buttons:false,
+                    timer:1000
+                });
             }
         }
     }
@@ -87,7 +143,21 @@ export default function Login(props) {
                         </Card.Body>
                     </Card>
                 </Col>
-                <Col></Col>
+                <Col>
+                    <Popup open={open} position="right center">
+                        <div>
+                            <a className="close" onClick={() => setOpen(false)}></a>
+                            <Form onSubmit={handleSubmit(onSubmitOTPConfirm)}>
+                                <Form.Group controlId="formBasicOTP">
+                                    <Form.Label>Please confirm code to active account</Form.Label>
+                                    <Form.Control type="text" name="otp" placeholder="Enter Confirm Code" ref={register({ required: true })} autoFocus />
+                                </Form.Group>
+                                <Button variant="primary" type="submit">Confirm</Button>
+                                <Button variant="secondary" onClick={cancelButton_Clicked}>Later</Button>
+                            </Form>
+                        </div>
+                    </Popup>
+                </Col>
             </Row>
 
         </Container>
