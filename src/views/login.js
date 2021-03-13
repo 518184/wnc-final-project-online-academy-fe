@@ -15,10 +15,11 @@ export default function Login(props) {
       const res = await axiosInstance.post('/auth', data);
       if (res.data.authenticated) {
         localStorage.account_accessToken = res.data.accessToken;
-        localStorage.account_ID = parseJwt(res.data.accessToken).userId;
-        localStorage.account_email = data.email;
+        localStorage.account_userID = parseJwt(res.data.accessToken).userId;
+        localStorage.account_expToken = parseJwt(res.data.accessToken).exp;
+        localStorage.account_refreshToken = res.data.refreshToken;
+        localStorage.account_email = res.data.email;
         // history.push(from.pathname);
-        console.log(res.data)
         if (res.data.type === 3) {
           history.push("/admin");
         }
@@ -39,13 +40,14 @@ export default function Login(props) {
 
   return (
     <Container>
-      <br></br>
       <Row>
         <Col></Col>
-        <Col xs={6}>
-          <Card>
-            <Form onSubmit={handleSubmit(onSubmit)}>
+        <Col xs={6} className="mt-4">
+          <Form onSubmit={handleSubmit(onSubmit)}>
+            <Card>
               <Card.Body>
+                <Card.Title as="h3"><center>Log In</center></Card.Title>
+                <hr></hr>
                 <Form.Group controlId="formBasicEmail">
                   <Form.Label>Email:</Form.Label>
                   <Form.Control type="email" name="email" placeholder="Enter email" ref={register({ required: true })} autoFocus />
@@ -55,15 +57,14 @@ export default function Login(props) {
                   <Form.Label>Password</Form.Label>
                   <Form.Control type="password" name="password" placeholder="Password" ref={register({ required: true })} />
                 </Form.Group>
-
-
+                
               </Card.Body>
               <Card.Footer>
                 <Button className="float-right py-2" variant="primary" type="submit">Login</Button>
                 <Button className="float-right mr-3 py-2" variant="danger" onClick={BackToHome_Clicked}>Cancel</Button>
-              </Card.Footer>
-            </Form>
-          </Card>
+              </Card.Footer> 
+            </Card>
+          </Form>
         </Col>
         <Col></Col>
       </Row>

@@ -101,13 +101,15 @@ export default function Signup(props) {
 
     return (
         <Container>
-            <br></br>
             <Row>
                 {/* <Col><Button variant="danger" size="lg" onClick={cancelButton_Clicked}>Back</Button></Col> */}
-                <Col xs={6}>
-                    <Card>
-                        <Card.Body>
-                            <Form onSubmit={handleSubmit(onSubmit)}>
+                <Col></Col>
+                <Col xs={6} className="mt-4">
+                    <Form onSubmit={handleSubmit(onSubmit)}>
+                        <Card>
+                            <Card.Body>
+                                <Card.Title as="h3"><center>Sign Up</center></Card.Title>
+                                <hr></hr>
                                 <Form.Group controlId="formBasicFullName">
                                     <Form.Label>Fullname</Form.Label>
                                     <Form.Control type="text" name="fullname" placeholder="Enter fullname" ref={register({ required: true })} autoFocus />
@@ -134,13 +136,18 @@ export default function Signup(props) {
                                         <option value="1">Student</option>
                                         <option value="2">Teacher</option>
                                     </Form.Control>
-                                </Form.Group>
-                                <Button variant="primary" type="submit">Sign up</Button>
-                                <Button variant="danger" onClick={cancelButton_Clicked}>Cancel</Button>
-                            </Form>
-                        </Card.Body>
-                    </Card>
+                                </Form.Group>      
+                            </Card.Body>
+                            <Card.Footer>
+                                <Button className="float-right py-2" variant="primary" type="submit">Sign up</Button>
+                                <Button className="float-right mr-3 py-2" variant="danger" onClick={cancelButton_Clicked}>Cancel</Button>
+                            </Card.Footer>
+                        </Card>
+                    </Form>
                 </Col>
+                <Col></Col>
+            </Row>
+            <Row>
                 <Col>
                     <Popup open={open} position="right center">
                         <div>
@@ -157,7 +164,6 @@ export default function Signup(props) {
                     </Popup>
                 </Col>
             </Row>
-
         </Container>
     )
 }

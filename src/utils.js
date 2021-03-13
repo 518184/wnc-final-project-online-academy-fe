@@ -15,3 +15,18 @@ export function parseJwt(token) {
 
   return JSON.parse(jsonPayload);
 };
+
+export function refreshToken() {
+  if(Date.now() >= localStorage.account_expToken * 1000) {
+    const data = {
+        "accessToken" : localStorage.account_accessToken,
+        "refreshToken" : localStorage.account_refreshToken
+    };
+    const res = axiosInstance.post('/auth/refresh', data);
+    localStorage.account_accessToken = res;
+    localStorage.account_expToken = parseJwt(res).exp;
+    return res;
+  } else {
+      return localStorage.account_accessToken;
+  }
+};
