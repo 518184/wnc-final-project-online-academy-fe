@@ -2,8 +2,8 @@ import React, { lazy, useState, useEffect, useReducer, forwardRef } from 'react'
 import { axiosInstance, parseJwt } from '../../../../utils';
 import { useForm } from 'react-hook-form';
 import { Modal, Button, Form, FormCheck, Col, Row } from 'react-bootstrap';
-import reducer from '../../userReducer';
-import AppContext from '../../userContext';
+import reducer from '../../categoryReducer';
+import AppContext from '../../categoryContext';
 import swal from 'sweetalert';
 
 import MaterialTable from 'material-table';
@@ -26,8 +26,8 @@ import DetailsIcon from '@material-ui/icons/Details';
 
 
 
-export default function User(props) {
-	const [userTable, setUserTable] = useState([]);
+export default function Category(props) {
+	const [categoryTable, setCategoryTable] = useState([]);
 	const { register, handleSubmit, watch, errors } = useForm();
 	const [showModalDetail, setShowModalDetail] = useState(false);
 	const [showModalEdit, setShowModalEdit] = useState(false);
@@ -45,13 +45,13 @@ export default function User(props) {
 	const handleCloseModalDelete = () => setShowModalDelete(false);
 	const handleShowModelNew = () => setShowModalNew(true);
 	const handleCloseModalNew = () => setShowModalNew(false);
-	const initialUserData = {query: '', items: []}
-	const [store, dispatch] = useReducer(reducer, initialUserData);
-	const defaulteUser = {id: null, email: null, fullname:null}
+	const initialCategoryData = {query: '', items: []}
+	const [store, dispatch] = useReducer(reducer, initialCategoryData);
+	const defaulteCategory = {id: null, title: null, description:null}
 
 	useEffect(function () {
-		async function loadDataUser() {
-			const res = await axiosInstance.get('/users', { headers: { 'x-access-token': localStorage.account_accessToken } });
+		async function loadDataCategory() {
+			const res = await axiosInstance.get('/categories', { headers: { 'x-access-token': localStorage.account_accessToken } });
 			if (res.status === 200) {
 				dispatch({
 					type: 'init',
@@ -62,13 +62,12 @@ export default function User(props) {
 				});
 			}
 		}
-		loadDataUser();
+		loadDataCategory();
 	}, []);
 	const columns = [
 		{ title: "ID", field: "id" },
-		{ title: "Fullname", field: "fullname" },
-		{ title: "Email", field: "email" },
-		{ title: "Type", field: "type" }
+		{ title: "Title", field: "title" },
+		{ title: "Description", field: "description" },
 	];
 
 	const tableIcons = {
@@ -91,8 +90,8 @@ export default function User(props) {
 		ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />),
 		DetailsIcon: forwardRef((props, ref) => <DetailsIcon {...props} ref={ref} />)
 	};
-	const reLoadDataUser = async function () {
-		const res = await axiosInstance.get('/users', { headers: { 'x-access-token': localStorage.account_accessToken } });
+	const reLoadDataCategory = async function () {
+		const res = await axiosInstance.get('/categories', { headers: { 'x-access-token': localStorage.account_accessToken } });
 		if (res.status === 200) {
 			dispatch({
 				type: 'init',
@@ -105,31 +104,31 @@ export default function User(props) {
 	}
 
 	const handleDetail = async function (dataRow) {
-		setUserTable(defaulteUser);
+		setCategoryTable(defaulteCategory);
 		let id = dataRow.id;
-		let res = await axiosInstance.get('/users/' + id, { headers: { 'x-access-token': localStorage.account_accessToken } });
+		let res = await axiosInstance.get('/categories/' + id, { headers: { 'x-access-token': localStorage.account_accessToken } });
 		if (res.status === 200) {
-			setUserTable(res.data);
+			setCategoryTable(res.data);
 		}
 		handleShowModelDetail();
 	}
 
 	const handleEdit = async function (dataRow) {
-		setUserTable(defaulteUser);
+		setCategoryTable(defaulteCategory);
 		let id = dataRow.id;
-		let res = await axiosInstance.get('/users/' + id, { headers: { 'x-access-token': localStorage.account_accessToken } });
+		let res = await axiosInstance.get('/categories/' + id, { headers: { 'x-access-token': localStorage.account_accessToken } });
 		if (res.status === 200) {
-			setUserTable(res.data);
+			setCategoryTable(res.data);
 		}
 		handleShowModelEdit();
 	}
 
 	const handleDelete = async function (dataRow) {
-		setUserTable(defaulteUser);
+		setCategoryTable(defaulteCategory);
 		let id = dataRow.id;
-		let res = await axiosInstance.get('/users/' + id, { headers: { 'x-access-token': localStorage.account_accessToken } });
+		let res = await axiosInstance.get('/categories/' + id, { headers: { 'x-access-token': localStorage.account_accessToken } });
 		if (res.status === 200) {
-			setUserTable(res.data);
+			setCategoryTable(res.data);
 		}
 		handleShowModelDelete();
 	}
@@ -138,21 +137,19 @@ export default function User(props) {
 		handleShowModelNew();
 	}
 
-	const onSubmitUpdateUser = async function (data) {
+	const onSubmitUpdate = async function (data) {
 		try {
 			if (data != null && data.id > 0) {
 				let id = data.id;
-				data.type = parseInt(data.type);
-				data.isActive = parseInt(data.isActive);
 				delete data.id;
-				let res = await axiosInstance.put('/users/' + id, data, {
+				let res = await axiosInstance.put('/categories/' + id, data, {
 					headers: { 'x-access-token': localStorage.account_accessToken }
 				});
-				if (res.status === 200) {
-					reLoadDataUser();
+				if (res.status === 201) {
+					reLoadDataCategory();
 					swal({
-						title: "Account is updated",
-						text: "User ID " + id + " updated",
+						title: "Category is updated",
+						text: "Category ID " + id + " updated",
 						icon: "success",
 						button: "OK"
 					});
@@ -176,18 +173,18 @@ export default function User(props) {
 		}
 	}
 
-	const onSubmitDeleteUser = async function (data) {
+	const onSubmitDelete = async function (data) {
 		try {
 			if (data != null && data.id > 0) {
 				let id = data.id;
-				let res = await axiosInstance.delete('/users/' + id, {
+				let res = await axiosInstance.delete('/categories/' + id, {
 					headers: { 'x-access-token': localStorage.account_accessToken }
 				});
 				if (res.status === 200) {
-					reLoadDataUser();
+					reLoadDataCategory();
 					swal({
-						title: "Account is deleted",
-						text: "User ID " + id + " deleted",
+						title: "Category is deleted",
+						text: "Category ID " + id + " deleted",
 						icon: "success",
 						button: "OK"
 					});
@@ -211,18 +208,17 @@ export default function User(props) {
 		}
 	}
 
-	const onSubmitNewUser = async function (data) {
+	const onSubmitNew= async function (data) {
 		try {
 			if (data != null) {
-				data.type = parseInt(data.type);
-				let res = await axiosInstance.post('/users', data, {
+				let res = await axiosInstance.post('/categories', data, {
 					headers: { 'x-access-token': localStorage.account_accessToken }
 				});
 				if (res.status === 201) {
-					reLoadDataUser();
+					reLoadDataCategory();
 					swal({
-						title: "Account is created",
-						text: "User ID " + res.data.id + " created",
+						title: "Category is created",
+						text: "Category ID " + res.data.id + " created",
 						icon: "success",
 						button: "OK"
 					});
@@ -254,11 +250,11 @@ export default function User(props) {
 						<div className="col-sm-12">
 							<div className="card shadow">
 								<h3 className="card-header d-flex">
-									User List from Academy
+                                Category List from Academy
             </h3>
 								<div className="card-body">
 									<div className="row">
-										<button className="btn btn-warning" onClick={reLoadDataUser}>Reload</button>
+										<button className="btn btn-warning" onClick={reLoadDataCategory}>Reload</button>
 										<button className="btn btn-primary" onClick={handleNew}>New</button>
 									</div>
 									<br></br>
@@ -267,17 +263,17 @@ export default function User(props) {
 											actions={[
 												{
 													icon: tableIcons.DetailsIcon,
-													tooltip: 'Detail User',
+													tooltip: 'Detail Category',
 													onClick: (event, rowData) => handleDetail(rowData)
 												},
 												{
 													icon: tableIcons.Edit,
-													tooltip: 'Modify user',
+													tooltip: 'Modify Category',
 													onClick: (event, rowData) => handleEdit(rowData)
 												},
 												{
 													icon: tableIcons.Delete,
-													tooltip: 'Delete User',
+													tooltip: 'Delete Category',
 													onClick: (event, rowData) => handleDelete(rowData)
 												}
 											]}
@@ -293,7 +289,7 @@ export default function User(props) {
 				</div>
 				<Modal show={showModalDetail} onHide={handleCloseModalDetail}>
 					<Modal.Header closeButton>
-						<Modal.Title>Detail User</Modal.Title>
+						<Modal.Title>Detail Category</Modal.Title>
 					</Modal.Header>
 					<Modal.Body>
 						<Form>
@@ -301,37 +297,25 @@ export default function User(props) {
 								<Col>
 									<Form.Group >
 										<Form.Label>ID</Form.Label>
-										<Form.Control type="text" name="id" value={userTable.id == null ? "" : userTable.id} readOnly />
+										<Form.Control type="text" name="id" value={categoryTable.id == null ? "" : categoryTable.id} readOnly />
 									</Form.Group>
 									<Form.Group >
-										<Form.Label>Fullname</Form.Label>
-										<Form.Control type="text" name="fullname" value={userTable.fullname == null ? "" : userTable.fullname} readOnly />
+										<Form.Label>Title</Form.Label>
+										<Form.Control type="text" name="title" value={categoryTable.title == null ? "" : categoryTable.title} readOnly />
 									</Form.Group>
 									<Form.Group >
-										<Form.Label>Email</Form.Label>
-										<Form.Control type="email" name="email" value={userTable.email == null ? "" : userTable.email} readOnly />
-									</Form.Group>
-									<Form.Group >
-										<Form.Label>Type</Form.Label>
-										<Form.Control type="text" name="type" value={userTable.type == null ? "" : userTable.type === 1 ? "Student" : userTable.type === 2 ? "Teacher" : "Admin"} readOnly />
+										<Form.Label>Description</Form.Label>
+										<Form.Control type="text" name="description" value={categoryTable.description == null ? "" : categoryTable.description} readOnly />
 									</Form.Group>
 								</Col>
 								<Col>
 									<Form.Group >
-										<Form.Label>Active</Form.Label>
-										<Form.Control type="text" name="isActive" value={userTable.isActive == null ? "" : userTable.isActive === 1 ? "Yes" : "No"} readOnly />
-									</Form.Group>
-									<Form.Group >
-										<Form.Label>Watch List</Form.Label>
-										<Form.Control type="text" name="watchlist" value={userTable.watchlist == null ? "" : userTable.watchlist} readOnly />
-									</Form.Group>
-									<Form.Group >
 										<Form.Label>Created Date</Form.Label>
-										<Form.Control type="text" name="createdDate" value={userTable.createdDate == null ? "" : userTable.createdDate} readOnly />
+										<Form.Control type="text" name="createdDate" value={categoryTable.createdDate == null ? "" : categoryTable.createdDate} readOnly />
 									</Form.Group>
 									<Form.Group >
 										<Form.Label>Modified Date</Form.Label>
-										<Form.Control type="text" name="modifiedDate" value={userTable.modifiedDate == null ? "" : userTable.modifiedDate} readOnly />
+										<Form.Control type="text" name="modifiedDate" value={categoryTable.modifiedDate == null ? "" : categoryTable.modifiedDate} readOnly />
 									</Form.Group>
 								</Col>
 							</Row>
@@ -342,55 +326,23 @@ export default function User(props) {
 					</Modal.Footer>
 				</Modal>
 				<Modal show={showModalEdit} onHide={handleCloseModalEdit}>
-					<Form onSubmit={handleSubmit(onSubmitUpdateUser)}>
+					<Form onSubmit={handleSubmit(onSubmitUpdate)}>
 						<Modal.Header closeButton>
-							<Modal.Title>Update User</Modal.Title>
+							<Modal.Title>Update Category</Modal.Title>
 						</Modal.Header>
 						<Modal.Body>
 							<Form.Group >
 								<Form.Label>ID</Form.Label>
-								<Form.Control type="text" name="id" value={userTable.id == null ? "" : userTable.id} ref={register({ required: true })} readOnly />
+								<Form.Control type="text" name="id" value={categoryTable.id == null ? "" : categoryTable.id} ref={register({ required: true })} readOnly />
 							</Form.Group>
 							<Form.Group >
-								<Form.Label>Fullname</Form.Label>
-								<Form.Control type="text" name="fullname" defaultValue={userTable.fullname == null ? "" : userTable.fullname} ref={register({ required: true })} autoFocus />
+								<Form.Label>Title</Form.Label>
+								<Form.Control type="text" name="title" defaultValue={categoryTable.title == null ? "" : categoryTable.title} ref={register({ required: true })} autoFocus />
 							</Form.Group>
-							{/* <Form.Group >
-								<Form.Check type="switch" id="custom-switch" label="Change password" onChange={handleDisableChangePassword}/>
-								<Form.Label>Password</Form.Label>
-								<Form.Control type="text" name="password" ref={register({ required: !{disableChangePassword} })} disabled={disableChangePassword} />
-							</Form.Group> */}
 							<Form.Group >
-								<Form.Label>Email</Form.Label>
-								<Form.Control type="email" name="email" defaultValue={userTable.email == null ? "" : userTable.email} ref={register({ required: true })} readOnly />
+								<Form.Label>Description</Form.Label>
+								<Form.Control type="text" name="description" defaultValue={categoryTable.description == null ? "" : categoryTable.description} ref={register({ required: true })} />
 							</Form.Group>
-							<Form.Group>
-								<Form.Label>Type</Form.Label>
-								<Form.Control as="select" name="type" defaultValue={userTable.id==null?-1:userTable.type == null ? "" : userTable.type === 1 ? 1 : userTable.type === 2 ? 2 : 3} ref={register({ required: true })} >
-									<option value="1">Student</option>
-									<option value="2">Teacher</option>
-									<option value="3">Admin</option>
-								</Form.Control>
-							</Form.Group>
-							<Form.Group>
-								<Form.Label>Active</Form.Label>
-								<Form.Control as="select" name="isActive" defaultValue={userTable.id==null?"":userTable.isActive == null ? "" : userTable.isActive === 1 ? 1 : 0} ref={register({ required: true })} >
-									<option value="1">Yes</option>
-									<option value="0">No</option>
-								</Form.Control>
-							</Form.Group>
-							{/* <Form.Group>
-								<Form.Label>Status</Form.Label>
-								<Form.Check type="switch" id="custom-switch" label="Restore user" onChange={handleDisableChangeStatus} disabled={userTable.isDeleted == null ? true : userTable.isDeleted === 1 ? false : true} />
-								<Form.Control as="select" name="isActive" defaultValue={userTable.isDeleted == null ? "" : userTable.isDeleted === 1 ? 1 : 0} ref={register({ required: !{disableChangeStatus} })} disabled={disableChangeStatus}>
-									<option value="1">User is deleted</option>
-									<option value="0">User is live</option>
-								</Form.Control>
-							</Form.Group> */}
-							{/* <Form.Group >
-								<Form.Label>Watch List</Form.Label>
-								<Form.Control type="text" name="watchlist" defaultValue={userTable.watchlist == null ? "" : userTable.watchlist} ref={register({ required: false })} />
-							</Form.Group> */}
 						</Modal.Body>
 						<Modal.Footer>
 							<Button variant="primary" type="submit">Update</Button>
@@ -399,46 +351,34 @@ export default function User(props) {
 					</Form>
 				</Modal>
 				<Modal show={showModalDelete} onHide={handleCloseModalDelete}>
-					<Form onSubmit={handleSubmit(onSubmitDeleteUser)}>
+					<Form onSubmit={handleSubmit(onSubmitDelete)}>
 						<Modal.Header closeButton>
-							<Modal.Title>Delete User</Modal.Title>
+							<Modal.Title>Delete Category</Modal.Title>
 						</Modal.Header>
 						<Modal.Body>
 							<Row>
 								<Col>
 									<Form.Group >
 										<Form.Label>ID</Form.Label>
-										<Form.Control type="text" name="id" defaultValue={userTable.id == null ? "" : userTable.id} ref={register({ required: false })} readOnly />
+										<Form.Control type="text" name="id" defaultValue={categoryTable.id == null ? "" : categoryTable.id} ref={register({ required: false })} readOnly />
 									</Form.Group>
 									<Form.Group >
-										<Form.Label>Fullname</Form.Label>
-										<Form.Control type="text" name="fullname" defaultValue={userTable.fullname == null ? "" : userTable.fullname} readOnly />
+										<Form.Label>Title</Form.Label>
+										<Form.Control type="text" name="title" defaultValue={categoryTable.title == null ? "" : categoryTable.title} readOnly />
 									</Form.Group>
 									<Form.Group >
-										<Form.Label>Email</Form.Label>
-										<Form.Control type="text" name="email" defaultValue={userTable.email == null ? "" : userTable.email} readOnly />
-									</Form.Group>
-									<Form.Group >
-										<Form.Label>Type</Form.Label>
-										<Form.Control type="text" name="type" defaultValue={userTable.type == null ? "" : userTable.type === 1 ? "Student" : userTable.type === 2 ? "Teacher" : "Admin"} readOnly />
+										<Form.Label>Description</Form.Label>
+										<Form.Control type="text" name="description" defaultValue={categoryTable.description == null ? "" : categoryTable.description} readOnly />
 									</Form.Group>
 								</Col>
 								<Col>
-								<Form.Group >
-										<Form.Label>Active</Form.Label>
-										<Form.Control type="text" name="isActive" defaultValue={userTable.isActive == null ? "" : userTable.isActive === 1 ? "Yes" : "No"} readOnly />
-									</Form.Group>
-									<Form.Group >
-										<Form.Label>Watch List</Form.Label>
-										<Form.Control type="text" name="watchlist" defaultValue={userTable.watchlist == null ? "" : userTable.watchlist} readOnly />
-									</Form.Group>
 									<Form.Group >
 										<Form.Label>Created Date</Form.Label>
-										<Form.Control type="text" name="createdDate" defaultValue={userTable.createdDate == null ? "" : userTable.createdDate} readOnly />
+										<Form.Control type="text" name="createdDate" defaultValue={categoryTable.createdDate == null ? "" : categoryTable.createdDate} readOnly />
 									</Form.Group>
 									<Form.Group >
 										<Form.Label>Modified Date</Form.Label>
-										<Form.Control type="text" name="modifiedDate" defaultValue={userTable.modifiedDate == null ? "" : userTable.modifiedDate} readOnly />
+										<Form.Control type="text" name="modifiedDate" defaultValue={categoryTable.modifiedDate == null ? "" : categoryTable.modifiedDate} readOnly />
 									</Form.Group>
 								</Col>
 							</Row>
@@ -451,29 +391,18 @@ export default function User(props) {
 					</Form>
 				</Modal>
 				<Modal show={showModalNew} onHide={handleCloseModalNew}>
-					<Form onSubmit={handleSubmit(onSubmitNewUser)}>
+					<Form onSubmit={handleSubmit(onSubmitNew)}>
 						<Modal.Header closeButton>
-							<Modal.Title>New User</Modal.Title>
+							<Modal.Title>New Category</Modal.Title>
 						</Modal.Header>
 						<Modal.Body>
 							<Form.Group >
-								<Form.Label>Fullname</Form.Label>
-								<Form.Control type="text" name="fullname" ref={register({ required: true })} autoFocus />
+								<Form.Label>Title</Form.Label>
+								<Form.Control type="text" name="title" ref={register({ required: true })} autoFocus />
 							</Form.Group>
 							<Form.Group >
-								<Form.Label>Email</Form.Label>
-								<Form.Control type="email" name="email" ref={register({ required: true })}  />
-							</Form.Group>
-							<Form.Group >
-								<Form.Label>Password</Form.Label>
-								<Form.Control type="password" name="password" ref={register({ required: true })}  />
-							</Form.Group>
-							<Form.Group>
-								<Form.Label>Type</Form.Label>
-								<Form.Control as="select" name="type" ref={register({ required: true })} >
-									<option value="2">Teacher</option>
-									<option value="3">Admin</option>
-								</Form.Control>
+								<Form.Label>Description</Form.Label>
+								<Form.Control type="text" name="description" ref={register({ required: true })}  />
 							</Form.Group>
 						</Modal.Body>
 						<Modal.Footer>

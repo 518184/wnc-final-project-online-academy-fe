@@ -17,16 +17,13 @@ const _nav =  [
     to: '/user',
   },
   {
-    _tag: 'CSidebarNavItem',
-    name: 'OTP',
-  },
-  {
     _tag: 'CSidebarNavTitle',
     _children: ['Data Manager']
   },
   {
     _tag: 'CSidebarNavItem',
     name: 'Category',
+    to: '/category',
   },
   {
     _tag: 'CSidebarNavItem',
