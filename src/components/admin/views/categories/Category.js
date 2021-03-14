@@ -205,6 +205,12 @@ export default function Category(props) {
 			}
 		} catch (err) {
 			console.log(err.response.data);
+            swal({
+                title: "Failed",
+                text: "Category has course",
+                icon: "danger",
+                button: "OK"
+            });
 		}
 	}
 
