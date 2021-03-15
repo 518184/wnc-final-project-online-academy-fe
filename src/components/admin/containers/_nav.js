@@ -28,18 +28,7 @@ const _nav =  [
   {
     _tag: 'CSidebarNavItem',
     name: 'Course',
-  },
-  {
-    _tag: 'CSidebarNavItem',
-    name: 'Subject',
-  },
-  {
-    _tag: 'CSidebarNavItem',
-    name: 'Transaction',
-  },
-  {
-    _tag: 'CSidebarNavItem',
-    name: 'Feedback',
+    to: '/course',
   },
 ]
 
