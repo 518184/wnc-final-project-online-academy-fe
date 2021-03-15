@@ -176,6 +176,12 @@ export default function Course(props) {
             }
         } catch (err) {
             console.log(err.response.data);
+            swal({
+                title: "Failed",
+                text: err.response.data.message,
+                icon: "danger",
+                button: "OK"
+            });
         }
     }
 
