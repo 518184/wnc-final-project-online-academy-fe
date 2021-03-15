@@ -54,6 +54,16 @@ export default function Course(props) {
         async function loadDataCourse() {
             const res = await axiosInstance.get('/courses', { headers: { 'x-access-token': localStorage.account_accessToken } });
             if (res.status === 200) {
+                for (let i in res.data) {
+                    let resGetTeacherEmail = await axiosInstance.get('/users/'+ res.data[i].teacherId, { headers: { 'x-access-token': localStorage.account_accessToken } });
+                    if (resGetTeacherEmail.status === 200) {
+                        res.data[i].teacher = resGetTeacherEmail.data.email;
+                    }
+                    let resGetCategoryTitle = await axiosInstance.get('/categories/'+ res.data[i].categoryId, { headers: { 'x-access-token': localStorage.account_accessToken } });
+                    if (resGetCategoryTitle.status === 200) {
+                        res.data[i].category = resGetCategoryTitle.data.title;
+                    }
+                }
                 dispatch({
                     type: 'init',
                     payload: {
@@ -66,10 +76,10 @@ export default function Course(props) {
         loadDataCourse();
     }, []);
     const columns = [
-        { title: "ID", field: "id" },
-        { title: "Title", field: "title" },
-        { title: "Description Short", field: "descriptionShort" },
-        { title: "Description Long", field: "descriptionLong" },
+        { title: "ID", field: "id", filtering: false },
+        { title: "Title", field: "title", filtering: false },
+        { title: "Category Title", field: "category" },
+        { title: "Teacher Email", field: "teacher" },
     ];
 
     const tableIcons = {
@@ -95,6 +105,16 @@ export default function Course(props) {
     const reLoadDataCourse = async function () {
         const res = await axiosInstance.get('/courses', { headers: { 'x-access-token': localStorage.account_accessToken } });
         if (res.status === 200) {
+            for (let i in res.data) {
+                let resGetTeacherEmail = await axiosInstance.get('/users/'+ res.data[i].teacherId, { headers: { 'x-access-token': localStorage.account_accessToken } });
+                if (resGetTeacherEmail.status === 200) {
+                    res.data[i].teacher = resGetTeacherEmail.data.email;
+                }
+                let resGetCategoryTitle = await axiosInstance.get('/categories/'+ res.data[i].categoryId, { headers: { 'x-access-token': localStorage.account_accessToken } });
+                if (resGetCategoryTitle.status === 200) {
+                    res.data[i].category = resGetCategoryTitle.data.title;
+                }
+            }
             dispatch({
                 type: 'init',
                 payload: {
@@ -298,6 +318,9 @@ export default function Course(props) {
                                                     onClick: (event, rowData) => handleDelete(rowData)
                                                 }
                                             ]}
+                                            options={{
+                                                filtering: true
+                                            }}
                                         />
                                     </div>
                                 </div>
