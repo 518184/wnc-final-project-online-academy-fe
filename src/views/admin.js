@@ -32,6 +32,7 @@ class AdminAcademy extends Component {
               <Route exact path="/500" name="Page 500" render={props => <Page500 {...props}/>} />
               <Route path="/admin" name="Home" render={props => <TheLayout {...props}/>} />
               <Route exact={true} path="/home" component={appp} />
+              <Route exact={true} path="/" component={appp} />
             </Switch>
           </React.Suspense>
       </BrowserRouter>
