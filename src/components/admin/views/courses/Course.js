@@ -128,30 +128,33 @@ export default function Course(props) {
     const handleDetail = async function (dataRow) {
         setCourseTable(defaultCourse);
         let id = dataRow.id;
-        let res = await axiosInstance.get('/courses/' + id, { headers: { 'x-access-token': localStorage.account_accessToken } });
-        if (res.status === 200) {
-            setCourseTable(res.data);
-        }
+        // let res = await axiosInstance.get('/courses/' + id, { headers: { 'x-access-token': localStorage.account_accessToken } });
+        // if (res.status === 200) {
+        //     setCourseTable(res.data);
+        // }
+        setCourseTable((store.items.filter(item => item.id===id))[0]);
         handleShowModelDetail();
     }
 
     const handleEdit = async function (dataRow) {
         setCourseTable(defaultCourse);
         let id = dataRow.id;
-        let res = await axiosInstance.get('/courses/' + id, { headers: { 'x-access-token': localStorage.account_accessToken } });
-        if (res.status === 200) {
-            setCourseTable(res.data);
-        }
+        // let res = await axiosInstance.get('/courses/' + id, { headers: { 'x-access-token': localStorage.account_accessToken } });
+        // if (res.status === 200) {
+        //     setCourseTable(res.data);
+        // }
+        setCourseTable((store.items.filter(item => item.id===id))[0]);
         handleShowModelEdit();
     }
 
     const handleDelete = async function (dataRow) {
         setCourseTable(defaultCourse);
         let id = dataRow.id;
-        let res = await axiosInstance.get('/courses/' + id, { headers: { 'x-access-token': localStorage.account_accessToken } });
-        if (res.status === 200) {
-            setCourseTable(res.data);
-        }
+        // let res = await axiosInstance.get('/courses/' + id, { headers: { 'x-access-token': localStorage.account_accessToken } });
+        // if (res.status === 200) {
+        //     setCourseTable(res.data);
+        // }
+        setCourseTable((store.items.filter(item => item.id===id))[0]);
         handleShowModelDelete();
     }
 
