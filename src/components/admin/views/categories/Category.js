@@ -45,9 +45,9 @@ export default function Category(props) {
 	const handleCloseModalDelete = () => setShowModalDelete(false);
 	const handleShowModelNew = () => setShowModalNew(true);
 	const handleCloseModalNew = () => setShowModalNew(false);
-	const initialCategoryData = {query: '', items: []}
+	const initialCategoryData = { query: '', items: [] }
 	const [store, dispatch] = useReducer(reducer, initialCategoryData);
-	const defaulteCategory = {id: null, title: null, description:null}
+	const defaulteCategory = { id: null, title: null, description: null }
 
 	useEffect(function () {
 		async function loadDataCategory() {
@@ -68,6 +68,7 @@ export default function Category(props) {
 		{ title: "ID", field: "id" },
 		{ title: "Title", field: "title" },
 		{ title: "Description", field: "description" },
+		{ title: "Level", field: "level" },
 	];
 
 	const tableIcons = {
@@ -106,30 +107,33 @@ export default function Category(props) {
 	const handleDetail = async function (dataRow) {
 		setCategoryTable(defaulteCategory);
 		let id = dataRow.id;
-		let res = await axiosInstance.get('/categories/' + id, { headers: { 'x-access-token': localStorage.account_accessToken } });
-		if (res.status === 200) {
-			setCategoryTable(res.data);
-		}
+		// let res = await axiosInstance.get('/categories/' + id, { headers: { 'x-access-token': localStorage.account_accessToken } });
+		// if (res.status === 200) {
+		// 	setCategoryTable(res.data);
+		// }
+		setCategoryTable((store.items.filter(item => item.id===id))[0]);
 		handleShowModelDetail();
 	}
 
 	const handleEdit = async function (dataRow) {
 		setCategoryTable(defaulteCategory);
-		let id = dataRow.id;
-		let res = await axiosInstance.get('/categories/' + id, { headers: { 'x-access-token': localStorage.account_accessToken } });
-		if (res.status === 200) {
-			setCategoryTable(res.data);
-		}
+		let id = parseInt(dataRow.id);
+		// let res = await axiosInstance.get('/categories/' + id, { headers: { 'x-access-token': localStorage.account_accessToken } });
+		// if (res.status === 200) {
+		// 	setCategoryTable(res.data);
+		// }
+		setCategoryTable((store.items.filter(item => item.id===id))[0]);
 		handleShowModelEdit();
 	}
 
 	const handleDelete = async function (dataRow) {
 		setCategoryTable(defaulteCategory);
 		let id = dataRow.id;
-		let res = await axiosInstance.get('/categories/' + id, { headers: { 'x-access-token': localStorage.account_accessToken } });
-		if (res.status === 200) {
-			setCategoryTable(res.data);
-		}
+		// let res = await axiosInstance.get('/categories/' + id, { headers: { 'x-access-token': localStorage.account_accessToken } });
+		// if (res.status === 200) {
+		// 	setCategoryTable(res.data);
+		// }
+		setCategoryTable((store.items.filter(item => item.id===id))[0]);
 		handleShowModelDelete();
 	}
 
@@ -140,7 +144,9 @@ export default function Category(props) {
 	const onSubmitUpdate = async function (data) {
 		try {
 			if (data != null && data.id > 0) {
-				let id = data.id;
+				const id = data.id;
+				data.level = parseInt(data.level);
+				data.owned = parseInt(data.owned);
 				delete data.id;
 				let res = await axiosInstance.put('/categories/' + id, data, {
 					headers: { 'x-access-token': localStorage.account_accessToken }
@@ -170,6 +176,12 @@ export default function Category(props) {
 			}
 		} catch (err) {
 			console.log(err.response.data);
+			swal({
+				title: "Failed",
+				text: err.response.data.message,
+				icon: "danger",
+				button: "OK"
+			});
 		}
 	}
 
@@ -205,18 +217,20 @@ export default function Category(props) {
 			}
 		} catch (err) {
 			console.log(err.response.data);
-            swal({
-                title: "Failed",
-                text: "Category has course",
-                icon: "danger",
-                button: "OK"
-            });
+			swal({
+				title: "Failed",
+				text: "Category has course",
+				icon: "danger",
+				button: "OK"
+			});
 		}
 	}
 
-	const onSubmitNew= async function (data) {
+	const onSubmitNew = async function (data) {
 		try {
 			if (data != null) {
+				data.level = parseInt(data.level);
+				data.owned = parseInt(data.owned);
 				let res = await axiosInstance.post('/categories', data, {
 					headers: { 'x-access-token': localStorage.account_accessToken }
 				});
@@ -256,7 +270,7 @@ export default function Category(props) {
 						<div className="col-sm-12">
 							<div className="card shadow">
 								<h3 className="card-header d-flex">
-                                Category List from Academy
+									Category List from Academy
             </h3>
 								<div className="card-body">
 									<div className="row">
@@ -313,6 +327,14 @@ export default function Category(props) {
 										<Form.Label>Description</Form.Label>
 										<Form.Control type="text" name="description" value={categoryTable.description == null ? "" : categoryTable.description} readOnly />
 									</Form.Group>
+									<Form.Group >
+										<Form.Label>Level</Form.Label>
+										<Form.Control type="text" name="level" value={categoryTable.level == null ? "" : categoryTable.level} readOnly />
+									</Form.Group>
+									<Form.Group >
+										<Form.Label>Owned</Form.Label>
+										<Form.Control type="text" name="owned" value={categoryTable.owned == null ? "" : categoryTable.owned === 0 ? "" : categoryTable.owned} readOnly />
+									</Form.Group>
 								</Col>
 								<Col>
 									<Form.Group >
@@ -349,6 +371,14 @@ export default function Category(props) {
 								<Form.Label>Description</Form.Label>
 								<Form.Control type="text" name="description" defaultValue={categoryTable.description == null ? "" : categoryTable.description} ref={register({ required: true })} />
 							</Form.Group>
+							<Form.Group >
+								<Form.Label>Level</Form.Label>
+								<Form.Control type="text" name="level" defaultValue={categoryTable.level == null ? "" : categoryTable.level} ref={register({ required: true })} />
+							</Form.Group>
+							<Form.Group >
+								<Form.Label>Owned</Form.Label>
+								<Form.Control type="text" name="owned" defaultValue={categoryTable.owned == null ? "" : categoryTable.owned === 0 ? "" : categoryTable.owned} ref={register({ required: true })} />
+							</Form.Group>
 						</Modal.Body>
 						<Modal.Footer>
 							<Button variant="primary" type="submit">Update</Button>
@@ -375,6 +405,14 @@ export default function Category(props) {
 									<Form.Group >
 										<Form.Label>Description</Form.Label>
 										<Form.Control type="text" name="description" defaultValue={categoryTable.description == null ? "" : categoryTable.description} readOnly />
+									</Form.Group>
+									<Form.Group >
+										<Form.Label>Level</Form.Label>
+										<Form.Control type="text" name="level" defaultValue={categoryTable.level == null ? "" : categoryTable.level} readOnly />
+									</Form.Group>
+									<Form.Group >
+										<Form.Label>Owned</Form.Label>
+										<Form.Control type="text" name="owned" defaultValue={categoryTable.owned == null ? "" : categoryTable.owned === 0 ? "" : categoryTable.owned} readOnly />
 									</Form.Group>
 								</Col>
 								<Col>
@@ -408,7 +446,15 @@ export default function Category(props) {
 							</Form.Group>
 							<Form.Group >
 								<Form.Label>Description</Form.Label>
-								<Form.Control type="text" name="description" ref={register({ required: true })}  />
+								<Form.Control type="text" name="description" ref={register({ required: true })} />
+							</Form.Group>
+							<Form.Group >
+								<Form.Label>Level</Form.Label>
+								<Form.Control type="text" name="level" ref={register({ required: true })} />
+							</Form.Group>
+							<Form.Group >
+								<Form.Label>Owned</Form.Label>
+								<Form.Control type="text" name="owned" ref={register({ required: true })} />
 							</Form.Group>
 						</Modal.Body>
 						<Modal.Footer>

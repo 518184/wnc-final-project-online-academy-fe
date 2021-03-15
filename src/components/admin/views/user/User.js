@@ -1,7 +1,7 @@
 import React, { lazy, useState, useEffect, useReducer, forwardRef } from 'react'
 import { axiosInstance, parseJwt } from '../../../../utils';
 import { useForm } from 'react-hook-form';
-import { Modal, Button, Form, FormCheck, Col, Row } from 'react-bootstrap';
+import { Modal, Button, Form, FormCheck, Col, Row, ToggleButtonGroup, ToggleButton, ButtonGroup } from 'react-bootstrap';
 import reducer from '../../userReducer';
 import AppContext from '../../userContext';
 import swal from 'sweetalert';
@@ -23,6 +23,7 @@ import SaveAlt from '@material-ui/icons/SaveAlt';
 import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
 import DetailsIcon from '@material-ui/icons/Details';
+import { Label } from '@material-ui/icons';
 
 
 
@@ -45,14 +46,18 @@ export default function User(props) {
 	const handleCloseModalDelete = () => setShowModalDelete(false);
 	const handleShowModelNew = () => setShowModalNew(true);
 	const handleCloseModalNew = () => setShowModalNew(false);
-	const initialUserData = {query: '', items: []}
+	const [radioValue, setRadioValue] = useState('1');
+	const initialUserData = { query: '', items: [] }
 	const [store, dispatch] = useReducer(reducer, initialUserData);
-	const defaulteUser = {id: null, email: null, fullname:null}
+	const defaulteUser = { id: null, email: null, fullname: null }
 
 	useEffect(function () {
 		async function loadDataUser() {
 			const res = await axiosInstance.get('/users', { headers: { 'x-access-token': localStorage.account_accessToken } });
 			if (res.status === 200) {
+				res.data.map(item => {
+					return item.type===1?item.typeName="Student":item.type===2?item.typeName="Teacher":item.type===3?item.typeName="Admin":""; 
+				});
 				dispatch({
 					type: 'init',
 					payload: {
@@ -64,11 +69,16 @@ export default function User(props) {
 		}
 		loadDataUser();
 	}, []);
+	const radios = [
+		{ name: 'Show all account', value: '1' },
+		{ name: 'Show only teacher account', value: '2' },
+		{ name: 'Show only student account', value: '3' },
+	];
 	const columns = [
 		{ title: "ID", field: "id" },
 		{ title: "Fullname", field: "fullname" },
 		{ title: "Email", field: "email" },
-		{ title: "Type", field: "type" }
+		{ title: "Type", field: "typeName" }
 	];
 
 	const tableIcons = {
@@ -94,6 +104,39 @@ export default function User(props) {
 	const reLoadDataUser = async function () {
 		const res = await axiosInstance.get('/users', { headers: { 'x-access-token': localStorage.account_accessToken } });
 		if (res.status === 200) {
+			res.data.map(item => {
+				return item.type===1?item.typeName="Student":item.type===2?item.typeName="Teacher":item.type===3?item.typeName="Admin":""; 
+			});
+			dispatch({
+				type: 'init',
+				payload: {
+					items: res.data,
+					query: ''
+				}
+			});
+		}
+	}
+	const reLoadDataOnlyTeacher = async function () {
+		const res = await axiosInstance.get('/users/teacher', { headers: { 'x-access-token': localStorage.account_accessToken } });
+		if (res.status === 200) {
+			res.data.map(item => {
+				return item.type===1?item.typeName="Student":item.type===2?item.typeName="Teacher":item.type===3?item.typeName="Admin":""; 
+			});
+			dispatch({
+				type: 'init',
+				payload: {
+					items: res.data,
+					query: ''
+				}
+			});
+		}
+	}
+	const reLoadDataOnlyStudent = async function () {
+		const res = await axiosInstance.get('/users/student', { headers: { 'x-access-token': localStorage.account_accessToken } });
+		if (res.status === 200) {
+			res.data.map(item => {
+				return item.type===1?item.typeName="Student":item.type===2?item.typeName="Teacher":item.type===3?item.typeName="Admin":""; 
+			});
 			dispatch({
 				type: 'init',
 				payload: {
@@ -104,33 +147,52 @@ export default function User(props) {
 		}
 	}
 
+	const handleFilterShowAccount = async function(value) {
+		switch(parseInt(value)) {
+			case 1:
+				await reLoadDataUser();
+				break;
+			case 2:
+				await reLoadDataOnlyTeacher();
+				break;
+			case 3:
+				await reLoadDataOnlyStudent();
+				break;
+			default:
+				break;
+		}
+	}
+
 	const handleDetail = async function (dataRow) {
 		setUserTable(defaulteUser);
 		let id = dataRow.id;
-		let res = await axiosInstance.get('/users/' + id, { headers: { 'x-access-token': localStorage.account_accessToken } });
-		if (res.status === 200) {
-			setUserTable(res.data);
-		}
+		// let res = await axiosInstance.get('/users/' + id, { headers: { 'x-access-token': localStorage.account_accessToken } });
+		// if (res.status === 200) {
+		// 	setUserTable(res.data);
+		// }
+		setUserTable((store.items.filter(item => item.id===id))[0]);
 		handleShowModelDetail();
 	}
 
 	const handleEdit = async function (dataRow) {
 		setUserTable(defaulteUser);
 		let id = dataRow.id;
-		let res = await axiosInstance.get('/users/' + id, { headers: { 'x-access-token': localStorage.account_accessToken } });
-		if (res.status === 200) {
-			setUserTable(res.data);
-		}
+		// let res = await axiosInstance.get('/users/' + id, { headers: { 'x-access-token': localStorage.account_accessToken } });
+		// if (res.status === 200) {
+		// 	setUserTable(res.data);
+		// }
+		setUserTable((store.items.filter(item => item.id===id))[0]);
 		handleShowModelEdit();
 	}
 
 	const handleDelete = async function (dataRow) {
 		setUserTable(defaulteUser);
 		let id = dataRow.id;
-		let res = await axiosInstance.get('/users/' + id, { headers: { 'x-access-token': localStorage.account_accessToken } });
-		if (res.status === 200) {
-			setUserTable(res.data);
-		}
+		// let res = await axiosInstance.get('/users/' + id, { headers: { 'x-access-token': localStorage.account_accessToken } });
+		// if (res.status === 200) {
+		// 	setUserTable(res.data);
+		// }
+		setUserTable((store.items.filter(item => item.id===id))[0]);
 		handleShowModelDelete();
 	}
 
@@ -259,7 +321,25 @@ export default function User(props) {
 								<div className="card-body">
 									<div className="row">
 										<button className="btn btn-warning" onClick={reLoadDataUser}>Reload</button>
-										<button className="btn btn-primary" onClick={handleNew}>New</button>
+										<button className="btn btn-primary" onClick={handleNew}>New Account Teacher</button>
+									</div>
+									<br />
+									<div className="row">
+										<ButtonGroup toggle>
+											{radios.map((radio, idx) => (
+												<ToggleButton
+													key={idx}
+													type="radio"
+													variant="secondary"
+													name="radio"
+													value={radio.value}
+													checked={radioValue === radio.value}
+													onChange={(e) => {setRadioValue(e.currentTarget.value); handleFilterShowAccount(e.currentTarget.value);}}
+												>
+													{radio.name}
+												</ToggleButton>
+											))}
+										</ButtonGroup>
 									</div>
 									<br></br>
 									<div style={{ maxWidth: '100%' }}>
@@ -366,7 +446,7 @@ export default function User(props) {
 							</Form.Group>
 							<Form.Group>
 								<Form.Label>Type</Form.Label>
-								<Form.Control as="select" name="type" defaultValue={userTable.id==null?-1:userTable.type == null ? "" : userTable.type === 1 ? 1 : userTable.type === 2 ? 2 : 3} ref={register({ required: true })} >
+								<Form.Control as="select" name="type" defaultValue={userTable.id == null ? -1 : userTable.type == null ? "" : userTable.type === 1 ? 1 : userTable.type === 2 ? 2 : 3} ref={register({ required: true })} >
 									<option value="1">Student</option>
 									<option value="2">Teacher</option>
 									<option value="3">Admin</option>
@@ -374,7 +454,7 @@ export default function User(props) {
 							</Form.Group>
 							<Form.Group>
 								<Form.Label>Active</Form.Label>
-								<Form.Control as="select" name="isActive" defaultValue={userTable.id==null?"":userTable.isActive == null ? "" : userTable.isActive === 1 ? 1 : 0} ref={register({ required: true })} >
+								<Form.Control as="select" name="isActive" defaultValue={userTable.id == null ? "" : userTable.isActive == null ? "" : userTable.isActive === 1 ? 1 : 0} ref={register({ required: true })} >
 									<option value="1">Yes</option>
 									<option value="0">No</option>
 								</Form.Control>
@@ -424,7 +504,7 @@ export default function User(props) {
 									</Form.Group>
 								</Col>
 								<Col>
-								<Form.Group >
+									<Form.Group >
 										<Form.Label>Active</Form.Label>
 										<Form.Control type="text" name="isActive" defaultValue={userTable.isActive == null ? "" : userTable.isActive === 1 ? "Yes" : "No"} readOnly />
 									</Form.Group>
@@ -462,11 +542,11 @@ export default function User(props) {
 							</Form.Group>
 							<Form.Group >
 								<Form.Label>Email</Form.Label>
-								<Form.Control type="email" name="email" ref={register({ required: true })}  />
+								<Form.Control type="email" name="email" ref={register({ required: true })} />
 							</Form.Group>
 							<Form.Group >
 								<Form.Label>Password</Form.Label>
-								<Form.Control type="password" name="password" ref={register({ required: true })}  />
+								<Form.Control type="password" name="password" ref={register({ required: true })} />
 							</Form.Group>
 							<Form.Group>
 								<Form.Label>Type</Form.Label>
