@@ -62,11 +62,14 @@
   font-weight: bold;
   border: 1px solid;
   height: 36px;
-  width: 90px;
+  width: fit-content;
   display: flex;
   justify-content: center;
   align-items: center;
   cursor: pointer;
+  word-wrap: break-word;
+  white-space: nowrap;
+  
 }
 
 .headerPrimary .login {

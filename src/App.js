@@ -8,7 +8,6 @@ import {
 import Login from './views/login';
 import Signup from './views/signup';
 import OnlineAcademy from './views/onlineAcademy';
-import OnlineAcademySignIn from "./views/onlineAcademySignIn";
 import AdminAcademy from "./views/admin";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -51,7 +50,7 @@ function App() {
         {/* <Route path="/login" render={() => <Login />} /> */}
 
         <PrivateRoute path="/">
-          <OnlineAcademySignIn />
+          <OnlineAcademy />
         </PrivateRoute>
       </Switch>
     </Router>
