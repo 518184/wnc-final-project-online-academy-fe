@@ -134,7 +134,6 @@ export default function Signup(props) {
                                     <Form.Label>Account Type</Form.Label>
                                     <Form.Control as="select" name="type" ref={register({ required: true })} >
                                         <option value="1">Student</option>
-                                        <option value="2">Teacher</option>
                                     </Form.Control>
                                 </Form.Group>      
                             </Card.Body>

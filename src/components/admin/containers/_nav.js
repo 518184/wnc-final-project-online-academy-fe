@@ -5,7 +5,7 @@ const _nav =  [
   {
     _tag: 'CSidebarNavItem',
     name: 'Dashboard',
-    to: '/dashboard',
+    to: '/admin/dashboard',
   },
   {
     _tag: 'CSidebarNavTitle',
@@ -14,7 +14,7 @@ const _nav =  [
   {
     _tag: 'CSidebarNavItem',
     name: 'User',
-    to: '/user',
+    to: '/admin/user',
   },
   {
     _tag: 'CSidebarNavTitle',
@@ -23,12 +23,12 @@ const _nav =  [
   {
     _tag: 'CSidebarNavItem',
     name: 'Category',
-    to: '/category',
+    to: '/admin/category',
   },
   {
     _tag: 'CSidebarNavItem',
     name: 'Course',
-    to: '/course',
+    to: '/admin/course',
   },
 ]
 
