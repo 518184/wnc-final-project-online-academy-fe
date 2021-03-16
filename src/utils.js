@@ -3,7 +3,12 @@ import axios from 'axios';
 export const axiosInstance = axios.create({
   baseURL: 'http://localhost:3001/api',
   timeout: 5000,
-  // headers: { 'X-Custom-Header': 'foobar' }
+});
+
+export const axiosAuth = axios.create({
+  baseURL: 'http://localhost:3001/api',
+  timeout: 5000,
+  headers: { 'x-access-token': localStorage.account_accessToken }
 });
 
 export function parseJwt(token) {
@@ -17,16 +22,15 @@ export function parseJwt(token) {
 };
 
 export function refreshToken() {
-  if(Date.now() >= localStorage.account_expToken * 1000) {
+  if (Date.now() >= localStorage.account_expToken * 1000) {
     const data = {
-        "accessToken" : localStorage.account_accessToken,
-        "refreshToken" : localStorage.account_refreshToken
+      "accessToken": localStorage.account_accessToken,
+      "refreshToken": localStorage.account_refreshToken
     };
     const res = axiosInstance.post('/auth/refresh', data);
     localStorage.account_accessToken = res;
     localStorage.account_expToken = parseJwt(res).exp;
     return res;
-  } else {
-      return localStorage.account_accessToken;
   }
+  return localStorage.account_accessToken;
 };

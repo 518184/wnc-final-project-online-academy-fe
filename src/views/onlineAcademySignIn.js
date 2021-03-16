@@ -1,18 +1,17 @@
 import React, { useEffect, useReducer } from 'react'
-
 import Header from "../components/Header";
 import HomeContent from "../components/HomeContent";
 import HomeFooter from "../components/HomeFooter";
-import AccountInfo from "./accountInfo";
-function onlineAcademySignIn() {
+import Accountinfo from './accountInfo';
+function onlineAcademy() {
     return (
         <div>
             <Header />
+            <Accountinfo />
             {/* <HeaderPopup />
             <HeaderPrimary /> */}
-            <AccountInfo />
             <HomeContent />
-            {/*
+            {/*    
             <AdImage />
             <Feature1 />
             <Recommendations />
@@ -29,4 +28,4 @@ function onlineAcademySignIn() {
     );
 }
 
-export default onlineAcademySignIn;
+export default onlineAcademy;

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom';
+import { Link, Redirect, useHistory } from 'react-router-dom';
 import { axiosInstance } from '../utils';
 
 export default function Accountinfo(props) {
@@ -11,11 +11,13 @@ export default function Accountinfo(props) {
         delete localStorage.account_refreshToken;
         delete localStorage.account_email;
         history.push('/home');
+        
     }
 
     return (
         <div>
-            <span>Email: {localStorage.email}</span>
+            <span>Email: {localStorage.account_email}</span>
+            {/* <button onClick={btnSignOut_Clicked}><Link to="/home" replace >Sign Out</Link></button> */}
             <button onClick={btnSignOut_Clicked}>Sign Out</button>
         </div>
     )
