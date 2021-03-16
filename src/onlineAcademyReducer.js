@@ -1,9 +1,27 @@
 export default function reducer(state, action) {
     switch (action.type) {
-      case 'loadCourses':
+      // case 'initCategoriesList':
+      //   return {
+      //     ...state,
+      //     categories: action.payload.categories
+      //   }
+      
+      case 'initCoursesList':
         return {
-          query: action.payload.query,
-          items: action.payload.items
+          courses: action.payload.courses,
+          query: action.payload.query
+        }
+
+      case 'update_query':
+        return {
+          ...state,
+          query: action.payload.query
+        }
+      
+      case 'getCategory':
+        return {
+          ...state,
+          courses: state.courses.map(course => course.id === action.payload.id ? { ...course, categoryId: action.payload.category } : course)
         }
   
     //   case 'add_item':
@@ -24,7 +42,7 @@ export default function reducer(state, action) {
     //       items: state.items.map(item => item.id === action.payload.id ? { ...item, complete: true } : item)
     //     }
   
-    //   default:
-    //     return state;
+      default:
+        return state;
      }
   }

@@ -1,18 +1,13 @@
-import React, { useEffect, useReducer } from "react";
+import React, { useContext, useEffect } from "react";
 // import "../../components/homeContent/fillerDiv.css";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { axiosInstance, refreshToken } from '../../utils'
 import { Card, Row, Col } from 'react-bootstrap';
-import reducer from '../../onlineAcademyReducer';
-import ApppContext from '../../onlineAcademyAppContext';
+import academyApppContext from '../../onlineAcademyAppContext';
+import { axiosInstance } from '../../utils';
 
 function FillerDiv() { 
-  const initialAppState = {
-    query: '',
-    items: []
-  }
 
-  const [store, dispatch] = useReducer(reducer, initialAppState);
+  const { store, dispatch } = useContext(academyApppContext);
 
   useEffect(function() {
     async function loadCourses() {
@@ -31,19 +26,18 @@ function FillerDiv() {
 
   return (
     <div>
-      <ApppContext.Provider value={{store, dispatch}}>
-      {store.items.map(item => 
-      <Card key={item.id}>
-        <Card.Body>
-          <Card.Title><center>{item.title}</center></Card.Title>
-          <Card.Text>{item.descriptionShort}</Card.Text>
-        </Card.Body>
-      </Card>
-      )}
-      {/* {
-        console.log(store.items)
-      } */}
-      </ApppContext.Provider>
+      <Row>
+        {store.items.map(item =>
+        <Col>
+          <Card key={item.id}>
+            <Card.Body>
+              <Card.Title><center>{item.title}</center></Card.Title>
+              <Card.Text>{item.descriptionShort}</Card.Text>
+            </Card.Body>
+          </Card>
+        </Col>
+        )}
+      </Row>
     </div>
   );
 }

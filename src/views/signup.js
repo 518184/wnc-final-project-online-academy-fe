@@ -112,7 +112,7 @@ export default function Signup(props) {
                                 <hr></hr>
                                 <Form.Group controlId="formBasicFullName">
                                     <Form.Label>Fullname</Form.Label>
-                                    <Form.Control type="text" name="fullname" placeholder="Enter fullname" ref={register({ required: true })} autoFocus />
+                                    <Form.Control type="text" name="fullname" placeholder="Enter fullname" ref={register({ required: true })} />
                                 </Form.Group>
 
                                 <Form.Group controlId="formBasicEmail">

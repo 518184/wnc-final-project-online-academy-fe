@@ -1,8 +1,11 @@
-import React, { useEffect, useReducer } from 'react'
+import React from 'react';
 import Header from "../components/Header";
 import HomeContent from "../components/HomeContent";
 import HomeFooter from "../components/HomeFooter";
+
 function onlineAcademy() {
+    
+
     return (
         <div>
             <Header />
