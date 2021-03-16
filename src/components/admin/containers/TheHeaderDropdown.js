@@ -7,9 +7,8 @@ import {
 	CDropdownToggle,
 	CImg
 } from '@coreui/react'
-import CIcon from '@coreui/icons-react'
-import AccountInfo from "../../../views/accountInfo";
 
+import LoggedIn from "../../LoggedIn"
 const TheHeaderDropdown = () => {
 	return (
 		<CDropdown
@@ -25,7 +24,7 @@ const TheHeaderDropdown = () => {
             alt="admin@bootstrapmaster.com"
           />
         </div> */}
-				<AccountInfo />
+				<LoggedIn />
 			</CDropdownToggle>
 			{/* <CDropdownMenu className="pt-0" placement="bottom-end">
 				<CDropdownItem>

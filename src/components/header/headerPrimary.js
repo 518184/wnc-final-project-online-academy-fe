@@ -3,32 +3,9 @@ import "../../components/header/headerPrimary.css";
 import ShoppingCartOutlinedIcon from "@material-ui/icons/ShoppingCartOutlined";
 import SearchOutlinedIcon from "@material-ui/icons/SearchOutlined";
 import PublishIcon from '@material-ui/icons/Publish';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import PersonIcon from '@material-ui/icons/Person';
-import PersonAddIcon from '@material-ui/icons/PersonAdd';
-import { Link } from "react-router-dom";
-import { useHistory } from 'react-router-dom';
+import LoggedIn from "../LoggedIn"
 
 function HeaderPrimary() {
-  const history = useHistory();
-  const logout = function () {
-    localStorage.clear();
-    history.push('/home');
-  }
-
-  function LoggedIn() {
-    if (localStorage.account_email) {
-      return (
-        <React.Fragment>
-          <Link to="/profile" style={{ textDecoration: 'none' }}><div className="login button"><PersonIcon className="icon" /><p>{localStorage.account_email}</p></div></Link>
-          <Link to="/" style={{ textDecoration: 'none' }}><div className="signup button" onClick={logout}><ExitToAppIcon className="icon" /><p>Sign Out</p></div></Link>
-        </React.Fragment>);
-    }
-    return (
-      <React.Fragment><Link to="/login" style={{ textDecoration: 'none' }}><div className="login button"><PersonIcon className="icon" /><p>Log In</p></div></Link>
-        <Link to="/signup" style={{ textDecoration: 'none' }}><div className="signup button"><PersonAddIcon className="icon" /><p>Sign Up</p></div></Link>
-      </React.Fragment>);
-  }
 
   return (
     <div className="headerPrimary">
