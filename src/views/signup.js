@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import { useForm } from 'react-hook-form';
 import { useHistory, useLocation } from 'react-router-dom';
 import { axiosInstance, parseJwt } from '../utils';
-import { Link } from 'react-router-dom';
 import Popup from "reactjs-popup";
 import swal from 'sweetalert';
 import {

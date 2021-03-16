@@ -19,6 +19,7 @@ export default function Login(props) {
 				localStorage.account_expToken = parseJwt(res.data.accessToken).exp;
 				localStorage.account_refreshToken = res.data.refreshToken;
 				localStorage.account_email = data.email;
+				localStorage.account_type = res.data.type;
 				// history.push(from.pathname);
 				if (res.data.type === 3) {
 					history.push("/admin");

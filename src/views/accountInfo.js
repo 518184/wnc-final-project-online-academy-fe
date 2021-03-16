@@ -10,6 +10,7 @@ export default function Accountinfo(props) {
         delete localStorage.account_expToken;
         delete localStorage.account_refreshToken;
         delete localStorage.account_email;
+        delete localStorage.account_type;
         history.push('/home');
         
     }
