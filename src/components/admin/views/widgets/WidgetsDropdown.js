@@ -16,19 +16,19 @@ const WidgetsDropdown = () => {
 		async function loadDataUser() {
 			const res = await axiosInstance.get('/users', { headers: { 'x-access-token': localStorage.account_accessToken } });
 			if (res.status === 200) {
-				setCountUser(parseInt(res.data.length));
+				setCountUser(res.data.length);
 			}
 		}
 		async function loadDataCategory() {
 			const res = await axiosInstance.get('/categories', { headers: { 'x-access-token': localStorage.account_accessToken } });
 			if (res.status === 200) {
-				setCountCategory(parseInt(res.data.length));
+				setCountCategory(res.data.length);
 			}
 		}
 		async function loadDataCourse() {
 			const res = await axiosInstance.get('/courses', { headers: { 'x-access-token': localStorage.account_accessToken } });
 			if (res.status === 200) {
-				setCountCourse(parseInt(res.data.length));
+				setCountCourse(res.data.length);
 			}
 		}
 		loadDataUser();
@@ -42,7 +42,7 @@ const WidgetsDropdown = () => {
 			<CCol sm="6" lg="3">
 				<CWidgetDropdown
 					color="gradient-primary"
-					header={countUser}
+					header={countUser.toString()}
 					text="Total users"
 				>
 				</CWidgetDropdown>
@@ -51,7 +51,7 @@ const WidgetsDropdown = () => {
 			<CCol sm="6" lg="3">
 				<CWidgetDropdown
 					color="gradient-info"
-					header={countCategory}
+					header={countCategory.toString()}
 					text="Total categories"
 				>
 				</CWidgetDropdown>
@@ -60,7 +60,7 @@ const WidgetsDropdown = () => {
 			<CCol sm="6" lg="3">
 				<CWidgetDropdown
 					color="gradient-warning"
-					header={countCourse}
+					header={countCourse.toString()}
 					text="Total courses"
 				>
 				</CWidgetDropdown>
