@@ -6,35 +6,6 @@ import { Link } from 'react-router-dom';
 import { Container, Row, Col, Card, Form, Button, DropdownButton, Dropdown } from 'react-bootstrap';
 
 export default function Login(props) {
-<<<<<<< HEAD
-  const { register, handleSubmit, watch, errors } = useForm();
-  const history = useHistory();
-  const location = useLocation();
-  const { from, toAdmin } = location.state || { from: { pathname: '/' } || { toAdmin: { pathname: '/admin' } } };
-  const onSubmit = async function (data) {
-    try {
-      const res = await axiosInstance.post('/auth', data);
-      if (res.data.authenticated) {
-        localStorage.account_accessToken = res.data.accessToken;
-        localStorage.account_userID = parseJwt(res.data.accessToken).userId;
-        localStorage.account_expToken = parseJwt(res.data.accessToken).exp;
-        localStorage.account_refreshToken = res.data.refreshToken;
-        localStorage.account_email = data.email;
-        // history.push(from.pathname);
-        if (res.data.type === 3) {
-          history.push("/admin");
-        }
-        else {
-          history.replace(from);
-        }
-      } else {
-        alert('Invalid login.');
-      }
-    } catch (err) {
-      console.log(err.response.data);
-    }
-  }
-=======
 	const { register, handleSubmit, watch, errors } = useForm();
 	const history = useHistory();
 	const location = useLocation();
@@ -62,7 +33,6 @@ export default function Login(props) {
 			console.log(err.response.data);
 		}
 	}
->>>>>>> 9bd03b5cde63f6184461529cf19f1f1058c86f5a
 
 	const BackToHome_Clicked = function () {
 		history.push("/home");
