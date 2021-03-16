@@ -2,8 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form';
 import { useHistory, useLocation } from 'react-router-dom';
 import { axiosInstance, parseJwt } from '../utils';
-import { Link } from 'react-router-dom';
-import Popup from "reactjs-popup";
 import swal from 'sweetalert';
 import {
     Container,
@@ -20,16 +18,28 @@ export default function Profile(props) {
     const location = useLocation();
     const { from } = location.state || { from: { pathname: '/' } };
     const [account, setAccount] = useState();
+    const [payment, setPayment] = useState();
     const [disablePassword, setDisablePassword] = useState(true);
 
     useEffect(function () {
         async function loadDataUser() {
             const res = await axiosInstance.get('/users/' + localStorage.account_userID, { headers: { 'x-access-token': localStorage.account_accessToken } });
             if (res.status === 200) {
+                res.data.watchlistJS = JSON.parse(res.data.watchlist).course;
                 setAccount(res.data);
+                console.log("user ", res.data);
             }
         }
+        async function loadDataPayment() {
+            const res = await axiosInstance.get('/transaction/user/' + localStorage.account_userID, { headers: { 'x-access-token': localStorage.account_accessToken } });
+            if (res.status === 200) {
+                setPayment(res.data);
+                console.log("transaction ", res.data);
+            }
+            console.log(payment);
+        }
         loadDataUser();
+        loadDataPayment();
     }, []);
 
 
@@ -40,7 +50,7 @@ export default function Profile(props) {
                     try {
                         delete data.confirmPassword;
                         delete data.switchPass;
-                        const res = await axiosInstance.put('/users/'+account.id, data, { headers: { 'x-access-token': localStorage.account_accessToken } });
+                        const res = await axiosInstance.put('/users/' + account.id, data, { headers: { 'x-access-token': localStorage.account_accessToken } });
                         if (res.status === 200) {
                             swal({
                                 title: "Profile Saved",
@@ -74,7 +84,7 @@ export default function Profile(props) {
                 try {
                     delete data.confirmPassword;
                     delete data.switchPass;
-                    const res = await axiosInstance.put('/users/'+account.id, data, { headers: { 'x-access-token': localStorage.account_accessToken } });
+                    const res = await axiosInstance.put('/users/' + account.id, data, { headers: { 'x-access-token': localStorage.account_accessToken } });
                     if (res.status === 200) {
                         swal({
                             title: "Profile Saved",
@@ -106,6 +116,24 @@ export default function Profile(props) {
         }
     }
 
+    const addCourse = async function () {
+        let data = {};
+        data.courseId = "5";
+        console.log(data);
+        const res = await axiosInstance.post('/transaction', data, { headers: { 'x-access-token': localStorage.account_accessToken } });
+        console.log(res.data);
+        const res2 = await axiosInstance.put('/transaction/' + res.data.id + '/payment', data, { headers: { 'x-access-token': localStorage.account_accessToken } });
+        console.log(res2.data);
+    }
+    const addWhiteList = async function () {
+        try {
+            const res = await axiosInstance.post('/users/watchlist/5', {}, { headers: { 'x-access-token': localStorage.account_accessToken } });
+        } catch (err) {
+            console.log(err.response.data);
+        }
+
+    }
+
     const changePassword = function () {
         disablePassword === true ? setDisablePassword(false) : setDisablePassword(true);
     }
@@ -117,12 +145,16 @@ export default function Profile(props) {
     return (
         <Container>
             <Row>
-                <Col></Col>
-                <Col xs={6} className="mt-4">
+                <Col xs={2} className="mt-1">
+                    <Button className="float-right mr-3 py-2" variant="secondary" onClick={cancelButton_Clicked}>Go Academy</Button>
+                </Col>
+            </Row>
+            <Row>
+                <Col xs={6} className="mt-1">
                     <Form onSubmit={handleSubmit(onSubmit)}>
                         <Card>
                             <Card.Body>
-                                <Card.Title as="h3"><center>Sign Up</center></Card.Title>
+                                <Card.Title as="h3"><center>Profile</center></Card.Title>
                                 <hr></hr>
                                 <Form.Group controlId="formBasicFullName">
                                     <Form.Label>Fullname</Form.Label>
@@ -146,12 +178,65 @@ export default function Profile(props) {
                             </Card.Body>
                             <Card.Footer>
                                 <Button className="float-right py-2" variant="primary" type="submit">Save</Button>
-                                <Button className="float-right mr-3 py-2" variant="danger" onClick={cancelButton_Clicked}>Cancel</Button>
                             </Card.Footer>
                         </Card>
                     </Form>
                 </Col>
-                <Col></Col>
+                <Col xs={6} className="mt-1">
+                    <Card>
+                        <Card.Body>
+                            <Card.Title as="h3"><center>My Courses</center></Card.Title>
+                            <hr></hr>
+                            {payment === undefined ? "" : payment.map(item =>
+                                <Card>
+                                    <Card.Img variant="top" src="holder.js/100px180" />
+                                    <Card.Body>
+                                        <Card.Title>{item.courseId}</Card.Title>
+                                        <Card.Text>
+                                            Some quick example text to build on the card title and make up the bulk of
+                                            the card's content.
+                                            </Card.Text>
+                                        <Button variant="primary">Go somewhere</Button>
+                                    </Card.Body>
+                                </Card>
+                            )}
+                        </Card.Body>
+                        <Card.Footer>
+                            <Button className="float-right py-2" variant="primary" onClick={addCourse}>Add</Button>
+                        </Card.Footer>
+                    </Card>
+                </Col>
+            </Row>
+            <Row>
+                <Col xs={12}>
+                    <Card>
+                        <Card.Body>
+                            <Card.Title as="h3"><center>My Favourite Courses</center></Card.Title>
+                            <hr></hr>
+                            <Card>
+                                <Card.Img variant="top" src="holder.js/100px180" />
+                                <Card.Body>
+                                    {account === undefined ? "" : account.watchlistJS.map(item =>
+                                        <Card>
+                                            <Card.Img variant="top" src="holder.js/100px180" />
+                                            <Card.Body>
+                                                <Card.Title>{item}</Card.Title>
+                                                <Card.Text>
+                                                    Some quick example text to build on the card title and make up the bulk of
+                                                    the card's content.
+                                            </Card.Text>
+                                                <Button variant="primary">Go somewhere</Button>
+                                            </Card.Body>
+                                        </Card>
+                                    )}
+                                </Card.Body>
+                            </Card>
+                        </Card.Body>
+                        <Card.Footer>
+                            <Button className="float-right py-2" variant="primary" onClick={addWhiteList}>Add</Button>
+                        </Card.Footer>
+                    </Card>
+                </Col>
             </Row>
         </Container>
     )
