@@ -6,30 +6,31 @@ import { axiosInstance } from '../../utils';
 
 export default function Course({ course }) {
     
-    const { store, dispatch } = useContext(academyApppContext);
+    const { store } = useContext(academyApppContext);
+    const categoryTitle = store.categories!=null?store.categories.filter(category => category.id === course.categoryId)[0]:[];
   
-    useEffect(function() {
-      async function getCategory() {
-        const res = await axiosInstance.get(`/categories/${course.categoryId}`);
-        if(res.status === 200){
-          dispatch({
-            type: 'getCategory',
-            payload: {
-              id: course.id,
-              category: res.data.title
-            }
-          });
-        }
-      }
-      getCategory();
-    }, []);
+    // useEffect(function() {
+    //   async function getCategory() {
+    //     const res = await axiosInstance.get(`/categories/${course.categoryId}`);
+    //     if(res.status === 200){
+    //       dispatch({
+    //         type: 'getCategory',
+    //         payload: {
+    //           id: course.id,
+    //           category: res.data.title
+    //         }
+    //       });
+    //     }
+    //   }
+    //   getCategory();
+    // }, []);
 
     return (
         <Card>
           <Card.Body>
             <Card.Title as="h4" className="my-2"><center>{course.title}</center></Card.Title>
             <hr></hr>
-            <Card.Text>Category: {course.categoryId}</Card.Text>
+            <Card.Text>Category: {categoryTitle===null?"":categoryTitle.title}</Card.Text>
             <Card.Text>Teacher: {course.teacherId}</Card.Text>
             <Card.Text>Review Point: {course.reviewPoint}</Card.Text>
             <Card.Text>Reviews: {course.reviews}</Card.Text>

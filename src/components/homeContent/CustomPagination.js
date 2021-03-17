@@ -1,5 +1,5 @@
 import React from 'react'
-import { Pagination } from "react-bootstrap";
+import { Container, Pagination } from "react-bootstrap";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 export default function CustomPagination({ postsPerPage, totalPage, paginate, currentPage }) {
@@ -9,7 +9,7 @@ export default function CustomPagination({ postsPerPage, totalPage, paginate, cu
     }
 
     return (
-        <nav>
+        <Container>
             <Pagination>
                {pageNumbers.map(number => number === currentPage ? (
                    <Pagination.Item active key={number} onClick={() => paginate(number)}>
@@ -22,6 +22,6 @@ export default function CustomPagination({ postsPerPage, totalPage, paginate, cu
                 )
                )} 
             </Pagination>
-        </nav>
+        </Container>
     )
 }

@@ -10,8 +10,8 @@ import Signup from './views/signup';
 import OnlineAcademy from './views/onlineAcademy';
 import AdminAcademy from "./views/admin";
 import Profile from "./views/profile";
+import Categories from './views/catogories';
 import 'bootstrap/dist/css/bootstrap.min.css';
-
 
 function App() {
 	function PrivateRoute({ children, ...rest }) {
@@ -48,6 +48,9 @@ function App() {
 				</Route>
 				<Route path="/profile">
 					<Profile />
+				</Route>
+				<Route path="/categories">
+					<Categories />
 				</Route>
 				<PrivateRoute path="/">
 					<OnlineAcademy />
