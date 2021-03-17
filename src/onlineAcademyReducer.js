@@ -12,6 +12,13 @@ export default function reducer(state, action) {
           query: action.payload.query
         }
 
+        case 'initCoursesList2':
+        return {
+          ...state,
+          courses2: action.payload.courses2,
+          query: action.payload.query
+        }
+
       case 'update_query':
         return {
           ...state,
@@ -21,7 +28,9 @@ export default function reducer(state, action) {
       case 'getCategory':
         return {
           ...state,
-          courses: state.courses.map(course => course.id === action.payload.id ? { ...course, categoryId: action.payload.category } : course)
+          // courses: state.courses.map(course => course.id === action.payload.id ? { ...course, categoryId: action.payload.category } : course)
+          categories: action.payload.categories,
+          query: action.payload.query
         }
   
     //   case 'add_item':
