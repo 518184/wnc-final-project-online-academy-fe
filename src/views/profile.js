@@ -27,16 +27,13 @@ export default function Profile(props) {
             if (res.status === 200) {
                 res.data.watchlistJS = JSON.parse(res.data.watchlist).course;
                 setAccount(res.data);
-                console.log("user ", res.data);
             }
         }
         async function loadDataPayment() {
             const res = await axiosInstance.get('/transaction/user/' + localStorage.account_userID, { headers: { 'x-access-token': localStorage.account_accessToken } });
             if (res.status === 200) {
                 setPayment(res.data);
-                console.log("transaction ", res.data);
             }
-            console.log(payment);
         }
         loadDataUser();
         loadDataPayment();
@@ -128,6 +125,14 @@ export default function Profile(props) {
     const addWhiteList = async function () {
         try {
             const res = await axiosInstance.post('/users/watchlist/5', {}, { headers: { 'x-access-token': localStorage.account_accessToken } });
+        } catch (err) {
+            console.log(err.response.data);
+        }
+
+    }
+    const delWhiteList = async function () {
+        try {
+            const res = await axiosInstance.delete('/users/delete/watchlist/4', { headers: { 'x-access-token': localStorage.account_accessToken } });
         } catch (err) {
             console.log(err.response.data);
         }
@@ -234,6 +239,7 @@ export default function Profile(props) {
                         </Card.Body>
                         <Card.Footer>
                             <Button className="float-right py-2" variant="primary" onClick={addWhiteList}>Add</Button>
+                            <Button className="float-right py-2" variant="danger" onClick={delWhiteList}>Del</Button>
                         </Card.Footer>
                     </Card>
                 </Col>
