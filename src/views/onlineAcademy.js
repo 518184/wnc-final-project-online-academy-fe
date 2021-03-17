@@ -2,6 +2,7 @@ import React from 'react';
 import Header from "../components/Header";
 import HomeContent from "../components/HomeContent";
 import HomeFooter from "../components/HomeFooter";
+import UploadCourse from "../components/UploadCourse";
 
 function onlineAcademy() {
     
