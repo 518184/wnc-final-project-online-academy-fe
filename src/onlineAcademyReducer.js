@@ -42,6 +42,20 @@ export default function reducer(state, action) {
 				mode: action.payload.mode,
 				key: action.payload.key
 			}
+		case 'setAccount':
+			return {
+				...state,
+				// courses: state.courses.map(course => course.id === action.payload.id ? { ...course, categoryId: action.payload.category } : course)
+				account: action.payload.account,
+				query: action.payload.query
+			}
+		case 'setPayment':
+			return {
+				...state,
+				// courses: state.courses.map(course => course.id === action.payload.id ? { ...course, categoryId: action.payload.category } : course)
+				payment: action.payload.payment,
+				query: action.payload.query
+			}
 
 		case 'getTeacher':
 			return {

@@ -12,6 +12,7 @@ import AdminAcademy from "./views/admin";
 import Profile from "./views/profile";
 import Categories from './views/catogories';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import UploadCourse from "./components/UploadCourse";
 
 function App() {
 	function PrivateRoute({ children, ...rest }) {
@@ -46,12 +47,15 @@ function App() {
 				<Route path="/admin">
 					<AdminAcademy />
 				</Route>
-				<Route path="/profile">
+				{/* </Switch>{ <Route path="/profile">
 					<Profile />
-				</Route>
-				{/* <Route path="/categories/:id" >
+				</Route> }
+				{ <Route path="/categories/:id" >
 					<Categories />
 				</Route> */}
+				<Route path="/upload">
+					<UploadCourse />
+				</Route>
 				<PrivateRoute path="/">
 					<OnlineAcademy />
 				</PrivateRoute>

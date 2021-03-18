@@ -17,11 +17,21 @@ function HeaderPrimary() {
 		history.push('/home');
 	}
 
+	const { store, dispatch } = useContext(academyApppContext);
+	const changeViewProfile = function() {
+		dispatch({
+			type: 'changeMode',
+			payload: {
+				mode: 'profile'
+			}
+		})
+	}
+
 	function LoggedIn() {
 		if (localStorage.account_email) {
 			return (
 				<React.Fragment>
-					<Link to="/profile" style={{ textDecoration: 'none' }}><div className="login button">{localStorage.account_email}</div></Link>
+					<Link to="" style={{ textDecoration: 'none' }}><div className="login button" onClick={changeViewProfile}>{localStorage.account_email}</div></Link>
 					<Link to="/" style={{ textDecoration: 'none' }}><div className="signup button" onClick={logout}>Sign Out</div></Link>
 				</React.Fragment>);
 		}
@@ -30,8 +40,6 @@ function HeaderPrimary() {
 				<Link to="/signup" style={{ textDecoration: 'none' }}><div className="signup button">Sign Up</div></Link>
 			</React.Fragment>);
 	}
-
-	const { store, dispatch } = useContext(academyApppContext);
 	// console.log('header',store);
 	// const setLevel = new Set();
 	// store.categories.map(item => setLevel.add(item.level));

@@ -2,10 +2,12 @@ import React, { useReducer, useEffect, useState } from 'react';
 import Header from "../components/Header";
 import HomeContent from "../components/HomeContent";
 import HomeFooter from "../components/HomeFooter";
+import UploadCourse from "../components/UploadCourse";
 import reducer from '../onlineAcademyReducer';
 import ApppContext from '../onlineAcademyAppContext';
 import { axiosInstance } from '../utils';
 import Resultcategories from './resultCategories';
+import Profile from './profile';
 
 export default function OnlineAcademy() {
     const initialAppState = {
@@ -84,6 +86,8 @@ export default function OnlineAcademy() {
                         return <HomeContent />
                     } else if (store.mode === 'search') {
                         return <Resultcategories />
+                    } else if (store.mode === 'profile') {
+                        return <Profile />
                     }
                 })()}
                 {/*    
