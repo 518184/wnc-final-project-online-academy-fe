@@ -26,7 +26,7 @@ export default function HotCourses() {
                         {courseRef.map(i =>
                             <Carousel.Item>
                                 <Card>
-                                    <Course course={i.id} />
+                                    <Course course={i} />
                                 </Card>
                             </Carousel.Item>
                         )}
