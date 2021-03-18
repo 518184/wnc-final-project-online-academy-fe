@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useReducer, useEffect, useState, useParams } from 'react';
 import Header from "../components/Header";
 import HomeContent from "../components/HomeContent";
 import HomeFooter from "../components/HomeFooter";
 import reducer from '../onlineAcademyReducer';
-import academyApppContext from '../onlineAcademyAppContext';
+import ApppContext from '../onlineAcademyAppContext';
 import { axiosInstance } from '../utils';
 import Result from './resultCategories';
 
@@ -20,21 +20,50 @@ export default function Categories() {
         
     // }, []);
 
-    const {courses, setCourses} = useState([]);
+    const initialAppState = {
+        courses: [],
+        query: '',
+        categories: [],
+    };
+
+    const [store, dispatch] = useReducer(reducer, initialAppState);
+
+    let {id}  =useParams();
+    console.log("id", Number(id));
 
     useEffect(function () {
         async function initCoursesList() {
             const res = await axiosInstance.get("/courses");
             if (res.status === 200) {
-                setCourses(res.data);
+                dispatch({
+                    type: 'initCoursesList',
+                    payload: {
+                        categories:[],
+                        courses: res.data,
+                        query: ''
+                    }
+                });
+            }
+        }
+        async function getCategory() {
+            const res = await axiosInstance.get('/categories');
+            if (res.status === 200) {
+                dispatch({
+                    type: 'getCategory',
+                    payload: {
+                        categories: res.data,
+                        query: ''
+                    }
+                });
             }
         }
         initCoursesList();
+        getCategory();
     }, []);
 
-    console.log(courses);
     return (
         <div>
+            <ApppContext.Provider value={{ store, dispatch }}>
             <Header />
             {/* <HeaderPopup />
             <HeaderPrimary /> */}
@@ -52,6 +81,7 @@ export default function Categories() {
             <VideoAdDiv /> */}
             <HomeFooter />
             {/* <Footer /> */}
+            </ApppContext.Provider>
         </div>
     );
 }

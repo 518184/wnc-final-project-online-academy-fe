@@ -49,9 +49,9 @@ function App() {
 				<Route path="/profile">
 					<Profile />
 				</Route>
-				<Route path="/categories">
+				{/* <Route path="/categories/:id" >
 					<Categories />
-				</Route>
+				</Route> */}
 				<PrivateRoute path="/">
 					<OnlineAcademy />
 				</PrivateRoute>
