@@ -14,6 +14,11 @@ export default function reducer(state, action) {
 				mode: action.payload.mode,
 			}
 
+		case 'reloadCourses':
+			return {
+				...state,
+				courses: action.payload.courses,
+			}
 		case 'initCoursesList2':
 			return {
 				...state,
