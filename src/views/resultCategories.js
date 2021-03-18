@@ -34,8 +34,17 @@ export default function Resultcategories(props) {
     var currentPosts = sortList.slice(indexOfFirstPage, indexOfLastPage);
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
+    const goHome = function() {
+		dispatch({
+			type: 'changeMode',
+			payload: {
+				mode: 'default'
+			}
+		})
+	}
     return (
         <>
+        <Button onClick={goHome}>Go home</Button>
             <Row className="my-3">
                 <Col><center><h1>Course List</h1></center></Col>
             </Row>

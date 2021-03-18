@@ -11,11 +11,7 @@ import {
     Form,
     Button
 } from 'react-bootstrap';
-import Header from "../components/Header";
-import HomeFooter from "../components/HomeFooter";
-import ApppContext from '../onlineAcademyAppContext';
-import Footer from '../components/footer/footer';
-import reducer from '../onlineAcademyReducer';
+import academyApppContext from '../onlineAcademyAppContext';
 
 export default function Profile(props) {
     const { register, handleSubmit, watch, errors } = useForm();
@@ -25,45 +21,48 @@ export default function Profile(props) {
     const [account, setAccount] = useState();
     const [payment, setPayment] = useState();
     const [disablePassword, setDisablePassword] = useState(true);
+    const [changeForm, setChangeForm] = useState(false);
 
-    const initialAppState = {
-        courses: [],
-        query: '',
-        categories: [],
-    };
+    // const initialAppState = {
+    //     courses: [],
+    //     query: '',
+    //     categories: [],
+    // };
 
-    const [store, dispatch] = useReducer(reducer, initialAppState);
+    // const [store, dispatch] = useReducer(reducer, initialAppState);
+    const { store, dispatch } = useContext(academyApppContext);
 
     useEffect(function () {
         async function loadDataUser() {
             const res = await axiosInstance.get('/users/' + localStorage.account_userID, { headers: { 'x-access-token': localStorage.account_accessToken } });
             if (res.status === 200) {
                 res.data.watchlistJS = JSON.parse(res.data.watchlist).course;
-                setAccount(res.data);
+
+                dispatch({
+                    type: 'setAccount',
+                    payload: {
+                        account: res.data,
+                        query: '',
+                    }
+                });
             }
         }
         async function loadDataPayment() {
             const res = await axiosInstance.get('/transaction/user/' + localStorage.account_userID, { headers: { 'x-access-token': localStorage.account_accessToken } });
             if (res.status === 200) {
-                setPayment(res.data);
-            }
-        }
-        async function getCategory() {
-            const res = await axiosInstance.get('/categories', { headers: { 'x-access-token': localStorage.account_accessToken } });
-            if (res.status === 200) {
+
                 dispatch({
-                    type: 'getCategory',
+                    type: 'setPayment',
                     payload: {
-                        categories: res.data,
-                        query: ''
+                        payment: res.data,
+                        query: '',
                     }
                 });
             }
         }
-        getCategory();
         loadDataUser();
         loadDataPayment();
-    }, []);
+    }, [changeForm]);
 
     const onSubmit = async function (data) {
         if (data) {
@@ -72,13 +71,14 @@ export default function Profile(props) {
                     try {
                         delete data.confirmPassword;
                         delete data.switchPass;
-                        const res = await axiosInstance.put('/users/' + account.id, data, { headers: { 'x-access-token': localStorage.account_accessToken } });
+                        const res = await axiosInstance.put('/users/' + store.account.id, data, { headers: { 'x-access-token': localStorage.account_accessToken } });
                         if (res.status === 200) {
                             swal({
                                 title: "Profile Saved",
                                 icon: "success",
                                 button: "OK"
                             });
+                            setChangeForm(true);
                         } else {
                             swal({
                                 title: "Not Save Profile",
@@ -106,13 +106,14 @@ export default function Profile(props) {
                 try {
                     delete data.confirmPassword;
                     delete data.switchPass;
-                    const res = await axiosInstance.put('/users/' + account.id, data, { headers: { 'x-access-token': localStorage.account_accessToken } });
+                    const res = await axiosInstance.put('/users/' + store.account.id, data, { headers: { 'x-access-token': localStorage.account_accessToken } });
                     if (res.status === 200) {
                         swal({
                             title: "Profile Saved",
                             icon: "success",
                             button: "OK"
                         });
+                        setChangeForm(true);
                     } else {
                         swal({
                             title: "Not Save Profile",
@@ -168,15 +169,20 @@ export default function Profile(props) {
     const cancelButton_Clicked = function () {
         history.push("/home");
     }
+    const goHome = function () {
+        dispatch({
+            type: 'changeMode',
+            payload: {
+                mode: 'default'
+            }
+        })
+    }
 
     return (
         <>
-        <ApppContext.Provider value={{ store, dispatch }}>
-            <Header />
-        <Container>
             <Row>
                 <Col xs={2} className="mt-1">
-                    <Button className="float-right mr-3 py-2" variant="secondary" onClick={cancelButton_Clicked}>Go Academy</Button>
+                    <Button className="float-right mr-3 py-2" variant="secondary" onClick={goHome}>Go Academy</Button>
                 </Col>
             </Row>
             <Row>
@@ -188,12 +194,12 @@ export default function Profile(props) {
                                 <hr></hr>
                                 <Form.Group controlId="formBasicFullName">
                                     <Form.Label>Fullname</Form.Label>
-                                    <Form.Control type="text" name="fullname" defaultValue={account == null ? "" : account.fullname} placeholder="Enter fullname" ref={register({ required: true })} />
+                                    <Form.Control type="text" name="fullname" defaultValue={store.account ? store.account.fullname : ""} placeholder="Enter fullname" ref={register({ required: true })} />
                                 </Form.Group>
 
                                 <Form.Group controlId="formBasicEmail">
                                     <Form.Label>Email</Form.Label>
-                                    <Form.Control type="email" name="email" defaultValue={account == null ? "" : account.email} placeholder="Enter email" ref={register({ required: true })} readOnly />
+                                    <Form.Control type="email" name="email" defaultValue={store.account ? store.account.email : ""} placeholder="Enter email" ref={register({ required: true })} readOnly />
                                 </Form.Group>
 
                                 <Form.Check type="switch" name="switchPass" id="custom-switch" label="Change password" onChange={changePassword} ref={register({ required: false })} />
@@ -217,7 +223,7 @@ export default function Profile(props) {
                         <Card.Body>
                             <Card.Title as="h3"><center>My Courses</center></Card.Title>
                             <hr></hr>
-                            {payment === undefined ? "" : payment.map(item =>
+                            {store.payment ? store.payment.map(item =>
                                 <Card>
                                     <Card.Img variant="top" src="holder.js/100px180" />
                                     <Card.Body>
@@ -229,7 +235,7 @@ export default function Profile(props) {
                                         <Button variant="primary">Go somewhere</Button>
                                     </Card.Body>
                                 </Card>
-                            )}
+                            ) : ""}
                         </Card.Body>
                         <Card.Footer>
                             <Button className="float-right py-2" variant="primary" onClick={addCourse}>Add</Button>
@@ -269,9 +275,6 @@ export default function Profile(props) {
                     </Card>
                 </Col>
             </Row>
-        </Container>
-        <Footer />
-        </ApppContext.Provider>
         </>
     )
 }

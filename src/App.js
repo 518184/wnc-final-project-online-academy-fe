@@ -46,9 +46,9 @@ function App() {
 				<Route path="/admin">
 					<AdminAcademy />
 				</Route>
-				<Route path="/profile">
+				{/* <Route path="/profile">
 					<Profile />
-				</Route>
+				</Route> */}
 				{/* <Route path="/categories/:id" >
 					<Categories />
 				</Route> */}
