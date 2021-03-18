@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState, Modal } from 'react';
 import AdImage from "../components/homeContent/adImage";
 import Feature1 from "../components/homeContent/featureDiv/featureDiv1";
 import Feature2 from "../components/homeContent/featureDiv/featureDiv2";
@@ -22,6 +22,8 @@ function HomeContent() {
     const [postsPerPage] = useState(8);
     const { store, dispatch } = useContext(academyApppContext);
     const [selectedType, setSelectedType] = useState(1);
+    
+
     const displayType = [
         { value: 1, label: 'Default' },
         { value: 2, label: 'Point' },
@@ -112,6 +114,13 @@ function HomeContent() {
                 </Col>
             </Row>
             {/* <VideoAdDiv /> */}
+            <Row>
+           
+ 
+
+      
+
+            </Row>
         </div>
     );
 }

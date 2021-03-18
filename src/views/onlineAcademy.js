@@ -5,10 +5,6 @@ import HomeFooter from "../components/HomeFooter";
 import reducer from '../onlineAcademyReducer';
 import ApppContext from '../onlineAcademyAppContext';
 import { axiosInstance } from '../utils';
-<<<<<<< HEAD
-import { SortRounded } from '@material-ui/icons';
-=======
->>>>>>> 0dad4ba60cd3b284e7f8296fb5c9c37cc416f5d1
 import Resultcategories from './resultCategories';
 
 export default function OnlineAcademy() {
@@ -16,11 +12,7 @@ export default function OnlineAcademy() {
         courses: [],
         query: '',
         categories: [],
-<<<<<<< HEAD
-        mode: ''
-=======
         mode: '',
->>>>>>> 0dad4ba60cd3b284e7f8296fb5c9c37cc416f5d1
     };
 
     const [store, dispatch] = useReducer(reducer, initialAppState);
@@ -34,11 +26,7 @@ export default function OnlineAcademy() {
                     payload: {
                         courses: res.data,
                         query: '',
-<<<<<<< HEAD
-                        mode: 'default'
-=======
                         mode: 'default',
->>>>>>> 0dad4ba60cd3b284e7f8296fb5c9c37cc416f5d1
                     }
                 });
             }
@@ -55,8 +43,33 @@ export default function OnlineAcademy() {
                 });
             }
         }
+        async function getTeacher() {
+            const res = await axiosInstance.get('/users/allteacher');
+            if (res.status === 200) {
+                dispatch({
+                    type: 'getTeacher',
+                    payload: {
+                        teacher: res.data,
+                    }
+                });
+            }
+        }
+        async function getFeedback() {
+            const res = await axiosInstance.get('/feedbacks');
+            
+            if (res.status === 200) {
+                dispatch({
+                    type: 'getFeedback',
+                    payload: {
+                        feedback: res.data,
+                    }
+                });
+            }
+        }
         initCoursesList();
         getCategory();
+        getTeacher();
+        getFeedback();
     }, []);
    
 

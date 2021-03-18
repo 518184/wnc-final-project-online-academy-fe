@@ -20,10 +20,12 @@ export default function Resultcategories(props) {
     const getValue = function(e) {
         setSelectedType(e.value);
     }
-
-    var sortList = [].concat(store.courses);
+    const l = store.key.length ? store.courses ? store.courses.filter(item => store.key.indexOf(item.categoryId) >= 0) : [] :store.courses?store.courses.filter(item => item.categoryId === store.key):[]
+    //const l  = store.courses ? store.courses.filter(item => store.key.includes(item.categoryId)) : []
+    // console.log(l);
+    var sortList = [].concat(l);
     if(selectedType === 1){
-        sortList = store.courses;
+        sortList = l;
     } else if (selectedType === 2){
         sortList = sortList.sort((a,b) => a.reviewPoint < b.reviewPoint ? 1 : -1);
     } else if (selectedType === 3){
