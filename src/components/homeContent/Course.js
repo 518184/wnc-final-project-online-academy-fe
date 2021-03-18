@@ -4,6 +4,9 @@ import { Card, Row, Col, Button, Modal, Carousel, Form } from 'react-bootstrap';
 import academyApppContext from '../../onlineAcademyAppContext';
 import { axiosInstance } from '../../utils';
 import '../homeContent/Course.css';
+import "video-react/dist/video-react.css"; // import css
+import { Player } from 'video-react';
+
 //import images from '../../views/images';
 
 export default function Course({ course }) {
@@ -43,6 +46,9 @@ export default function Course({ course }) {
   //   }
   //   getCategory();
   // }, []);
+  const getResource = async () => {
+    return await axiosInstance.get("/courses/" + course.id + "/resources/" + JSON.parse(course.outline).uploadFilenames[0]);
+  }
 
   return (
     <div>
@@ -75,15 +81,11 @@ export default function Course({ course }) {
             <Col>
               <Card>
                 <Card.Header>
-                  <iframe
-                    title="Mohamad Alaloush's Story"
-                    allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-                    allowfullscreen=""
-                    src="https://www.youtube.com/embed/QFIhEmOd6No/?autoplay=1"
-                    width="100%"
-                    height="400px"
-                    frameborder="0"
-                  ></iframe>
+                  <Player
+                    playsInline
+                    src={getResource}
+                  />
+
                 </Card.Header>
                 <Card.Body>
                   <Button size="lg" className="mb-2" style={{ float: 'right' }} variant="success" onClick={handleClose}>

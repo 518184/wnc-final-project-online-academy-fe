@@ -62,11 +62,11 @@ function HomeContent() {
                     <Feature1 />
                 </Col>
             </Row>
-            <Row>
+            {/* <Row>
                 <Col>
                     <Recommendations />
                 </Col>
-            </Row>
+            </Row> */}
             <Row>
                 <Col>
                     <Feature2 />
