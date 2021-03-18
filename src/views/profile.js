@@ -36,8 +36,7 @@ export default function Profile(props) {
         async function loadDataUser() {
             const res = await axiosInstance.get('/users/' + localStorage.account_userID, { headers: { 'x-access-token': localStorage.account_accessToken } });
             if (res.status === 200) {
-                res.data.watchlistJS = JSON.parse(res.data.watchlist).course;
-
+                res.data.watchlistJS = res.data.watchlist ? JSON.parse(res.data.watchlist).course : [];
                 dispatch({
                     type: 'setAccount',
                     payload: {
@@ -64,6 +63,7 @@ export default function Profile(props) {
         loadDataPayment();
     }, [changeForm]);
 
+    console.log(store);
     const onSubmit = async function (data) {
         if (data) {
             if (data.switchPass) {
