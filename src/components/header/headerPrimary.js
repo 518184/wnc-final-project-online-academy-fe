@@ -5,10 +5,10 @@ import SearchOutlinedIcon from "@material-ui/icons/SearchOutlined";
 import PublishIcon from '@material-ui/icons/Publish';
 import { Link } from "react-router-dom";
 import { useHistory } from 'react-router-dom';
-import { Navbar, Nav, NavDropdown, Form, FormControl, Button, ButtonGroup  } from "react-bootstrap";
+import { Navbar, Nav, NavDropdown, Form, FormControl, Button, ButtonGroup } from "react-bootstrap";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import academyApppContext from '../../onlineAcademyAppContext';
-import { DropdownSubmenu, NavDropdownMenu} from "react-bootstrap-submenu";
+import { DropdownSubmenu, NavDropdownMenu } from "react-bootstrap-submenu";
 
 function HeaderPrimary() {
   const history = useHistory();
@@ -50,7 +50,11 @@ function HeaderPrimary() {
     obb.lv1 = i;
     obb.own = temp;
     categories1.push(obb);
-  } 
+  }
+
+  const toUpload = () => {
+    history.push("/upload")
+  }
 
   console.log("categories1", categories1);
   return (
@@ -64,11 +68,11 @@ function HeaderPrimary() {
         </div> */}
         <NavDropdownMenu title="Categories">
           {
-            categories1!=null ? categories1.map(i => i.own.length>0? 
-            <DropdownSubmenu href="#action/3.7" title={i.lv1.title}>
-              {i.own.map(j => <NavDropdown.Item>{j.title}</NavDropdown.Item>)}
-            </DropdownSubmenu>
-            : <NavDropdown.Item>{i.lv1.title}</NavDropdown.Item>) :  <NavDropdown.Item></NavDropdown.Item>
+            categories1 != null ? categories1.map(i => i.own.length > 0 ?
+              <DropdownSubmenu href="#action/3.7" title={i.lv1.title}>
+                {i.own.map(j => <NavDropdown.Item>{j.title}</NavDropdown.Item>)}
+              </DropdownSubmenu>
+              : <NavDropdown.Item>{i.lv1.title}</NavDropdown.Item>) : <NavDropdown.Item></NavDropdown.Item>
           }
         </NavDropdownMenu>
       </div>
@@ -80,7 +84,7 @@ function HeaderPrimary() {
       </div>
       <div className="right part">
         <div className="uploadDiv">
-        <PublishIcon className="icon" />
+            <PublishIcon className="icon" onClick={toUpload}/>
         </div>
         <div className="cartDiv">
           <ShoppingCartOutlinedIcon className="icon" />
@@ -88,7 +92,7 @@ function HeaderPrimary() {
         <LoggedIn />
       </div>
     </div>
-    
+
     // <Navbar>
     //   <Navbar.Brand>
     //     <img src="..//logo.jpg" className="d-inline-block align-top" height="32" width="110" alt="logo"></img>
@@ -99,7 +103,7 @@ function HeaderPrimary() {
     //         <NavDropdown.Item>{category.title}</NavDropdown.Item>
     //       )} */}
     //       <NavDropdown.Item>1</NavDropdown.Item>
-          
+
     //     </NavDropdown>
     //   </Nav>
     //   <Form inline className="ml-5 w-50 mr-auto">

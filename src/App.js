@@ -12,6 +12,7 @@ import AdminAcademy from "./views/admin";
 import Profile from "./views/profile";
 import Categories from './views/catogories';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import UploadCourse from "./components/UploadCourse";
 
 function App() {
 	function PrivateRoute({ children, ...rest }) {
@@ -51,6 +52,9 @@ function App() {
 				</Route>
 				<Route path="/categories">
 					<Categories />
+				</Route>
+				<Route path="/upload">
+					<UploadCourse />
 				</Route>
 				<PrivateRoute path="/">
 					<OnlineAcademy />

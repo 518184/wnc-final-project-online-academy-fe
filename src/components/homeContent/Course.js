@@ -30,7 +30,7 @@ export default function Course({ course }) {
           <Card.Body>
             <Card.Title as="h4" className="my-2"><center>{course.title}</center></Card.Title>
             <hr></hr>
-            <Card.Text>Category: {categoryTitle===null?"":categoryTitle.title}</Card.Text>
+            <Card.Text>Category: {categoryTitle ? categoryTitle.title : "" }</Card.Text>
             <Card.Text>Teacher: {course.teacherId}</Card.Text>
             <Card.Text>Review Point: {course.reviewPoint}</Card.Text>
             <Card.Text>Reviews: {course.reviews}</Card.Text>
