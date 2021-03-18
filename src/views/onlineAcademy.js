@@ -58,7 +58,7 @@ export default function OnlineAcademy() {
         }
         async function getFeedback() {
             const res = await axiosInstance.get('/feedbacks');
-            
+
             if (res.status === 200) {
                 dispatch({
                     type: 'getFeedback',
@@ -73,7 +73,7 @@ export default function OnlineAcademy() {
         getTeacher();
         getFeedback();
     }, []);
-   
+
 
     return (
         <div>
@@ -82,12 +82,15 @@ export default function OnlineAcademy() {
                 {/* <HeaderPopup />
                 <HeaderPrimary /> */}
                 {(() => {
-                    if (store.mode === 'default') {
-                        return <HomeContent />
-                    } else if (store.mode === 'search') {
-                        return <Resultcategories />
-                    } else if (store.mode === 'profile') {
-                        return <Profile />
+                    switch (store.mode) {
+                        case 'default':
+                            return <HomeContent />
+                        case 'search':
+                            return <Resultcategories />
+                        case 'profile':
+                            return <Profile />
+                        case 'upload':
+                            return <UploadCourse />
                     }
                 })()}
                 {/*    
