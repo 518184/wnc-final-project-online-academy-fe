@@ -134,9 +134,6 @@ export default function Course({ course }) {
       store.teacher ? store.teacher.filter(j => j.id === i.userId).map(k => <Card.Text><b><i>{k.fullname} </i></b> : {i.content}</Card.Text>) : <Card.Text></Card.Text>)
   }
 
-  const getResource = async () => {
-    return await axiosInstance.get("/courses/" + course.id + "/resources/" + JSON.parse(course.outline).uploadFilenames[0]);
-  }
   return (
     <div>
       <Card>
@@ -170,7 +167,7 @@ export default function Course({ course }) {
                 <Card.Header>
                   <Player
                     playsInline
-                    src={getResource}
+                    src={axiosInstance.get("/courses/" + course.id + "/resources/" + JSON.parse(course.outline).uploadFilenames[0])}
                   />
 
                   {/* <iframe
