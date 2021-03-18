@@ -31,7 +31,7 @@ function HeaderPrimary() {
       </React.Fragment>);
   }
 
-  const { store } = useContext(academyApppContext);
+  const { store, dispatch } = useContext(academyApppContext);
   // console.log('header',store);
   // const setLevel = new Set();
   // store.categories.map(item => setLevel.add(item.level));
@@ -52,7 +52,14 @@ function HeaderPrimary() {
     categories1.push(obb);
   } 
 
-  console.log("categories1", categories1);
+  const searchCategories = function() {
+    dispatch({
+      type: 'searchCategories',
+      payload: {
+        mode: 'search'
+      }
+    })
+  }
   return (
     <div className="headerPrimary">
       <div className="left part">
@@ -66,9 +73,9 @@ function HeaderPrimary() {
           {
             categories1!=null ? categories1.map(i => i.own.length>0? 
             <DropdownSubmenu href="#action/3.7" title={i.lv1.title}>
-              {i.own.map(j => <NavDropdown.Item>{j.title}</NavDropdown.Item>)}
+              {i.own.map(j => <NavDropdown.Item onClick={searchCategories}>{j.title}</NavDropdown.Item>)}
             </DropdownSubmenu>
-            : <NavDropdown.Item>{i.lv1.title}</NavDropdown.Item>) :  <NavDropdown.Item></NavDropdown.Item>
+            : <NavDropdown.Item onClick={searchCategories}>{i.lv1.title}</NavDropdown.Item>) :  <NavDropdown.Item></NavDropdown.Item>
           }
         </NavDropdownMenu>
       </div>

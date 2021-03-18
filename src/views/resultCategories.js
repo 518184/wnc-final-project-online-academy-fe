@@ -4,8 +4,6 @@ export default function Resultcategories(props) {
     
 
     return (
-        <>
-            
-        </>
+        <div>  Search </div>
     )
 }

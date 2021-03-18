@@ -9,7 +9,8 @@ export default function reducer(state, action) {
       case 'initCoursesList':
         return {
           courses: action.payload.courses,
-          query: action.payload.query
+          query: action.payload.query,
+          mode: action.payload.mode
         }
 
         case 'initCoursesList2':
@@ -31,6 +32,12 @@ export default function reducer(state, action) {
           // courses: state.courses.map(course => course.id === action.payload.id ? { ...course, categoryId: action.payload.category } : course)
           categories: action.payload.categories,
           query: action.payload.query
+        }
+
+      case 'changeMode':
+        return {
+          ...state,
+          mode: action.payload.mode
         }
   
     //   case 'add_item':
