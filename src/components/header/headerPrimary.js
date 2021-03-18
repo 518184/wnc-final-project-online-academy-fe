@@ -18,11 +18,29 @@ function HeaderPrimary() {
 	}
 
 	const { store, dispatch } = useContext(academyApppContext);
-	const changeViewProfile = function() {
+	const changeViewProfile = function () {
 		dispatch({
 			type: 'changeMode',
 			payload: {
 				mode: 'profile'
+			}
+		})
+	}
+
+	const uploadCourseView = function () {
+		dispatch({
+			type: 'changeMode',
+			payload: {
+				mode: 'upload'
+			}
+		})
+	}
+
+	const defaultView = function () {
+		dispatch({
+			type: 'changeMode',
+			payload: {
+				mode: 'default'
 			}
 		})
 	}
@@ -73,8 +91,8 @@ function HeaderPrimary() {
 	return (
 		<div className="headerPrimary">
 			<div className="left part">
-				<div className="udemyLogo">
-					<img src="..//logo.jpg" className="logo" alt="logo"></img>
+				<div className="udemyLogo" onClick={defaultView} >
+					<img src="..//logo.png" className="logo" alt="logo"></img>
 				</div>
 				{/* <div className="categoriesDiv">
           <span className="categories">Categories</span>
@@ -99,7 +117,7 @@ function HeaderPrimary() {
 			</div>
 			<div className="right part">
 				<div className="uploadDiv">
-					<PublishIcon className="icon" />
+					<PublishIcon className="icon" onClick={uploadCourseView} />
 				</div>
 				<div className="cartDiv">
 					<ShoppingCartOutlinedIcon className="icon" />

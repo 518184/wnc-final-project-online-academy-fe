@@ -11,7 +11,7 @@ function Feature2() {
       <FeatureCard
         icon={<AccessTimeIcon className="icon" />}
         heading={"Go at your own pace"}
-        para={"Enjoy lifetime access to courses on Udemy’s website and app"}
+        para={"Enjoy lifetime access to courses on Online Academy’s website and app"}
       />
       <FeatureCard
         icon={<EmojiPeopleIcon className="icon" />}

@@ -7,8 +7,8 @@ function Footer() {
       <div className="upperDiv">
         <div className="linksContainer">
           <div className="linksDiv linksDiv1">
-            <p>Udemy for Business</p>
-            <p>Teach on Udemy</p>
+            <p>Online Academy for Business</p>
+            <p>Teach on Online Academy</p>
             <p>Get the app</p>
             <p>About us</p>
             <p>Contact us</p>
@@ -31,9 +31,9 @@ function Footer() {
         <div className="linksDiv linksDiv4"></div>
       </div>
       <div className="lowerDiv">
-        <img src="..//logo.jpg" className="udemyLogo" alt="logo"></img>
+        <img src="..//logo.png" className="udemyLogo" alt="logo"></img>
         <div className="copyrightDiv">
-          <p>© 2020 Udemy, Inc.</p>
+          <p>© 2020 Online Academy, Inc.</p>
         </div>
       </div>
     </div>

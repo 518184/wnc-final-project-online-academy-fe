@@ -59,7 +59,7 @@ export default function OnlineAcademy() {
         }
         async function getFeedback() {
             const res = await axiosInstance.get('/feedbacks');
-            
+
             if (res.status === 200) {
                 dispatch({
                     type: 'getFeedback',
@@ -102,7 +102,12 @@ export default function OnlineAcademy() {
         //     loadDataPayment();
         // }
     }, []);
+<<<<<<< HEAD
    
+=======
+
+
+>>>>>>> dd88218ef461e056ce1317c2d26e9eb59f7b0e2a
     return (
         <div>
             <ApppContext.Provider value={{ store, dispatch }}>
@@ -116,6 +121,7 @@ export default function OnlineAcademy() {
                     }
                 })()} */}
                 {(() => {
+<<<<<<< HEAD
                     if (store.mode === 'default') {
                             return [<HotCourses />,
                                 <HomeContent />];
@@ -123,6 +129,17 @@ export default function OnlineAcademy() {
                         return <Resultcategories />
                     } else if (store.mode === 'profile') {
                         return <Profile />
+=======
+                    switch (store.mode) {
+                        case 'default':
+                            return <HomeContent />
+                        case 'search':
+                            return <Resultcategories />
+                        case 'profile':
+                            return <Profile />
+                        case 'upload':
+                            return <UploadCourse />
+>>>>>>> dd88218ef461e056ce1317c2d26e9eb59f7b0e2a
                     }
                 })()}
                 {/*    

@@ -14,7 +14,7 @@ function BecomeInstructor() {
         <h2 className="heading">Become an instructor</h2>
         <p className="about">
           Top instructors from around the world teach millions of students on
-          Udemy. We provide the tools and skills to teach what you love.{" "}
+          Online Academy. We provide the tools and skills to teach what you love.{" "}
         </p>
         <div className="startTeching button">Start teaching today</div>
       </div>
