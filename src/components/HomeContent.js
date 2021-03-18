@@ -21,35 +21,35 @@ function HomeContent() {
     const [currentPage, setCurrentPage] = useState(1);
     const [postsPerPage] = useState(8);
     const { store, dispatch } = useContext(academyApppContext);
-    const [selectedType, setSelectedType] = useState(1); 
+    const [selectedType, setSelectedType] = useState(1);
     const displayType = [
-        {value: 1, label: 'Default'},
-        {value: 2, label: 'Point'},
-        {value: 3, label: 'Price'}
+        { value: 1, label: 'Default' },
+        { value: 2, label: 'Point' },
+        { value: 3, label: 'Price' }
     ]
 
-    const getValue = function(e) {
+    const getValue = function (e) {
         setSelectedType(e.value);
     }
 
-    
-    
+
+
     var sortList = [].concat(store.courses);
-    if(selectedType === 1){
+    if (selectedType === 1) {
         sortList = store.courses;
-    } else if (selectedType === 2){
-        sortList = sortList.sort((a,b) => a.reviewPoint < b.reviewPoint ? 1 : -1);
-    } else if (selectedType === 3){
-        sortList = sortList.sort((a,b) => a.price >= b.price ? 1 : -1);
+    } else if (selectedType === 2) {
+        sortList = sortList.sort((a, b) => a.reviewPoint < b.reviewPoint ? 1 : -1);
+    } else if (selectedType === 3) {
+        sortList = sortList.sort((a, b) => a.price >= b.price ? 1 : -1);
     }
-    const indexOfLastPage = currentPage *  postsPerPage;
+    const indexOfLastPage = currentPage * postsPerPage;
     const indexOfFirstPage = indexOfLastPage - postsPerPage;
     var currentPosts = sortList.slice(indexOfFirstPage, indexOfLastPage);
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
-   
+
 
     return (
-    <div>
+        <div>
             <Row>
                 <Col>
                     <AdImage />
@@ -87,8 +87,8 @@ function HomeContent() {
             </Row>
             <Row>
                 <Col>
-                    <ListCourses currentPosts={currentPosts}/>
-                    <CustomPagination postsPerPage={postsPerPage} totalPage={store.courses.length} paginate={paginate} currentPage={currentPage}/>
+                    <ListCourses currentPosts={currentPosts} />
+                    <CustomPagination postsPerPage={postsPerPage} totalPage={store.courses.length} paginate={paginate} currentPage={currentPage} />
                 </Col>
             </Row>
             <Row>
@@ -112,7 +112,7 @@ function HomeContent() {
                 </Col>
             </Row>
             {/* <VideoAdDiv /> */}
-    </div>
+        </div>
     );
 }
 

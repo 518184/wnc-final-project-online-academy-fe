@@ -17,7 +17,7 @@ export default function Signup(props) {
     const { register, handleSubmit, watch, errors } = useForm();
     const history = useHistory();
     const location = useLocation();
-    const { from } = location.state || { from: { pathname: '/' } };
+    const { from } = location.state || { from: { pathname: '/home' } };
     const [open, setOpen] = useState(false);
     const [account, setAccount] = useState();
     const onSubmit = async function (data) {

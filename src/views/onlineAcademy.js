@@ -6,12 +6,15 @@ import UploadCourse from "../components/UploadCourse";
 import reducer from '../onlineAcademyReducer';
 import ApppContext from '../onlineAcademyAppContext';
 import { axiosInstance } from '../utils';
+import Resultcategories from './resultCategories';
+import Profile from './profile';
 
 export default function OnlineAcademy() {
     const initialAppState = {
         courses: [],
         query: '',
         categories: [],
+        mode: '',
     };
 
     const [store, dispatch] = useReducer(reducer, initialAppState);
@@ -26,9 +29,9 @@ export default function OnlineAcademy() {
                 dispatch({
                     type: 'initCoursesList',
                     payload: {
-                        categories:[],
                         courses: res.data,
-                        query: ''
+                        query: '',
+                        mode: 'default',
                     }
                 });
             }
@@ -56,7 +59,15 @@ export default function OnlineAcademy() {
                 <Header />
                 {/* <HeaderPopup />
                 <HeaderPrimary /> */}
-                <HomeContent />
+                {(() => {
+                    if (store.mode === 'default') {
+                        return <HomeContent />
+                    } else if (store.mode === 'search') {
+                        return <Resultcategories />
+                    } else if (store.mode === 'profile') {
+                        return <Profile />
+                    }
+                })()}
                 {/*    
                 <AdImage />
                 <Feature1 />

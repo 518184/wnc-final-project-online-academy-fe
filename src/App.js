@@ -47,12 +47,12 @@ function App() {
 				<Route path="/admin">
 					<AdminAcademy />
 				</Route>
-				<Route path="/profile">
+				{/* </Switch>{ <Route path="/profile">
 					<Profile />
-				</Route>
-				<Route path="/categories">
+				</Route> }
+				{ <Route path="/categories/:id" >
 					<Categories />
-				</Route>
+				</Route> */}
 				<Route path="/upload">
 					<UploadCourse />
 				</Route>
