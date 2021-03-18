@@ -9,7 +9,7 @@ export default function Login(props) {
 	const { register, handleSubmit, watch, errors } = useForm();
 	const history = useHistory();
 	const location = useLocation();
-	const { from, toAdmin } = location.state || { from: { pathname: '/' } || { toAdmin: { pathname: '/admin' } } };
+	const { from, toAdmin } = location.state || { from: { pathname: '/home' } || { toAdmin: { pathname: '/admin' } } };
 	const onSubmit = async function (data) {
 		try {
 			const res = await axiosInstance.post('/auth', data);

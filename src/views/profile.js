@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useReducer, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form';
 import { useHistory, useLocation } from 'react-router-dom';
 import { axiosInstance, parseJwt } from '../utils';
@@ -11,6 +11,11 @@ import {
     Form,
     Button
 } from 'react-bootstrap';
+import Header from "../components/Header";
+import HomeFooter from "../components/HomeFooter";
+import ApppContext from '../onlineAcademyAppContext';
+import Footer from '../components/footer/footer';
+import reducer from '../onlineAcademyReducer';
 
 export default function Profile(props) {
     const { register, handleSubmit, watch, errors } = useForm();
@@ -20,6 +25,14 @@ export default function Profile(props) {
     const [account, setAccount] = useState();
     const [payment, setPayment] = useState();
     const [disablePassword, setDisablePassword] = useState(true);
+
+    const initialAppState = {
+        courses: [],
+        query: '',
+        categories: [],
+    };
+
+    const [store, dispatch] = useReducer(reducer, initialAppState);
 
     useEffect(function () {
         async function loadDataUser() {
@@ -35,10 +48,22 @@ export default function Profile(props) {
                 setPayment(res.data);
             }
         }
+        async function getCategory() {
+            const res = await axiosInstance.get('/categories', { headers: { 'x-access-token': localStorage.account_accessToken } });
+            if (res.status === 200) {
+                dispatch({
+                    type: 'getCategory',
+                    payload: {
+                        categories: res.data,
+                        query: ''
+                    }
+                });
+            }
+        }
+        getCategory();
         loadDataUser();
         loadDataPayment();
     }, []);
-
 
     const onSubmit = async function (data) {
         if (data) {
@@ -116,11 +141,8 @@ export default function Profile(props) {
     const addCourse = async function () {
         let data = {};
         data.courseId = "5";
-        console.log(data);
         const res = await axiosInstance.post('/transaction', data, { headers: { 'x-access-token': localStorage.account_accessToken } });
-        console.log(res.data);
         const res2 = await axiosInstance.put('/transaction/' + res.data.id + '/payment', data, { headers: { 'x-access-token': localStorage.account_accessToken } });
-        console.log(res2.data);
     }
     const addWhiteList = async function () {
         try {
@@ -148,6 +170,9 @@ export default function Profile(props) {
     }
 
     return (
+        <>
+        <ApppContext.Provider value={{ store, dispatch }}>
+            <Header />
         <Container>
             <Row>
                 <Col xs={2} className="mt-1">
@@ -245,5 +270,8 @@ export default function Profile(props) {
                 </Col>
             </Row>
         </Container>
+        <Footer />
+        </ApppContext.Provider>
+        </>
     )
 }

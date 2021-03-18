@@ -3,6 +3,8 @@ import { HashRouter, Route, Router, Switch, BrowserRouter } from 'react-router-d
 import '../components/admin/scss/style.scss';
 import onlineAcademy from '../views/onlineAcademy';
 import appp from '../App';
+import { Provider } from 'react-redux';
+import store from '../components/admin/store';
 
 const loading = (
 	<div className="pt-3 text-center">
@@ -17,8 +19,10 @@ class AdminAcademy extends Component {
 
 	render() {
 		return (
+			<Provider store={store}>
 			<BrowserRouter>
-				<React.Suspense fallback={loading}>
+				<React.Suspense fallback={loading} >
+					
 					<Switch>
 						<Route path="/admin" name="Home" render={props => <TheLayout {...props} />} />
 						<Route exact={true} path="/home" component={appp} />
@@ -26,6 +30,7 @@ class AdminAcademy extends Component {
 					</Switch>
 				</React.Suspense>
 			</BrowserRouter>
+			</Provider>
 		);
 	}
 }

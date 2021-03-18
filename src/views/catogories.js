@@ -1,29 +1,35 @@
-import React, { useReducer, useEffect, useState } from 'react';
+import React, { useReducer, useEffect, useState, useParams } from 'react';
 import Header from "../components/Header";
 import HomeContent from "../components/HomeContent";
 import HomeFooter from "../components/HomeFooter";
 import reducer from '../onlineAcademyReducer';
 import ApppContext from '../onlineAcademyAppContext';
 import { axiosInstance } from '../utils';
-<<<<<<< HEAD
-import { SortRounded } from '@material-ui/icons';
-=======
->>>>>>> 0dad4ba60cd3b284e7f8296fb5c9c37cc416f5d1
-import Resultcategories from './resultCategories';
+import Result from './resultCategories';
 
-export default function OnlineAcademy() {
+export default function Categories() {
+
+    // const initialAppState = {
+    //     courses: [],
+    //     query: '',
+    //     categories: [],
+    // };
+
+    // const [store, dispatch] = useReducer(reducer, initialAppState);
+    // useEffect(function () {
+        
+    // }, []);
+
     const initialAppState = {
         courses: [],
         query: '',
         categories: [],
-<<<<<<< HEAD
-        mode: ''
-=======
-        mode: '',
->>>>>>> 0dad4ba60cd3b284e7f8296fb5c9c37cc416f5d1
     };
 
     const [store, dispatch] = useReducer(reducer, initialAppState);
+
+    let {id}  =useParams();
+    console.log("id", Number(id));
 
     useEffect(function () {
         async function initCoursesList() {
@@ -32,13 +38,9 @@ export default function OnlineAcademy() {
                 dispatch({
                     type: 'initCoursesList',
                     payload: {
+                        categories:[],
                         courses: res.data,
-                        query: '',
-<<<<<<< HEAD
-                        mode: 'default'
-=======
-                        mode: 'default',
->>>>>>> 0dad4ba60cd3b284e7f8296fb5c9c37cc416f5d1
+                        query: ''
                     }
                 });
             }
@@ -58,34 +60,27 @@ export default function OnlineAcademy() {
         initCoursesList();
         getCategory();
     }, []);
-   
 
     return (
         <div>
             <ApppContext.Provider value={{ store, dispatch }}>
-                <Header />
-                {/* <HeaderPopup />
-                <HeaderPrimary /> */}
-                {(() => {
-                    if (store.mode === 'default') {
-                        return <HomeContent />
-                    } else if (store.mode === 'search') {
-                        return <Resultcategories />
-                    }
-                })()}
-                {/*    
-                <AdImage />
-                <Feature1 />
-                <Recommendations />
-                <Feature2 />
-                <FillerDiv />
-                <TopCategories />
-                <BecomeInstructor />
-                <TrustedCompanies />
-                <UdemyForBusiness />
-                <VideoAdDiv /> */}
-                <HomeFooter />
-                {/* <Footer /> */}
+            <Header />
+            {/* <HeaderPopup />
+            <HeaderPrimary /> */}
+            <Result />
+            {/*    
+            <AdImage />
+            <Feature1 />
+            <Recommendations />
+            <Feature2 />
+            <FillerDiv />
+            <TopCategories />
+            <BecomeInstructor />
+            <TrustedCompanies />
+            <UdemyForBusiness />
+            <VideoAdDiv /> */}
+            <HomeFooter />
+            {/* <Footer /> */}
             </ApppContext.Provider>
         </div>
     );
