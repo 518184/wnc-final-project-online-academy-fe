@@ -165,10 +165,10 @@ export default function Course({ course }) {
             <Col>
               <Card>
                 <Card.Header>
-                  <Player
+                  {/* <Player
                     playsInline
                     src={axiosInstance.get("/courses/" + course.id + "/resources/" + JSON.parse(course.outline).uploadFilenames[0])}
-                  />
+                  /> */}
 
                   {/* <iframe
                     title="Mohamad Alaloush's Story"
