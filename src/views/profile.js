@@ -63,7 +63,6 @@ export default function Profile(props) {
         loadDataPayment();
     }, [changeForm]);
 
-    console.log(store);
     const onSubmit = async function (data) {
         if (data) {
             if (data.switchPass) {
@@ -189,66 +188,72 @@ export default function Profile(props) {
                 <Col xs={6} className="mt-1">
                     <Form onSubmit={handleSubmit(onSubmit)}>
                         <Card>
-                            <Card.Body>
+                            <Card.Header>
                                 <Card.Title as="h3"><center>Profile</center></Card.Title>
-                                <hr></hr>
+                            </Card.Header>
+                            <Card.Body style={{height: 500, overflowY: 'auto'}}>
                                 <Form.Group controlId="formBasicFullName">
                                     <Form.Label>Fullname</Form.Label>
                                     <Form.Control type="text" name="fullname" defaultValue={store.account ? store.account.fullname : ""} placeholder="Enter fullname" ref={register({ required: true })} />
                                 </Form.Group>
-
+                                <br></br>
                                 <Form.Group controlId="formBasicEmail">
                                     <Form.Label>Email</Form.Label>
                                     <Form.Control type="email" name="email" defaultValue={store.account ? store.account.email : ""} placeholder="Enter email" ref={register({ required: true })} readOnly />
                                 </Form.Group>
 
                                 <Form.Check type="switch" name="switchPass" id="custom-switch" label="Change password" onChange={changePassword} ref={register({ required: false })} />
+                                <br></br>
                                 <Form.Group controlId="formBasicPassword">
                                     <Form.Label>New Password</Form.Label>
                                     <Form.Control type="password" name="password" placeholder="Password" ref={register({ required: false })} disabled={disablePassword} />
                                 </Form.Group>
+                                <br></br>
                                 <Form.Group controlId="formBasicConfirmPassword">
                                     <Form.Label>Confirm New Password</Form.Label>
                                     <Form.Control type="password" name="confirmPassword" placeholder="Confirm Password" ref={register({ required: false })} disabled={disablePassword} />
                                 </Form.Group>
                             </Card.Body>
                             <Card.Footer>
-                                <Button className="float-right py-2" variant="primary" type="submit">Save</Button>
+                                <Button className="float-right py-2" variant="primary" type="submit" size="lg">Save</Button>
                             </Card.Footer>
                         </Card>
                     </Form>
                 </Col>
                 <Col xs={6} className="mt-1">
                     <Card>
-                        <Card.Body>
+                        <Card.Header>
                             <Card.Title as="h3"><center>My Courses</center></Card.Title>
-                            <hr></hr>
+                        </Card.Header>
+                        
+                        <Card.Body  style={{height: 500, overflowY: 'auto'}}>
+                            {/* { console.log(store.payment)} */}
                             {store.payment ? store.payment.map(item =>
                                 <Card>
                                     <Card.Img variant="top" src="holder.js/100px180" />
                                     <Card.Body>
-                                        <Card.Title>{item.courseId}</Card.Title>
-                                        <Card.Text>
-                                            Some quick example text to build on the card title and make up the bulk of
-                                            the card's content.
-                                            </Card.Text>
+                                        {store.courses ? store.courses.map(i => i.id === item.courseId ? 
+                                            [<Card.Title>{i.title}</Card.Title>,
+                                            <Card.Text>{i.descriptionShort}</Card.Text>] : <Card.Title></Card.Title>) : <Card.Title></Card.Title>}             
                                         <Button variant="primary">Go somewhere</Button>
                                     </Card.Body>
                                 </Card>
                             ) : ""}
                         </Card.Body>
                         <Card.Footer>
-                            <Button className="float-right py-2" variant="primary" onClick={addCourse}>Add</Button>
+                            <Button className="float-right py-2" variant="primary" onClick={addCourse} size="lg" >Add</Button>
                         </Card.Footer>
                     </Card>
                 </Col>
             </Row>
             <Row>
-                <Col xs={12}>
+                <Col>
                     <Card>
-                        <Card.Body>
+                        <Card.Header>
                             <Card.Title as="h3"><center>My Favourite Courses</center></Card.Title>
-                            <hr></hr>
+                        </Card.Header>
+                        
+                        <Card.Body style={{height: 300, overflowX: 'auto'}}>
                             <Card>
                                 <Card.Img variant="top" src="holder.js/100px180" />
                                 <Card.Body>
@@ -269,8 +274,8 @@ export default function Profile(props) {
                             </Card>
                         </Card.Body>
                         <Card.Footer>
-                            <Button className="float-right py-2" variant="primary" onClick={addWhiteList}>Add</Button>
-                            <Button className="float-right py-2" variant="danger" onClick={delWhiteList}>Del</Button>
+                            <Button className="float-right py-2 mx-2" variant="primary" size="lg" onClick={addWhiteList}>Add</Button>
+                            <Button className="float-right py-2 mx-2" variant="danger" size="lg" onClick={delWhiteList}>Del</Button>
                         </Card.Footer>
                     </Card>
                 </Col>

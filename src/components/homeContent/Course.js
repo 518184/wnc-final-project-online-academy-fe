@@ -3,9 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { useForm } from 'react-hook-form';
 import { Card, Row, Col, Button, Modal, Carousel, Form } from 'react-bootstrap';
 import academyApppContext from '../../onlineAcademyAppContext';
-import "video-react/dist/video-react.css"; // import css
-import { Player } from 'video-react';
-
+import video from '../../videos/Kalinka.mp4';
 import { axiosInstance, parseJwt } from '../../utils';
 import swal from 'sweetalert';
 //import images from '../../views/images';
@@ -17,9 +15,20 @@ export default function Course({ course }) {
   const { register, handleSubmit, watch, errors } = useForm();
   const [show, setShow] = useState(false);
   const [disableButton, setDisableButton] = useState(false);
+
+
+
+  const addWhiteList = async function () {
+    try {
+      const res = await axiosInstance.post('/users/watchlist/' + course.id, {}, { headers: { 'x-access-token': localStorage.account_accessToken } });
+    } catch (err) {
+      console.log(err.response.data);
+    }
+  }
   const handleClose = () => setShow(false);
   const handleShow = async () => {
     setShow(true);
+    addWhiteList();
     if (localStorage.account_accessToken) {
       const res = await axiosInstance.get('/transaction/user/' + localStorage.account_userID, { headers: { 'x-access-token': localStorage.account_accessToken } });
       if (res.status === 200) {
@@ -136,26 +145,62 @@ export default function Course({ course }) {
 
   return (
     <div>
-      <Card>
-        {/* {images.map(ima=> )} */}
-        {/* <Card.Img variant="top" src={images[]} /> */}
-        <img src={require('../../img/java.jpg').default} />
+      {(() => {
+        if (course.sale) {
+          return (
+            <Card>
+              <img src={require('../../img/java.jpg').default} />
+              <Card.Body>
+                <img src={require('../../img/icon/sale.png').default} style={{width : 150, zIndex: 2, position: 'absolute', right: 2, top:'50%'}}/>
+                <Card.Title as="h4" className="my-2"><center>{course.title}</center></Card.Title>
+                <hr></hr>
+                <Card.Text>Category: {categoryTitle ? categoryTitle.title ? categoryTitle.title : "" : ""}</Card.Text>
+                {
+                  store.teacher ? store.teacher.filter(i => i.id === course.teacherId).map(j => 
+                    <Card.Text>Teacher: {j.fullname}</Card.Text>
+                  ) : <Card.Text></Card.Text>
+                }
+                
+                <Card.Text>Review Point: {course.reviewPoint}</Card.Text>
+                <Card.Text>Reviews: {course.reviews}</Card.Text>
+                <Card.Text>Price: {course.price}</Card.Text>
+                <Card.Text>Sale: {course.sale}</Card.Text>
+                <Card.Text>{course.descriptionShort}</Card.Text>
+                <br></br>
+                <center>
+                  <Button variant="primary" size="lg" onClick={handleShow}>Detail</Button>
+                </center>
+              </Card.Body>
+            </Card>
+          )
+        } else {
+          return (
+            <Card>
+              <img src={require('../../img/java.jpg').default} />
+              <Card.Body>
+                <Card.Title as="h4" className="my-2"><center>{course.title}</center></Card.Title>
+                <hr></hr>
+                <Card.Text>Category: {categoryTitle ? categoryTitle.title ? categoryTitle.title : "" : ""}</Card.Text>
+                {
+                  store.teacher ? store.teacher.filter(i => i.id === course.teacherId).map(j => 
+                    <Card.Text>Teacher: {j.fullname}</Card.Text>
+                  ) : <Card.Text></Card.Text>
+                }
+                <Card.Text>Review Point: {course.reviewPoint}</Card.Text>
+                <Card.Text>Reviews: {course.reviews}</Card.Text>
 
-        <Card.Body>
-          <Card.Title as="h4" className="my-2"><center>{course.title}</center></Card.Title>
-          <hr></hr>
-          <Card.Text>Category: {categoryTitle ? categoryTitle.title ? categoryTitle.title : "" : ""}</Card.Text>
-          <Card.Text>Teacher: {course.teacherId}</Card.Text>
-          <Card.Text>Review Point: {course.reviewPoint}</Card.Text>
-          <Card.Text>Reviews: {course.reviews}</Card.Text>
+                <Card.Text>Price: {course.price}</Card.Text>
+                <Card.Text>{course.descriptionShort}</Card.Text>
+                <br></br>
+                <center>
+                  <Button variant="primary" size="lg" onClick={handleShow}>Detail</Button>
+                </center>
+              </Card.Body>
+            </Card>
+          )
+        }
+      })()}
 
-          <Card.Text>Price: {course.price}</Card.Text>
-          <Card.Text>{course.descriptionShort}</Card.Text>
-          <Button variant="primary" onClick={handleShow}>
-            Launch demo modal
-          </Button>
-        </Card.Body>
-      </Card>
       <Modal show={show} onHide={handleClose} dialogClassName="modal-90w" scrollable="true">
         <Modal.Header closeButton>
           <Modal.Title>{course.title}</Modal.Title>
@@ -165,10 +210,10 @@ export default function Course({ course }) {
             <Col>
               <Card>
                 <Card.Header>
-                  <Player
+                  {/* <Player
                     playsInline
                     src={axiosInstance.get("/courses/" + course.id + "/resources/" + JSON.parse(course.outline).uploadFilenames[0])}
-                  />
+                  /> */}
 
                   {/* <iframe
                     title="Mohamad Alaloush's Story"
@@ -179,6 +224,26 @@ export default function Course({ course }) {
                     height="400px"
                     frameborder="0"
                   ></iframe> */}
+                  {/* <Player
+      playsInline
+      poster={require("../../img/java.jpg").default}
+      src={video}
+    /> */}
+
+                  {/* {
+        (() => {
+          const outline = JSON.parse(course.outline);
+          if(outline){
+            return <video controls poster={require('../../img/java.jpg').default} width='100%' height='400px'><source src={require(outline.uploadDir + '\\' + outline.uploadFilenames[0]).default} type="video/mp4"/></video>
+          }
+          
+        })()
+      } */}
+                  <video controls poster={require('../../img/java.jpg').default} width='100%' height='400px'>
+                    {/* <source src={require('E:\\Download\\Video\\zoom_1.mp4').default} type="video/mp4"/> */}
+                    {/* <source src={require(alias.vid} type="video/mp4"/> */}
+
+                  </video>
                 </Card.Header>
                 <Card.Body>
                   {
@@ -231,7 +296,14 @@ export default function Course({ course }) {
               </Card>
             </Col>
             <Col>
-              <Card.Text><b>Outline: </b>{course.outline}</Card.Text>
+              <Card.Text><b>Outline: </b>
+                {/* {(()=>{
+                if(course.outline) {
+                  const outline = JSON.parse(course.outline);
+                  return <Card.Text>{outline}</Card.Text>;
+                }
+              })()} */}
+              </Card.Text>
             </Col>
           </Row>
           <Row>

@@ -16,7 +16,6 @@ export default function HotCourses() {
         const sortList2 = sortList ? sortList.sort((a, b) => a.participants < b.participants ? 1 : -1) : [];
         courseRef = sortList2.splice(0, 5);
     }
-    console.log(courseRef);
     return (
         <div>
             <Row>
@@ -26,7 +25,10 @@ export default function HotCourses() {
                         {courseRef.map(i =>
                             <Carousel.Item>
                                 <Card>
-                                    <Course course={i} />
+                                    <Card.Body>
+                                        <Card.Img src={require('../img/icon/hot.png').default} style={{width : 70, zIndex: 2, position: 'absolute'}}></Card.Img>
+                                        <Course course={i} />
+                                    </Card.Body>
                                 </Card>
                             </Carousel.Item>
                         )}

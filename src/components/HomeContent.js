@@ -57,21 +57,11 @@ function HomeContent() {
                     <AdImage />
                 </Col>
             </Row>
-            <Row>
-                <Col>
-                    <Feature1 />
-                </Col>
-            </Row>
             {/* <Row>
                 <Col>
                     <Recommendations />
                 </Col>
             </Row> */}
-            <Row>
-                <Col>
-                    <Feature2 />
-                </Col>
-            </Row>
             <Row className="my-3">
                 <Col><center><h1>Course List</h1></center></Col>
             </Row>
@@ -90,12 +80,11 @@ function HomeContent() {
             <Row>
                 <Col>
                     <ListCourses currentPosts={currentPosts} />
-                    <CustomPagination postsPerPage={postsPerPage} totalPage={store.courses.length} paginate={paginate} currentPage={currentPage} />
                 </Col>
             </Row>
             <Row>
                 <Col>
-                    <TopCategories />
+                    <CustomPagination postsPerPage={postsPerPage} totalPage={store.courses.length} paginate={paginate} currentPage={currentPage} />
                 </Col>
             </Row>
             <Row>
