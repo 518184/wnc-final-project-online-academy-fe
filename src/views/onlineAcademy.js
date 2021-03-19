@@ -9,10 +9,11 @@ import { axiosInstance } from '../utils';
 import Resultcategories from './resultCategories';
 import Profile from './profile';
 
-import { Col, Row } from 'react-bootstrap';
+import { Alert} from 'react-bootstrap';
 
 
 export default function OnlineAcademy() {
+    const [show, setShow] = useState(false);
     const initialAppState = {
         courses: [],
         query: '',
@@ -71,16 +72,23 @@ export default function OnlineAcademy() {
                 });
             }
         }
-        if(localStorage.account_accessToken){
+        if (localStorage.account_accessToken) {
+            setShow(false);
             async function getAccountInfo() {
-                const res = await axiosInstance.get('/users/' + localStorage.account_userID, { headers: { 'x-access-token': localStorage.account_accessToken } });
-                if (res.status === 200) {
-                    dispatch({
-                        type: 'getAccountInfo',
-                        payload: {
-                            accountInfo: res.data,
-                        }
-                    });
+                try {
+                    const res = await axiosInstance.get('/users/' + localStorage.account_userID, { headers: { 'x-access-token': localStorage.account_accessToken } });
+                    if (res.status === 200) {
+                        delete res.data.password;
+                        dispatch({
+                            type: 'getAccountInfo',
+                            payload: {
+                                accountInfo: res.data,
+                            }
+                        });
+                        setShow(false);
+                    }
+                } catch (err) {
+                    setShow(true);
                 }
             }
             getAccountInfo()
@@ -124,6 +132,13 @@ export default function OnlineAcademy() {
         <div>
             <ApppContext.Provider value={{ store, dispatch }}>
                 <Header />
+                <Alert variant="danger" show={show} onClose={() => setShow(false)} dismissible>
+                        <Alert.Heading>Your Account Is Not Active!</Alert.Heading>
+                        <p>
+                            Your account is not active by otp code, please get it in your mail
+                            and confirm in your profile!
+                        </p>
+                    </Alert>
                 {/* <HeaderPopup />
                 <HeaderPrimary /> */}
                 {/* <HotCourses /> */}
