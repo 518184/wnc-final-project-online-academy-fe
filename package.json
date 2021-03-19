@@ -17,6 +17,7 @@
     "@testing-library/user-event": "^12.6.0",
     "@wojtekmaj/enzyme-adapter-react-17": "^0.3.2",
     "axios": "^0.21.1",
+    "axios-auth-refresh": "^3.1.0",
     "bootstrap": "^4.6.0",
     "classnames": "^2.2.6",
     "core-js": "^3.8.1",

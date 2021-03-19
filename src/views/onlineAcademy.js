@@ -9,6 +9,10 @@ import { axiosInstance } from '../utils';
 import Resultcategories from './resultCategories';
 import Profile from './profile';
 import HotCourses from './hotcourses';
+import TopWatchList from './topWatchList';
+import { Col, Row } from 'react-bootstrap';
+import TopNew from './topNew';
+import TopRegister from './topRegister';
 
 export default function OnlineAcademy() {
     const initialAppState = {
@@ -119,8 +123,11 @@ export default function OnlineAcademy() {
                 {(() => {
                     switch (store.mode) {
                         case 'default':
-                            return [<HotCourses />,
-                                    <HomeContent />];
+                            return [<Row><Col><HotCourses /></Col>
+                                <Col><TopWatchList /></Col>
+                                <Col><TopNew /></Col>
+                                <Col><TopRegister /></Col></Row>,
+                            <HomeContent />];
                         case 'search':
                             return <Resultcategories />
                         case 'profile':

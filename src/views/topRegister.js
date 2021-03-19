@@ -8,7 +8,7 @@ import academyApppContext from '../onlineAcademyAppContext';
 import { axiosInstance } from '../utils';
 //import images from '../../views/images';
 
-export default function HotCourses() {
+export default function TopRegister() {
     const { store } = useContext(academyApppContext);
     Date.prototype.getWeekNumber = function () {
         var d = new Date(Date.UTC(this.getFullYear(), this.getMonth(), this.getDate()));
@@ -18,26 +18,23 @@ export default function HotCourses() {
         return Math.ceil((((d - yearStart) / 86400000) + 1) / 7)
     };
     var courseRef = [];
-    if (store.courses != null) {
+    if (store.courses) {
         let currWeek = new Date().getWeekNumber();
-        const sortList = [].concat(store.courses.filter(it => (currWeek - new Date(it.createdDate).getWeekNumber() === 1) && (it.participants != 0) && (it.reviewPoint >= 7)));
+        const sortList = [].concat(store.courses.filter(it => (currWeek - new Date(it.createdDate).getWeekNumber() === 1) && (it.participants != 0)));
         const sortList2 = sortList ? sortList.sort((a, b) => a.participants < b.participants ? 1 : -1) : [];
-        courseRef = sortList2.splice(0, 3);
+        courseRef = sortList2.splice(0, 5);
     }
     return (
         <div>
             <Row>
                 <Col></Col>
                 <Col xs={5}>
-                    <h1>Hot Course</h1>
+                    <h1>Top Register</h1>
                     <Carousel>
                         {courseRef.map(i =>
                             <Carousel.Item>
                                 <Card>
-                                    <Card.Body>
-                                        <Card.Img src={require('../img/icon/hot.png').default} style={{width : 70, zIndex: 2, position: 'absolute'}}></Card.Img>
-                                        <Course course={i} />
-                                    </Card.Body>
+                                    <Course course={i} />
                                 </Card>
                             </Carousel.Item>
                         )}
