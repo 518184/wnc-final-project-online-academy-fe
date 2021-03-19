@@ -3,10 +3,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { useForm } from 'react-hook-form';
 import { Card, Row, Col, Button, Modal, Carousel, Form } from 'react-bootstrap';
 import academyApppContext from '../../onlineAcademyAppContext';
-import video from '../../videos/Kalinka.mp4';
 import { axiosInstance, parseJwt } from '../../utils';
 import swal from 'sweetalert';
-//import images from '../../views/images';
 import '../homeContent/Course.css';
 
 export default function Course({ course }) {
@@ -151,16 +149,16 @@ export default function Course({ course }) {
             <Card>
               <img src={require('../../img/java.jpg').default} />
               <Card.Body>
-                <img src={require('../../img/icon/sale.png').default} style={{width : 150, zIndex: 2, position: 'absolute', right: 2, top:'50%'}}/>
+                <img src={require('../../img/icon/sale.png').default} style={{ width: 150, zIndex: 2, position: 'absolute', right: 2, top: '50%' }} />
                 <Card.Title as="h4" className="my-2"><center>{course.title}</center></Card.Title>
                 <hr></hr>
                 <Card.Text>Category: {categoryTitle ? categoryTitle.title ? categoryTitle.title : "" : ""}</Card.Text>
                 {
-                  store.teacher ? store.teacher.filter(i => i.id === course.teacherId).map(j => 
+                  store.teacher ? store.teacher.filter(i => i.id === course.teacherId).map(j =>
                     <Card.Text>Teacher: {j.fullname}</Card.Text>
                   ) : <Card.Text></Card.Text>
                 }
-                
+
                 <Card.Text>Review Point: {course.reviewPoint}</Card.Text>
                 <Card.Text>Reviews: {course.reviews}</Card.Text>
                 <Card.Text>Price: {course.price}</Card.Text>
@@ -182,7 +180,7 @@ export default function Course({ course }) {
                 <hr></hr>
                 <Card.Text>Category: {categoryTitle ? categoryTitle.title ? categoryTitle.title : "" : ""}</Card.Text>
                 {
-                  store.teacher ? store.teacher.filter(i => i.id === course.teacherId).map(j => 
+                  store.teacher ? store.teacher.filter(i => i.id === course.teacherId).map(j =>
                     <Card.Text>Teacher: {j.fullname}</Card.Text>
                   ) : <Card.Text></Card.Text>
                 }
@@ -215,15 +213,15 @@ export default function Course({ course }) {
                     src={axiosInstance.get("/courses/" + course.id + "/resources/" + JSON.parse(course.outline).uploadFilenames[0])}
                   /> */}
 
-                  {/* <iframe
+                  <iframe
                     title="Mohamad Alaloush's Story"
                     allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
                     allowfullscreen=""
-                    src="https://www.youtube.com/embed/QFIhEmOd6No/?autoplay=1"
+                    src={"http://localhost:3001/resources/" + JSON.parse(course.outline).uploadDir + JSON.parse(course.outline).uploadFilenames[0]}
                     width="100%"
                     height="400px"
                     frameborder="0"
-                  ></iframe> */}
+                  ></iframe>
                   {/* <Player
       playsInline
       poster={require("../../img/java.jpg").default}
@@ -239,11 +237,6 @@ export default function Course({ course }) {
           
         })()
       } */}
-                  <video controls poster={require('../../img/java.jpg').default} width='100%' height='400px'>
-                    {/* <source src={require('E:\\Download\\Video\\zoom_1.mp4').default} type="video/mp4"/> */}
-                    {/* <source src={require(alias.vid} type="video/mp4"/> */}
-
-                  </video>
                 </Card.Header>
                 <Card.Body>
                   {
