@@ -1,10 +1,9 @@
-import React, { useContext, useReducer, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form';
 import { useHistory, useLocation } from 'react-router-dom';
-import { axiosInstance, parseJwt } from '../utils';
+import { axiosInstance } from '../utils';
 import swal from 'sweetalert';
 import {
-    Container,
     Row,
     Col,
     Card,
@@ -12,6 +11,7 @@ import {
     Button
 } from 'react-bootstrap';
 import academyApppContext from '../onlineAcademyAppContext';
+import Course from '../components/homeContent/Course';
 
 export default function Profile(props) {
     const { register, handleSubmit, watch, errors } = useForm();
@@ -22,14 +22,7 @@ export default function Profile(props) {
     const [payment, setPayment] = useState();
     const [disablePassword, setDisablePassword] = useState(true);
     const [changeForm, setChangeForm] = useState(false);
-
-    // const initialAppState = {
-    //     courses: [],
-    //     query: '',
-    //     categories: [],
-    // };
-
-    // const [store, dispatch] = useReducer(reducer, initialAppState);
+    const watchListCourse = [];
     const { store, dispatch } = useContext(academyApppContext);
 
     useEffect(function () {
@@ -137,26 +130,24 @@ export default function Profile(props) {
             });
         }
     }
-
-    const addCourse = async function () {
-        let data = {};
-        data.courseId = "5";
-        const res = await axiosInstance.post('/transaction', data, { headers: { 'x-access-token': localStorage.account_accessToken } });
-        const res2 = await axiosInstance.put('/transaction/' + res.data.id + '/payment', data, { headers: { 'x-access-token': localStorage.account_accessToken } });
-    }
-    const addWhiteList = async function () {
+    const delWhiteList = async function (id) {
         try {
-            const res = await axiosInstance.post('/users/watchlist/5', {}, { headers: { 'x-access-token': localStorage.account_accessToken } });
+            const res = await axiosInstance.delete('/users/delete/watchlist/'+id, { headers: { 'x-access-token': localStorage.account_accessToken } });
+            if (res.status === 200) {
+                swal({
+                    title: "Removed Course",
+                    icon: "success",
+                    button: "OK"
+                });
+                setChangeForm(true);
+            }
         } catch (err) {
             console.log(err.response.data);
-        }
-
-    }
-    const delWhiteList = async function () {
-        try {
-            const res = await axiosInstance.delete('/users/delete/watchlist/4', { headers: { 'x-access-token': localStorage.account_accessToken } });
-        } catch (err) {
-            console.log(err.response.data);
+            swal({
+                title: "Not Remove",
+                icon: "warning",
+                button: "OK",
+            });
         }
 
     }
@@ -164,26 +155,8 @@ export default function Profile(props) {
     const changePassword = function () {
         disablePassword === true ? setDisablePassword(false) : setDisablePassword(true);
     }
-
-    const cancelButton_Clicked = function () {
-        history.push("/home");
-    }
-    const goHome = function () {
-        dispatch({
-            type: 'changeMode',
-            payload: {
-                mode: 'default'
-            }
-        })
-    }
-
     return (
         <>
-            <Row>
-                <Col xs={2} className="mt-1">
-                    <Button className="float-right mr-3 py-2" variant="secondary" onClick={goHome}>Go Academy</Button>
-                </Col>
-            </Row>
             <Row>
                 <Col xs={6} className="mt-1">
                     <Form onSubmit={handleSubmit(onSubmit)}>
@@ -191,7 +164,7 @@ export default function Profile(props) {
                             <Card.Header>
                                 <Card.Title as="h3"><center>Profile</center></Card.Title>
                             </Card.Header>
-                            <Card.Body style={{height: 500, overflowY: 'auto'}}>
+                            <Card.Body style={{ height: 500, overflowY: 'auto' }}>
                                 <Form.Group controlId="formBasicFullName">
                                     <Form.Label>Fullname</Form.Label>
                                     <Form.Control type="text" name="fullname" defaultValue={store.account ? store.account.fullname : ""} placeholder="Enter fullname" ref={register({ required: true })} />
@@ -225,23 +198,18 @@ export default function Profile(props) {
                         <Card.Header>
                             <Card.Title as="h3"><center>My Courses</center></Card.Title>
                         </Card.Header>
-                        
-                        <Card.Body  style={{height: 500, overflowY: 'auto'}}>
-                            {/* { console.log(store.payment)} */}
+
+                        <Card.Body style={{ height: 500, overflowX: 'auto' }}>
+                            <Row>
                             {store.payment ? store.payment.map(item =>
-                                <Card>
-                                    <Card.Img variant="top" src="holder.js/100px180" />
-                                    <Card.Body>
-                                        {store.courses ? store.courses.map(i => i.id === item.courseId ? 
-                                            [<Card.Title>{i.title}</Card.Title>,
-                                            <Card.Text>{i.descriptionShort}</Card.Text>] : <Card.Title></Card.Title>) : <Card.Title></Card.Title>}             
-                                        <Button variant="primary">Go somewhere</Button>
-                                    </Card.Body>
-                                </Card>
-                            ) : ""}
+                                store.courses ? store.courses.map(i => i.id === item.courseId ?
+                                            <Col sm={5}>
+                                        <Course course={i} />
+                                 </Col>
+                             : ""):""):""}
+                            </Row>
                         </Card.Body>
                         <Card.Footer>
-                            <Button className="float-right py-2" variant="primary" onClick={addCourse} size="lg" >Add</Button>
                         </Card.Footer>
                     </Card>
                 </Col>
@@ -252,30 +220,22 @@ export default function Profile(props) {
                         <Card.Header>
                             <Card.Title as="h3"><center>My Favourite Courses</center></Card.Title>
                         </Card.Header>
-                        
-                        <Card.Body style={{height: 300, overflowX: 'auto'}}>
+                        <Card.Body style={{ height: 700, overflowX: 'auto' }}>
                             <Card>
-                                <Card.Img variant="top" src="holder.js/100px180" />
                                 <Card.Body>
-                                    {account === undefined ? "" : account.watchlistJS.map(item =>
-                                        <Card>
-                                            <Card.Img variant="top" src="holder.js/100px180" />
-                                            <Card.Body>
-                                                <Card.Title>{item}</Card.Title>
-                                                <Card.Text>
-                                                    Some quick example text to build on the card title and make up the bulk of
-                                                    the card's content.
-                                            </Card.Text>
-                                                <Button variant="primary">Go somewhere</Button>
-                                            </Card.Body>
-                                        </Card>
-                                    )}
+                                    <Row>
+                                        {store.account?store.courses ? store.courses.filter(it => store.account ? store.account.watchlistJS.includes(it.id) :"").map(item =>
+                                            <Col sm={2}>
+                                                <Course course={item} />
+                                                <Button variant="danger" size="lg" onClick={() => delWhiteList(item.id)}>Delete</Button>
+                                            </Col>
+                                        ) : []:""}
+                                    </Row>
                                 </Card.Body>
                             </Card>
                         </Card.Body>
                         <Card.Footer>
-                            <Button className="float-right py-2 mx-2" variant="primary" size="lg" onClick={addWhiteList}>Add</Button>
-                            <Button className="float-right py-2 mx-2" variant="danger" size="lg" onClick={delWhiteList}>Del</Button>
+                            
                         </Card.Footer>
                     </Card>
                 </Col>

@@ -5,7 +5,7 @@ import SearchOutlinedIcon from "@material-ui/icons/SearchOutlined";
 import PublishIcon from '@material-ui/icons/Publish';
 import { Link } from "react-router-dom";
 import { useHistory } from 'react-router-dom';
-import { Navbar, Nav, NavDropdown, Form, FormControl, Button, ButtonGroup } from "react-bootstrap";
+import { NavDropdown } from "react-bootstrap";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import academyApppContext from '../../onlineAcademyAppContext';
 import { DropdownSubmenu, NavDropdownMenu } from "react-bootstrap-submenu";
@@ -49,7 +49,7 @@ function HeaderPrimary() {
 		if (localStorage.account_email) {
 			return (
 				<React.Fragment>
-					<Link to="" style={{ textDecoration: 'none' }}><div className="login button" onClick={changeViewProfile}>{localStorage.account_email}</div></Link>
+					<div style={{ textDecoration: 'none' }}><div className="login button" onClick={changeViewProfile}>{localStorage.account_email}</div></div>
 					<Link to="/" style={{ textDecoration: 'none' }}><div className="signup button" onClick={logout}>Sign Out</div></Link>
 				</React.Fragment>);
 		}
