@@ -3,10 +3,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { useForm } from 'react-hook-form';
 import { Card, Row, Col, Button, Modal, Carousel, Form } from 'react-bootstrap';
 import academyApppContext from '../../onlineAcademyAppContext';
-import video from '../../videos/Kalinka.mp4';
 import { axiosInstance, parseJwt } from '../../utils';
 import swal from 'sweetalert';
-//import images from '../../views/images';
 import '../homeContent/Course.css';
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 
@@ -306,15 +304,15 @@ export default function Course({ course }) {
                     src={axiosInstance.get("/courses/" + course.id + "/resources/" + JSON.parse(course.outline).uploadFilenames[0])}
                   /> */}
 
-                  {/* <iframe
+                  <iframe
                     title="Mohamad Alaloush's Story"
                     allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
                     allowfullscreen=""
-                    src="https://www.youtube.com/embed/QFIhEmOd6No/?autoplay=1"
+                    src={"http://localhost:3001/resources/" + JSON.parse(course.outline).uploadDir + JSON.parse(course.outline).uploadFilenames[0]}
                     width="100%"
                     height="400px"
                     frameborder="0"
-                  ></iframe> */}
+                  ></iframe>
                   {/* <Player
       playsInline
       poster={require("../../img/java.jpg").default}
@@ -330,11 +328,6 @@ export default function Course({ course }) {
           
         })()
       } */}
-                  <video controls poster={require('../../img/java.jpg').default} width='100%' height='400px'>
-                    {/* <source src={require('E:\\Download\\Video\\zoom_1.mp4').default} type="video/mp4"/> */}
-                    {/* <source src={require(alias.vid} type="video/mp4"/> */}
-
-                  </video>
                 </Card.Header>
                 <Card.Body>
                   {
