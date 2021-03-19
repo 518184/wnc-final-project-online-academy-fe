@@ -20,28 +20,19 @@ export default function TopWatchList() {
             counts[el] = counts[el] ? (counts[el] += 1) : 1;
         });
         const countId = Object.entries(counts).sort(([_, a], [__, b]) => b - a).map(it => parseInt(it[0]));
-        const watchList = store.courses?store.courses.filter(it => countId.includes(it.id)):[];
+        const watchList = store.courses ? store.courses.filter(it => countId.includes(it.id)) : [];
         courseRef = watchList.splice(0, 10);
     }
     return (
         <div>
-            <Row>
-                <Col></Col>
-                <Col xs={5}>
-                    <h1>Top Wacth</h1>
-                    <Carousel>
-                        {courseRef.map(i =>
-                            <Carousel.Item>
-                                <Card>
-                                    <Course course={i} />
-                                </Card>
-                            </Carousel.Item>
-                        )}
-                    </Carousel>
-                </Col>
-                <Col></Col>
-            </Row>
-
+            <center><h1>Top Wacth</h1></center>
+            <Carousel>
+                {courseRef.map(i =>
+                    <Carousel.Item>
+                        <Course course={i} />
+                    </Carousel.Item>
+                )}
+            </Carousel>
         </div>
     )
 }

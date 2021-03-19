@@ -73,6 +73,18 @@ export default function reducer(state, action) {
 				...state,
 				feedback: action.payload.feedback
 			}
+
+		case 'getHotCourses':
+			return {
+				...state,
+				hotCourses: action.payload.hotCourses
+			}
+
+		case 'getAccountInfo':
+			return {
+				...state,
+				accountInfo: action.payload.accountInfo
+			}
 		//   case 'add_item':
 		//     return {
 		//       ...state,

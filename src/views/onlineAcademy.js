@@ -8,11 +8,9 @@ import ApppContext from '../onlineAcademyAppContext';
 import { axiosInstance } from '../utils';
 import Resultcategories from './resultCategories';
 import Profile from './profile';
-import HotCourses from './hotcourses';
-import TopWatchList from './topWatchList';
+
 import { Col, Row } from 'react-bootstrap';
-import TopNew from './topNew';
-import TopRegister from './topRegister';
+
 
 export default function OnlineAcademy() {
     const initialAppState = {
@@ -56,7 +54,7 @@ export default function OnlineAcademy() {
                 dispatch({
                     type: 'getTeacher',
                     payload: {
-                        teacher: res.data,
+                        teacher: res.data
                     }
                 });
             }
@@ -72,6 +70,20 @@ export default function OnlineAcademy() {
                     }
                 });
             }
+        }
+        if(localStorage.account_accessToken){
+            async function getAccountInfo() {
+                const res = await axiosInstance.get('/users/' + localStorage.account_userID, { headers: { 'x-access-token': localStorage.account_accessToken } });
+                if (res.status === 200) {
+                    dispatch({
+                        type: 'getAccountInfo',
+                        payload: {
+                            accountInfo: res.data,
+                        }
+                    });
+                }
+            }
+            getAccountInfo()
         }
         // async function loadDataUser() {
         //     const res = await axiosInstance.get('/users/' + localStorage.account_userID, { headers: { 'x-access-token': localStorage.account_accessToken } });
@@ -123,11 +135,7 @@ export default function OnlineAcademy() {
                 {(() => {
                     switch (store.mode) {
                         case 'default':
-                            return [<Row><Col><HotCourses /></Col>
-                                <Col><TopWatchList /></Col>
-                                <Col><TopNew /></Col>
-                                <Col><TopRegister /></Col></Row>,
-                            <HomeContent />];
+                            return <HomeContent />
                         case 'search':
                             return <Resultcategories />
                         case 'profile':

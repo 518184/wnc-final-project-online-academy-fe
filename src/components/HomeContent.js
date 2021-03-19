@@ -12,8 +12,12 @@ import ListCourses from "./homeContent/ListCourses";
 import SearchCourse from "./homeContent/searchCourse";
 import CustomPagination from "./homeContent/CustomPagination";
 import academyApppContext from '../onlineAcademyAppContext';
+import HotCourses from '../views/hotcourses';
+import TopWatchList from '../views/topWatchList';
+import TopNew from '../views/topNew';
+import TopRegister from '../views/topRegister';
 
-import { Row, Col, InputGroup, Button, FormControl } from "react-bootstrap";
+import { Row, Col, InputGroup, Button, FormControl, Card } from "react-bootstrap";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Select from 'react-select';
 
@@ -22,7 +26,7 @@ function HomeContent() {
     const [postsPerPage] = useState(8);
     const { store, dispatch } = useContext(academyApppContext);
     const [selectedType, setSelectedType] = useState(1);
-    
+
 
     const displayType = [
         { value: 1, label: 'Default' },
@@ -54,9 +58,23 @@ function HomeContent() {
         <div>
             <Row>
                 <Col>
-                    <AdImage />
+                    <Card style={{border: 'none'}}>
+                        <Card.Body style={{backgroundColor:'#ebedef'}}>
+                            <Row>
+                                <Col><HotCourses /></Col>
+                                <Col><TopWatchList /></Col>
+                                <Col><TopNew /></Col>
+                                <Col><TopRegister /></Col>
+                            </Row>  
+                        </Card.Body>
+                    </Card>
                 </Col>
             </Row>
+            {/* <Row>
+                <Col>
+                    <AdImage />
+                </Col>
+            </Row> */}
             {/* <Row>
                 <Col>
                     <Recommendations />
@@ -104,10 +122,10 @@ function HomeContent() {
             </Row>
             {/* <VideoAdDiv /> */}
             <Row>
-           
- 
 
-      
+
+
+
 
             </Row>
         </div>

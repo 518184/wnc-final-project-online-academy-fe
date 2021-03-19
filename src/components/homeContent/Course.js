@@ -8,6 +8,7 @@ import { axiosInstance, parseJwt } from '../../utils';
 import swal from 'sweetalert';
 //import images from '../../views/images';
 import '../homeContent/Course.css';
+import { FaHeart, FaRegHeart } from "react-icons/fa";
 
 export default function Course({ course }) {
   const { store, dispatch } = useContext(academyApppContext);
@@ -15,7 +16,7 @@ export default function Course({ course }) {
   const { register, handleSubmit, watch, errors } = useForm();
   const [show, setShow] = useState(false);
   const [disableButton, setDisableButton] = useState(false);
-
+  const [like, setLike] = useState(false);
 
 
   const addWhiteList = async function () {
@@ -25,10 +26,17 @@ export default function Course({ course }) {
       console.log(err.response.data);
     }
   }
+
+  const delWhiteList = async function(){
+    try{
+      const res = await axiosInstance.delete('/users/delete/watchlist/' + course.id, { headers: { 'x-access-token': localStorage.account_accessToken } });
+    } catch (err) {
+      console.log(err.response.data);
+    }
+  }
   const handleClose = () => setShow(false);
   const handleShow = async () => {
     setShow(true);
-    addWhiteList();
     if (localStorage.account_accessToken) {
       const res = await axiosInstance.get('/transaction/user/' + localStorage.account_userID, { headers: { 'x-access-token': localStorage.account_accessToken } });
       if (res.status === 200) {
@@ -38,6 +46,7 @@ export default function Course({ course }) {
             break;
           }
         }
+        store.accountInfo?JSON.parse(store.accountInfo.watchlist).course.includes(course.id)?setLike(true):setLike(false):setLike(false);
       }
     }
   }
@@ -138,9 +147,54 @@ export default function Course({ course }) {
     }
   }
 
+  // const watchList = localStorage.account_accessToken ? store.teacher ? store.teacher.filter(i => i.id === +localStorage.account_userID)
+  
   function loadContent() {
     return feedbackList.map(i =>
       store.teacher ? store.teacher.filter(j => j.id === i.userId).map(k => <Card.Text><b><i>{k.fullname} </i></b> : {i.content}</Card.Text>) : <Card.Text></Card.Text>)
+  }
+
+  // if(store.accountInfo){
+  //   console.log(store.accountInfo.watchlist)
+  // }
+  function getFavourist() {
+    if(store.accountInfo){
+      if(store.accountInfo.watchlist){
+        const watchListTemp = JSON.parse(store.accountInfo.watchlist).course;
+        for(var i of watchListTemp){
+          if(i === course.id){
+            setLike(true);
+            return;
+          }
+        }
+      }
+    }
+  }
+  //getFavourist();
+  Date.prototype.getWeekNumber = function () {
+    var d = new Date(Date.UTC(this.getFullYear(), this.getMonth(), this.getDate()));
+    var dayNum = d.getUTCDay() || 7;
+    d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+    var yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+    return Math.ceil((((d - yearStart) / 86400000) + 1) / 7)
+  };
+  var hotCourses = [];
+
+  if (store.courses != null) {
+    let currWeek = new Date().getWeekNumber();
+    const sortList = [].concat(store.courses.filter(it => (currWeek - new Date(it.createdDate).getWeekNumber() === 1) && (it.participants != 0) && (it.reviewPoint >= 7)));
+    const sortList2 = sortList ? sortList.sort((a, b) => a.participants < b.participants ? 1 : -1) : [];
+    hotCourses = sortList2.splice(0, 3);
+  }
+
+  const likeClicked = function() {
+    if(like){
+      delWhiteList();
+      setLike(false);
+    } else {
+      addWhiteList();
+      setLike(true);
+    }
   }
 
   return (
@@ -148,41 +202,76 @@ export default function Course({ course }) {
       {(() => {
         if (course.sale) {
           return (
-            <Card>
+            <Card style={{boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)'}}>
               <img src={require('../../img/java.jpg').default} />
-              <Card.Body>
-                <img src={require('../../img/icon/sale.png').default} style={{width : 150, zIndex: 2, position: 'absolute', right: 2, top:'50%'}}/>
+              <Card.Body style={{ height: 350 }}>
+                <img src={require('../../img/icon/sale.png').default} style={{ width: 150, zIndex: 1, position: 'absolute', right: 2, top: '50%' }} />
                 <Card.Title as="h4" className="my-2"><center>{course.title}</center></Card.Title>
                 <hr></hr>
                 <Card.Text>Category: {categoryTitle ? categoryTitle.title ? categoryTitle.title : "" : ""}</Card.Text>
                 {
-                  store.teacher ? store.teacher.filter(i => i.id === course.teacherId).map(j => 
+                  store.teacher ? store.teacher.filter(i => i.id === course.teacherId).map(j =>
                     <Card.Text>Teacher: {j.fullname}</Card.Text>
                   ) : <Card.Text></Card.Text>
                 }
-                
+
                 <Card.Text>Review Point: {course.reviewPoint}</Card.Text>
                 <Card.Text>Reviews: {course.reviews}</Card.Text>
                 <Card.Text>Price: {course.price}</Card.Text>
                 <Card.Text>Sale: {course.sale}</Card.Text>
                 <Card.Text>{course.descriptionShort}</Card.Text>
                 <br></br>
+              </Card.Body>
+              <Card.Footer style={{borderTop:'none'}}>
                 <center>
                   <Button variant="primary" size="lg" onClick={handleShow}>Detail</Button>
                 </center>
-              </Card.Body>
+              </Card.Footer>
             </Card>
           )
         } else {
+          if (hotCourses) {
+            for (var i of hotCourses) {
+              if (i.id === course.id) {
+                return (
+                  <Card style={{boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)'}}>
+                    <Card.Img src={require('../../img/icon/hot.png').default} style={{ width: 70, zIndex: 1, position: 'absolute', right: 0 }}></Card.Img>
+                    <img src={require('../../img/java.jpg').default} />
+                    <Card.Body style={{ height: 350 }}>
+                      <Card.Title as="h4" className="my-2"><center>{course.title}</center></Card.Title>
+                      <hr></hr>
+                      <Card.Text>Category: {categoryTitle ? categoryTitle.title ? categoryTitle.title : "" : ""}</Card.Text>
+                      {
+                        store.teacher ? store.teacher.filter(i => i.id === course.teacherId).map(j =>
+                          <Card.Text>Teacher: {j.fullname}</Card.Text>
+                        ) : <Card.Text></Card.Text>
+                      }
+                      <Card.Text>Review Point: {course.reviewPoint}</Card.Text>
+                      <Card.Text>Reviews: {course.reviews}</Card.Text>
+
+                      <Card.Text>Price: {course.price}</Card.Text>
+                      <Card.Text>{course.descriptionShort}</Card.Text>
+                      <br></br>
+                    </Card.Body>
+                    <Card.Footer style={{borderTop:'none'}}>
+                      <center>
+                        <Button variant="primary" size="lg" onClick={handleShow}>Detail</Button>
+                      </center>
+                    </Card.Footer>
+                  </Card>
+                )
+              }
+            }
+          }
           return (
-            <Card>
+            <Card style={{boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)'}}>
               <img src={require('../../img/java.jpg').default} />
-              <Card.Body>
+              <Card.Body style={{ height: 350 }}>
                 <Card.Title as="h4" className="my-2"><center>{course.title}</center></Card.Title>
                 <hr></hr>
                 <Card.Text>Category: {categoryTitle ? categoryTitle.title ? categoryTitle.title : "" : ""}</Card.Text>
                 {
-                  store.teacher ? store.teacher.filter(i => i.id === course.teacherId).map(j => 
+                  store.teacher ? store.teacher.filter(i => i.id === course.teacherId).map(j =>
                     <Card.Text>Teacher: {j.fullname}</Card.Text>
                   ) : <Card.Text></Card.Text>
                 }
@@ -192,10 +281,12 @@ export default function Course({ course }) {
                 <Card.Text>Price: {course.price}</Card.Text>
                 <Card.Text>{course.descriptionShort}</Card.Text>
                 <br></br>
+              </Card.Body>
+              <Card.Footer style={{borderTop:'none'}}>
                 <center>
                   <Button variant="primary" size="lg" onClick={handleShow}>Detail</Button>
                 </center>
-              </Card.Body>
+              </Card.Footer>
             </Card>
           )
         }
@@ -292,6 +383,17 @@ export default function Course({ course }) {
                   {store.teacher ? store.teacher.filter(i => i.id === course.teacherId).map(j =>
                     <Card.Text><b>Teacher: </b>{j.fullname}</Card.Text>) : <Card.Text></Card.Text>
                   }
+                  {/* {
+                    store.accountInfo ? JSON.parse(store.accountInfo.watchlist).course.filter(i => i === course.id) ? setLike(true) : setLike(false) : setLike(false)
+                  } */}
+                  {(()=>{
+                    
+                    if(!like) {
+                      return <Card.Text style={{color: 'red', fontSize: 25}} onClick={()=>likeClicked()}><FaRegHeart /></Card.Text>
+                    } else {
+                      return <Card.Text style={{color: 'red', fontSize: 25}} onClick={()=>likeClicked()}><FaHeart /></Card.Text>
+                    }
+                  })()}
                 </Card.Body>
               </Card>
             </Col>

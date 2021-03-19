@@ -26,23 +26,14 @@ export default function TopRegister() {
     }
     return (
         <div>
-            <Row>
-                <Col></Col>
-                <Col xs={5}>
-                    <h1>Top Register</h1>
-                    <Carousel>
-                        {courseRef.map(i =>
-                            <Carousel.Item>
-                                <Card>
-                                    <Course course={i} />
-                                </Card>
-                            </Carousel.Item>
-                        )}
-                    </Carousel>
-                </Col>
-                <Col></Col>
-            </Row>
-
+            <center><h1>Top Register</h1></center>
+            <Carousel>
+                {courseRef.map(i =>
+                    <Carousel.Item>
+                        <Course course={i} />
+                    </Carousel.Item>
+                )}
+            </Carousel>
         </div>
     )
 }
