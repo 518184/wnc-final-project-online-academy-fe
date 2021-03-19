@@ -46,7 +46,6 @@ export default function Resultcategories(props) {
 	}
     return (
         <>
-        <Button onClick={goHome}>Go home</Button>
             <Row className="my-3">
                 <Col><center><h1>Course List</h1></center></Col>
             </Row>

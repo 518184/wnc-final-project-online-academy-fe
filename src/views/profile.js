@@ -8,7 +8,8 @@ import {
     Col,
     Card,
     Form,
-    Button
+    Button,
+    Container
 } from 'react-bootstrap';
 import academyApppContext from '../onlineAcademyAppContext';
 import Course from '../components/homeContent/Course';
@@ -132,7 +133,7 @@ export default function Profile(props) {
     }
     const delWhiteList = async function (id) {
         try {
-            const res = await axiosInstance.delete('/users/delete/watchlist/'+id, { headers: { 'x-access-token': localStorage.account_accessToken } });
+            const res = await axiosInstance.delete('/users/delete/watchlist/' + id, { headers: { 'x-access-token': localStorage.account_accessToken } });
             if (res.status === 200) {
                 swal({
                     title: "Removed Course",
@@ -159,12 +160,12 @@ export default function Profile(props) {
         <>
             <Row>
                 <Col xs={6} className="mt-1">
-                    <Form onSubmit={handleSubmit(onSubmit)}>
-                        <Card>
+                    <Form onSubmit={handleSubmit(onSubmit)} >
+                        <Card style={{height: 700}}>
                             <Card.Header>
                                 <Card.Title as="h3"><center>Profile</center></Card.Title>
                             </Card.Header>
-                            <Card.Body style={{ height: 500, overflowY: 'auto' }}>
+                            <Card.Body style={{ overflowY: 'auto' }}>
                                 <Form.Group controlId="formBasicFullName">
                                     <Form.Label>Fullname</Form.Label>
                                     <Form.Control type="text" name="fullname" defaultValue={store.account ? store.account.fullname : ""} placeholder="Enter fullname" ref={register({ required: true })} />
@@ -193,24 +194,26 @@ export default function Profile(props) {
                         </Card>
                     </Form>
                 </Col>
-                <Col xs={6} className="mt-1">
-                    <Card>
+                <Col xs={6} className="mt-1" >
+                    <Card style={{height: 700}}>
                         <Card.Header>
                             <Card.Title as="h3"><center>My Courses</center></Card.Title>
                         </Card.Header>
 
-                        <Card.Body style={{ height: 500, overflowX: 'auto' }}>
-                            <Row>
-                            {store.payment ? store.payment.map(item =>
-                                store.courses ? store.courses.map(i => i.id === item.courseId ?
-                                            <Col sm={5}>
-                                        <Course course={i} />
-                                 </Col>
-                             : ""):""):""}
-                            </Row>
+                        <Card.Body style={{ height: 600, overflowX: 'auto', overflowY: 'hidden' }}>
+                            <Container fluid>
+                                <Row className="row flex-row flex-nowrap" >
+                                    {store.payment ? store.payment.map(item =>
+                                        store.courses ? store.courses.map(i => i.id === item.courseId ?
+                                            <Col sm={5} style={{height : 'auto'}}>
+                                                <Course course={i} />
+                                                <b style={{position: 'absolute', bottom:0, fontSize:20}}>{i.isCompleted?<center style={{color:'green'}}>completed</center> : <center style={{color:'blue'}}>processing...</center>}</b>
+                                            </Col>
+                                            : "") : "") : ""
+                                    }
+                                </Row>
+                            </Container>
                         </Card.Body>
-                        <Card.Footer>
-                        </Card.Footer>
                     </Card>
                 </Col>
             </Row>
@@ -220,22 +223,20 @@ export default function Profile(props) {
                         <Card.Header>
                             <Card.Title as="h3"><center>My Favourite Courses</center></Card.Title>
                         </Card.Header>
-                        <Card.Body style={{ height: 700, overflowX: 'auto' }}>
-                            <Card>
-                                <Card.Body>
-                                    <Row>
-                                        {store.account?store.courses ? store.courses.filter(it => store.account ? store.account.watchlistJS.includes(it.id) :"").map(item =>
-                                            <Col sm={2}>
-                                                <Course course={item} />
-                                                <Button variant="danger" size="lg" onClick={() => delWhiteList(item.id)}>Delete</Button>
-                                            </Col>
-                                        ) : []:""}
-                                    </Row>
-                                </Card.Body>
-                            </Card>
+                        <Card.Body style={{overflowY: 'hidden' }}>
+                            <Container fluid>
+                                <Row className="row flex-row flex-nowrap" style={{ height: 640, overflowX: 'auto' }}>
+                                    {store.account ? store.courses ? store.courses.filter(it => store.account ? store.account.watchlistJS.includes(it.id) : "").map(item =>
+                                        <Col sm={2}>
+                                            <Course course={item} />
+                                            <Button variant="danger" style={{ width: '100%' }} onClick={() => delWhiteList(item.id)}>Delete</Button>
+                                        </Col>
+                                    ) : [] : ""}
+                                </Row>
+                            </Container>
                         </Card.Body>
                         <Card.Footer>
-                            
+
                         </Card.Footer>
                     </Card>
                 </Col>
