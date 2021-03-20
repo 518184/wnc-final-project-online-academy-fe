@@ -87,7 +87,7 @@ export default function OnlineAcademy() {
                         setShow(false);
                     }
                 } catch (err) {
-                    if (err.respone.status === 403) {
+                    if (err.response.status === 403) {
                         setShow(true);
                     }
                 }
