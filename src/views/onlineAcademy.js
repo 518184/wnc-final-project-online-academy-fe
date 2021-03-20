@@ -72,6 +72,7 @@ export default function OnlineAcademy() {
             }
         }
         if (localStorage.account_accessToken) {
+            setShow(false);
             async function getAccountInfo() {
                 try {
                     const res = await axiosInstance.get('/users/' + localStorage.account_userID, { headers: { 'x-access-token': localStorage.account_accessToken } });
@@ -86,7 +87,9 @@ export default function OnlineAcademy() {
                         setShow(false);
                     }
                 } catch (err) {
-                    setShow(true);
+                    if (err.respone.status === 403) {
+                        setShow(true);
+                    }
                 }
             }
             getAccountInfo()
