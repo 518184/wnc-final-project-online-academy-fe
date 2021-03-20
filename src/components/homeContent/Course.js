@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useForm } from 'react-hook-form';
 import { Card, Row, Col, Button, Modal, Carousel, Form } from 'react-bootstrap';
@@ -11,7 +11,7 @@ import { FaHeart, FaRegHeart } from "react-icons/fa";
 export default function Course({ course }) {
   const { store, dispatch } = useContext(academyApppContext);
   const categoryTitle = store.categories ? store.categories.filter(category => category.id === course.categoryId)[0] : [];
-  const { register, handleSubmit, watch, errors } = useForm();
+  const { register, handleSubmit } = useForm();
   const [show, setShow] = useState(false);
   const [disableButton, setDisableButton] = useState(false);
   const [like, setLike] = useState(false);
@@ -51,7 +51,7 @@ export default function Course({ course }) {
   const sortList = store.courses ? store.courses.filter(i => i.categoryId === course.categoryId).sort((a, b) => a.participants < b.participants ? 1 : -1) : [];
   const courseRef = [];
   for (var i = 0; i < sortList.length; i++) {
-    if (sortList[i].id != course.id) {
+    if (sortList[i].id !== course.id) {
       if (courseRef.length > 5) {
         break;
       }
@@ -180,7 +180,7 @@ export default function Course({ course }) {
 
   if (store.courses != null) {
     let currWeek = new Date().getWeekNumber();
-    const sortList = [].concat(store.courses.filter(it => (currWeek - new Date(it.createdDate).getWeekNumber() === 1) && (it.participants != 0) && (it.reviewPoint >= 7)));
+    const sortList = [].concat(store.courses.filter(it => (currWeek - new Date(it.createdDate).getWeekNumber() === 1) && (it.participants !== 0) && (it.reviewPoint >= 7)));
     const sortList2 = sortList ? sortList.sort((a, b) => a.participants < b.participants ? 1 : -1) : [];
     hotCourses = sortList2.splice(0, 3);
   }
@@ -308,8 +308,8 @@ export default function Course({ course }) {
                     title="Mohamad Alaloush's Story"
                     allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
                     allowfullscreen=""
-                    //src={"http://localhost:3001/resources/" + JSON.parse(course.outline).uploadDir + JSON.parse(course.outline).uploadFilenames[0]}
-                    src={"http://localhost:3001/resources/" + '\\08f60dae-3572-48ba-8d6f-fa8c23fbf1b7\\Kalinka.mp4'}
+                    src={"http://localhost:3001/resources/" + JSON.parse(course.outline).uploadDir + JSON.parse(course.outline).uploadFilenames[0]}
+                    // src={"http://localhost:3001/resources/" + '\\08f60dae-3572-48ba-8d6f-fa8c23fbf1b7\\Kalinka.mp4'}
                     width="100%"
                     height="400px"
                     frameborder="0"

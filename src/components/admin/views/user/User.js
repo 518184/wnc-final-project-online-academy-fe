@@ -1,7 +1,7 @@
-import React, { lazy, useState, useEffect, useReducer, forwardRef } from 'react'
-import { axiosInstance, parseJwt } from '../../../../utils';
+import React, { useState, useEffect, useReducer, forwardRef } from 'react'
+import { axiosInstance } from '../../../../utils';
 import { useForm } from 'react-hook-form';
-import { Modal, Button, Form, FormCheck, Col, Row, ToggleButtonGroup, ToggleButton, ButtonGroup } from 'react-bootstrap';
+import { Modal, Button, Form, Col, Row, ToggleButton, ButtonGroup } from 'react-bootstrap';
 import reducer from '../../userReducer';
 import AppContext from '../../userContext';
 import swal from 'sweetalert';
@@ -23,7 +23,6 @@ import SaveAlt from '@material-ui/icons/SaveAlt';
 import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
 import DetailsIcon from '@material-ui/icons/Details';
-import { Label } from '@material-ui/icons';
 
 
 

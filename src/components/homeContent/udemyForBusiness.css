@@ -52,6 +52,7 @@
   border-radius: 4px;
   font-weight: 600;
   cursor: pointer;
+  padding: 15px;
 }
 
 .udemyForBusiness .contentDiv .button:hover {
