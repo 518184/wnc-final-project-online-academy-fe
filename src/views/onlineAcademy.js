@@ -62,7 +62,6 @@ export default function OnlineAcademy() {
         }
         async function getFeedback() {
             const res = await axiosInstance.get('/feedbacks');
-
             if (res.status === 200) {
                 dispatch({
                     type: 'getFeedback',
@@ -73,7 +72,6 @@ export default function OnlineAcademy() {
             }
         }
         if (localStorage.account_accessToken) {
-            setShow(false);
             async function getAccountInfo() {
                 try {
                     const res = await axiosInstance.get('/users/' + localStorage.account_userID, { headers: { 'x-access-token': localStorage.account_accessToken } });
@@ -138,7 +136,7 @@ export default function OnlineAcademy() {
                             Your account is not active by otp code, please get it in your mail
                             and confirm in your profile!
                         </p>
-                    </Alert>
+                </Alert>
                 {/* <HeaderPopup />
                 <HeaderPrimary /> */}
                 {/* <HotCourses /> */}
