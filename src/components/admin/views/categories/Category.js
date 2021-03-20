@@ -1,9 +1,10 @@
-import React, { lazy, useState, useEffect, useReducer, forwardRef } from 'react'
+import React, { lazy, useState, useEffect, useReducer, forwardRef, useContext } from 'react'
 import { axiosInstance, parseJwt } from '../../../../utils';
 import { useForm } from 'react-hook-form';
 import { Modal, Button, Form, FormCheck, Col, Row } from 'react-bootstrap';
 import reducer from '../../categoryReducer';
 import AppContext from '../../categoryContext';
+import ApppContext from '../../adminContext';
 import swal from 'sweetalert';
 
 import MaterialTable from 'material-table';
@@ -45,25 +46,26 @@ export default function Category(props) {
 	const handleCloseModalDelete = () => setShowModalDelete(false);
 	const handleShowModelNew = () => setShowModalNew(true);
 	const handleCloseModalNew = () => setShowModalNew(false);
-	const initialCategoryData = { query: '', items: [] }
-	const [store, dispatch] = useReducer(reducer, initialCategoryData);
+	// const initialCategoryData = { query: '', items: [] }
+	// const [store, dispatch] = useReducer(reducer, initialCategoryData);
+	const {store, dispatch} = useContext(ApppContext);
 	const defaulteCategory = { id: null, title: null, description: null }
 
-	useEffect(function () {
-		async function loadDataCategory() {
-			const res = await axiosInstance.get('/categories', { headers: { 'x-access-token': localStorage.account_accessToken } });
-			if (res.status === 200) {
-				dispatch({
-					type: 'init',
-					payload: {
-						items: res.data,
-						query: ''
-					}
-				});
-			}
-		}
-		loadDataCategory();
-	}, []);
+	// useEffect(function () {
+	// 	async function loadDataCategory() {
+	// 		const res = await axiosInstance.get('/categories', { headers: { 'x-access-token': localStorage.account_accessToken } });
+	// 		if (res.status === 200) {
+	// 			dispatch({
+	// 				type: 'init',
+	// 				payload: {
+	// 					items: res.data,
+	// 					query: ''
+	// 				}
+	// 			});
+	// 		}
+	// 	}
+	// 	loadDataCategory();
+	// }, []);
 	const columns = [
 		{ title: "ID", field: "id" },
 		{ title: "Title", field: "title" },
@@ -95,7 +97,7 @@ export default function Category(props) {
 		const res = await axiosInstance.get('/categories', { headers: { 'x-access-token': localStorage.account_accessToken } });
 		if (res.status === 200) {
 			dispatch({
-				type: 'init',
+				type: 'initCategory',
 				payload: {
 					items: res.data,
 					query: ''
@@ -111,7 +113,7 @@ export default function Category(props) {
 		// if (res.status === 200) {
 		// 	setCategoryTable(res.data);
 		// }
-		setCategoryTable((store.items.filter(item => item.id===id))[0]);
+		setCategoryTable((store.categories.filter(item => item.id===id))[0]);
 		handleShowModelDetail();
 	}
 
@@ -122,7 +124,7 @@ export default function Category(props) {
 		// if (res.status === 200) {
 		// 	setCategoryTable(res.data);
 		// }
-		setCategoryTable((store.items.filter(item => item.id===id))[0]);
+		setCategoryTable((store.categories.filter(item => item.id===id))[0]);
 		handleShowModelEdit();
 	}
 
@@ -133,7 +135,7 @@ export default function Category(props) {
 		// if (res.status === 200) {
 		// 	setCategoryTable(res.data);
 		// }
-		setCategoryTable((store.items.filter(item => item.id===id))[0]);
+		setCategoryTable((store.categories.filter(item => item.id===id))[0]);
 		handleShowModelDelete();
 	}
 
@@ -229,6 +231,9 @@ export default function Category(props) {
 	const onSubmitNew = async function (data) {
 		try {
 			if (data != null) {
+				if (data.id) {
+					delete data.id;
+				}
 				data.level = parseInt(data.level);
 				data.owned = parseInt(data.owned);
 				let res = await axiosInstance.post('/categories', data, {
@@ -264,7 +269,7 @@ export default function Category(props) {
 
 	return (
 		<div>
-			<AppContext.Provider value={{ store, dispatch }}>
+			{/* <AppContext.Provider value={{ store, dispatch }}> */}
 				<div className="container mt-3">
 					<div className="row mt-3">
 						<div className="col-sm-12">
@@ -279,7 +284,7 @@ export default function Category(props) {
 									</div>
 									<br></br>
 									<div style={{ maxWidth: '100%' }}>
-										<MaterialTable columns={columns} data={store.items} icons={tableIcons} title={null}
+										<MaterialTable columns={columns} data={store.categories?store.categories:[]} icons={tableIcons} title={null}
 											actions={[
 												{
 													icon: tableIcons.DetailsIcon,
@@ -317,33 +322,33 @@ export default function Category(props) {
 								<Col>
 									<Form.Group >
 										<Form.Label>ID</Form.Label>
-										<Form.Control type="text" name="id" value={categoryTable.id == null ? "" : categoryTable.id} readOnly />
+										<Form.Control type="text" name="id" value={categoryTable? categoryTable.id:""} readOnly />
 									</Form.Group>
 									<Form.Group >
 										<Form.Label>Title</Form.Label>
-										<Form.Control type="text" name="title" value={categoryTable.title == null ? "" : categoryTable.title} readOnly />
+										<Form.Control type="text" name="title" value={categoryTable? categoryTable.title:""} readOnly />
 									</Form.Group>
 									<Form.Group >
 										<Form.Label>Description</Form.Label>
-										<Form.Control type="text" name="description" value={categoryTable.description == null ? "" : categoryTable.description} readOnly />
+										<Form.Control type="text" name="description" value={categoryTable?categoryTable.description:""} readOnly />
 									</Form.Group>
 									<Form.Group >
 										<Form.Label>Level</Form.Label>
-										<Form.Control type="text" name="level" value={categoryTable.level == null ? "" : categoryTable.level} readOnly />
+										<Form.Control type="text" name="level" value={categoryTable?categoryTable.level:""} readOnly />
 									</Form.Group>
 									<Form.Group >
 										<Form.Label>Owned</Form.Label>
-										<Form.Control type="text" name="owned" value={categoryTable.owned == null ? "" : categoryTable.owned === 0 ? "" : categoryTable.owned} readOnly />
+										<Form.Control type="text" name="owned" value={categoryTable?categoryTable.owned:""} readOnly />
 									</Form.Group>
 								</Col>
 								<Col>
 									<Form.Group >
 										<Form.Label>Created Date</Form.Label>
-										<Form.Control type="text" name="createdDate" value={categoryTable.createdDate == null ? "" : categoryTable.createdDate} readOnly />
+										<Form.Control type="text" name="createdDate" value={categoryTable?categoryTable.createdDate:""} readOnly />
 									</Form.Group>
 									<Form.Group >
 										<Form.Label>Modified Date</Form.Label>
-										<Form.Control type="text" name="modifiedDate" value={categoryTable.modifiedDate == null ? "" : categoryTable.modifiedDate} readOnly />
+										<Form.Control type="text" name="modifiedDate" value={categoryTable?categoryTable.modifiedDate:""} readOnly />
 									</Form.Group>
 								</Col>
 							</Row>
@@ -361,23 +366,23 @@ export default function Category(props) {
 						<Modal.Body>
 							<Form.Group >
 								<Form.Label>ID</Form.Label>
-								<Form.Control type="text" name="id" value={categoryTable.id == null ? "" : categoryTable.id} ref={register({ required: true })} readOnly />
+								<Form.Control type="text" name="id" value={categoryTable?categoryTable.id:""} ref={register({ required: true })} readOnly />
 							</Form.Group>
 							<Form.Group >
 								<Form.Label>Title</Form.Label>
-								<Form.Control type="text" name="title" defaultValue={categoryTable.title == null ? "" : categoryTable.title} ref={register({ required: true })} autoFocus />
+								<Form.Control type="text" name="title" defaultValue={categoryTable?categoryTable.title:""} ref={register({ required: true })} autoFocus />
 							</Form.Group>
 							<Form.Group >
 								<Form.Label>Description</Form.Label>
-								<Form.Control type="text" name="description" defaultValue={categoryTable.description == null ? "" : categoryTable.description} ref={register({ required: true })} />
+								<Form.Control type="text" name="description" defaultValue={categoryTable?categoryTable.description:""} ref={register({ required: true })} />
 							</Form.Group>
 							<Form.Group >
 								<Form.Label>Level</Form.Label>
-								<Form.Control type="text" name="level" defaultValue={categoryTable.level == null ? "" : categoryTable.level} ref={register({ required: true })} />
+								<Form.Control type="text" name="level" defaultValue={categoryTable?categoryTable.level:""} ref={register({ required: true })} />
 							</Form.Group>
 							<Form.Group >
 								<Form.Label>Owned</Form.Label>
-								<Form.Control type="text" name="owned" defaultValue={categoryTable.owned == null ? "" : categoryTable.owned === 0 ? "" : categoryTable.owned} ref={register({ required: true })} />
+								<Form.Control type="text" name="owned" defaultValue={categoryTable?categoryTable.owned:""} ref={register({ required: true })} />
 							</Form.Group>
 						</Modal.Body>
 						<Modal.Footer>
@@ -396,33 +401,33 @@ export default function Category(props) {
 								<Col>
 									<Form.Group >
 										<Form.Label>ID</Form.Label>
-										<Form.Control type="text" name="id" defaultValue={categoryTable.id == null ? "" : categoryTable.id} ref={register({ required: false })} readOnly />
+										<Form.Control type="text" name="id" defaultValue={categoryTable?categoryTable.id:""} ref={register({ required: false })} readOnly />
 									</Form.Group>
 									<Form.Group >
 										<Form.Label>Title</Form.Label>
-										<Form.Control type="text" name="title" defaultValue={categoryTable.title == null ? "" : categoryTable.title} readOnly />
+										<Form.Control type="text" name="title" defaultValue={categoryTable?categoryTable.title:""} readOnly />
 									</Form.Group>
 									<Form.Group >
 										<Form.Label>Description</Form.Label>
-										<Form.Control type="text" name="description" defaultValue={categoryTable.description == null ? "" : categoryTable.description} readOnly />
+										<Form.Control type="text" name="description" defaultValue={categoryTable?categoryTable.description:""} readOnly />
 									</Form.Group>
 									<Form.Group >
 										<Form.Label>Level</Form.Label>
-										<Form.Control type="text" name="level" defaultValue={categoryTable.level == null ? "" : categoryTable.level} readOnly />
+										<Form.Control type="text" name="level" defaultValue={categoryTable?categoryTable.level:""} readOnly />
 									</Form.Group>
 									<Form.Group >
 										<Form.Label>Owned</Form.Label>
-										<Form.Control type="text" name="owned" defaultValue={categoryTable.owned == null ? "" : categoryTable.owned === 0 ? "" : categoryTable.owned} readOnly />
+										<Form.Control type="text" name="owned" defaultValue={categoryTable?categoryTable.owned:""} readOnly />
 									</Form.Group>
 								</Col>
 								<Col>
 									<Form.Group >
 										<Form.Label>Created Date</Form.Label>
-										<Form.Control type="text" name="createdDate" defaultValue={categoryTable.createdDate == null ? "" : categoryTable.createdDate} readOnly />
+										<Form.Control type="text" name="createdDate" defaultValue={categoryTable?categoryTable.createdDate:""} readOnly />
 									</Form.Group>
 									<Form.Group >
 										<Form.Label>Modified Date</Form.Label>
-										<Form.Control type="text" name="modifiedDate" defaultValue={categoryTable.modifiedDate == null ? "" : categoryTable.modifiedDate} readOnly />
+										<Form.Control type="text" name="modifiedDate" defaultValue={categoryTable?categoryTable.modifiedDate:""} readOnly />
 									</Form.Group>
 								</Col>
 							</Row>
@@ -435,35 +440,35 @@ export default function Category(props) {
 					</Form>
 				</Modal>
 				<Modal show={showModalNew} onHide={handleCloseModalNew}>
-					<Form onSubmit={handleSubmit(onSubmitNew)}>
+					<Form onSubmit={handleSubmit(onSubmitNew)} id="newForm">
 						<Modal.Header closeButton>
 							<Modal.Title>New Category</Modal.Title>
 						</Modal.Header>
 						<Modal.Body>
-							<Form.Group >
+							<Form.Group id="newTitle">
 								<Form.Label>Title</Form.Label>
 								<Form.Control type="text" name="title" ref={register({ required: true })} autoFocus />
 							</Form.Group>
-							<Form.Group >
+							<Form.Group id="newdes">
 								<Form.Label>Description</Form.Label>
 								<Form.Control type="text" name="description" ref={register({ required: true })} />
 							</Form.Group>
-							<Form.Group >
+							<Form.Group id="newLevle">
 								<Form.Label>Level</Form.Label>
 								<Form.Control type="text" name="level" ref={register({ required: true })} />
 							</Form.Group>
-							<Form.Group >
+							<Form.Group id="newOwn">
 								<Form.Label>Owned</Form.Label>
 								<Form.Control type="text" name="owned" ref={register({ required: true })} />
 							</Form.Group>
 						</Modal.Body>
 						<Modal.Footer>
-							<Button variant="success" type="submit">Create</Button>
+							<Button variant="success" type="submit" id="newFormSub">Create</Button>
 							<Button variant="secondary" onClick={handleCloseModalNew}>Close</Button>
 						</Modal.Footer>
 					</Form>
 				</Modal>
-			</AppContext.Provider>
+			{/* </AppContext.Provider> */}
 		</div>
 	);
 }

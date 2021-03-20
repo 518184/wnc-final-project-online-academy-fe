@@ -1,9 +1,10 @@
-import React, { lazy, useState, useEffect, useReducer, forwardRef } from 'react'
+import React, { lazy, useState, useEffect, useReducer, forwardRef, useContext } from 'react'
 import { axiosInstance, parseJwt } from '../../../../utils';
 import { useForm } from 'react-hook-form';
 import { Modal, Button, Form, FormCheck, Col, Row } from 'react-bootstrap';
 import reducer from '../../courseReducer';
 import AppContext from '../../courseContext';
+import ApppContext from '../../adminContext';
 import swal from 'sweetalert';
 
 import MaterialTable from 'material-table';
@@ -46,39 +47,48 @@ export default function Course(props) {
     const handleCloseModalDelete = () => setShowModalDelete(false);
     const handleShowModelNew = () => setShowModalNew(true);
     const handleCloseModalNew = () => setShowModalNew(false);
-    const initialCategoryData = { query: '', items: [] }
-    const [store, dispatch] = useReducer(reducer, initialCategoryData);
-    const defaultCourse = { id: null, title: null, descriptionShort: null, descriptionLong:null }
+    // const initialCategoryData = { query: '', items: [] }
+    // const [store, dispatch] = useReducer(reducer, initialCategoryData);
+    const { store, dispatch } = useContext(ApppContext);
+    const defaultCourse = { id: null, title: null, descriptionShort: null, descriptionLong: null }
 
-    useEffect(function () {
-        async function loadDataCourse() {
-            const res = await axiosInstance.get('/courses', { headers: { 'x-access-token': localStorage.account_accessToken } });
-            if (res.status === 200) {
-                for (let i in res.data) {
-                    let resGetTeacherEmail = await axiosInstance.get('/users/'+ res.data[i].teacherId, { headers: { 'x-access-token': localStorage.account_accessToken } });
-                    if (resGetTeacherEmail.status === 200) {
-                        res.data[i].teacher = resGetTeacherEmail.data.email;
-                    }
-                    let resGetCategoryTitle = await axiosInstance.get('/categories/'+ res.data[i].categoryId, { headers: { 'x-access-token': localStorage.account_accessToken } });
-                    if (resGetCategoryTitle.status === 200) {
-                        res.data[i].category = resGetCategoryTitle.data.title;
-                    }
-                }
-                dispatch({
-                    type: 'init',
-                    payload: {
-                        items: res.data,
-                        query: ''
-                    }
-                });
-            }
-        }
-        loadDataCourse();
-    }, []);
+    // useEffect(function () {
+    //     async function loadDataCourse() {
+    //         const res = await axiosInstance.get('/courses', { headers: { 'x-access-token': localStorage.account_accessToken } });
+    //         if (res.status === 200) {
+    //             for (let i in res.data) {
+    //                 let resGetTeacherEmail = await axiosInstance.get('/users/'+ res.data[i].teacherId, { headers: { 'x-access-token': localStorage.account_accessToken } });
+    //                 if (resGetTeacherEmail.status === 200) {
+    //                     res.data[i].teacher = resGetTeacherEmail.data.email;
+    //                 }
+    //                 let resGetCategoryTitle = await axiosInstance.get('/categories/'+ res.data[i].categoryId, { headers: { 'x-access-token': localStorage.account_accessToken } });
+    //                 if (resGetCategoryTitle.status === 200) {
+    //                     res.data[i].category = resGetCategoryTitle.data.title;
+    //                 }
+    //             }
+    //             dispatch({
+    //                 type: 'init',
+    //                 payload: {
+    //                     items: res.data,
+    //                     query: ''
+    //                 }
+    //             });
+    //         }
+    //     }
+    //     loadDataCourse();
+    // }, []);
+    let filteredList = [
+        ...new Map(store.courses.map(obj => [`${obj.categoryId}:${obj.category}`, obj]))
+            .values()
+    ];
+    var obj = filteredList.reduce(function (acc, cur, i) {
+        acc[cur.categoryId] = cur.category;
+        return acc;
+    }, {});
     const columns = [
         { title: "ID", field: "id", filtering: false },
         { title: "Title", field: "title", filtering: false },
-        { title: "Category Title", field: "category" },
+        { title: "Category Title", field: "categoryId", lookup: obj },
         { title: "Teacher Email", field: "teacher" },
     ];
 
@@ -106,17 +116,17 @@ export default function Course(props) {
         const res = await axiosInstance.get('/courses', { headers: { 'x-access-token': localStorage.account_accessToken } });
         if (res.status === 200) {
             for (let i in res.data) {
-                let resGetTeacherEmail = await axiosInstance.get('/users/'+ res.data[i].teacherId, { headers: { 'x-access-token': localStorage.account_accessToken } });
+                let resGetTeacherEmail = await axiosInstance.get('/users/' + res.data[i].teacherId, { headers: { 'x-access-token': localStorage.account_accessToken } });
                 if (resGetTeacherEmail.status === 200) {
                     res.data[i].teacher = resGetTeacherEmail.data.email;
                 }
-                let resGetCategoryTitle = await axiosInstance.get('/categories/'+ res.data[i].categoryId, { headers: { 'x-access-token': localStorage.account_accessToken } });
+                let resGetCategoryTitle = await axiosInstance.get('/categories/' + res.data[i].categoryId, { headers: { 'x-access-token': localStorage.account_accessToken } });
                 if (resGetCategoryTitle.status === 200) {
                     res.data[i].category = resGetCategoryTitle.data.title;
                 }
             }
             dispatch({
-                type: 'init',
+                type: 'initCourse',
                 payload: {
                     items: res.data,
                     query: ''
@@ -132,7 +142,7 @@ export default function Course(props) {
         // if (res.status === 200) {
         //     setCourseTable(res.data);
         // }
-        setCourseTable((store.items.filter(item => item.id===id))[0]);
+        setCourseTable((store.courses.filter(item => item.id === id))[0]);
         handleShowModelDetail();
     }
 
@@ -143,7 +153,7 @@ export default function Course(props) {
         // if (res.status === 200) {
         //     setCourseTable(res.data);
         // }
-        setCourseTable((store.items.filter(item => item.id===id))[0]);
+        setCourseTable((store.courses.filter(item => item.id === id))[0]);
         handleShowModelEdit();
     }
 
@@ -154,7 +164,7 @@ export default function Course(props) {
         // if (res.status === 200) {
         //     setCourseTable(res.data);
         // }
-        setCourseTable((store.items.filter(item => item.id===id))[0]);
+        setCourseTable((store.courses.filter(item => item.id === id))[0]);
         handleShowModelDelete();
     }
 
@@ -288,266 +298,276 @@ export default function Course(props) {
 
     return (
         <div>
-            <AppContext.Provider value={{ store, dispatch }}>
-                <div className="container mt-3">
-                    <div className="row mt-3">
-                        <div className="col-sm-12">
-                            <div className="card shadow">
-                                <h3 className="card-header d-flex">
-                                    Course List from Academy
+            {/* <AppContext.Provider value={{ store, dispatch }}> */}
+            <div className="container mt-3">
+                <div className="row mt-3">
+                    <div className="col-sm-12">
+                        <div className="card shadow">
+                            <h3 className="card-header d-flex">
+                                Course List from Academy
             </h3>
-                                <div className="card-body">
-                                    <div className="row">
-                                        <button className="btn btn-warning" onClick={reLoadDataCourse}>Reload</button>
-                                        {/* <button className="btn btn-primary" onClick={handleNew}>New</button> */}
-                                    </div>
-                                    <br></br>
-                                    <div style={{ maxWidth: '100%' }}>
-                                        <MaterialTable columns={columns} data={store.items} icons={tableIcons} title={null}
-                                            actions={[
-                                                {
-                                                    icon: tableIcons.DetailsIcon,
-                                                    tooltip: 'Detail Category',
-                                                    onClick: (event, rowData) => handleDetail(rowData)
-                                                },
-                                                {
-                                                    icon: tableIcons.Edit,
-                                                    tooltip: 'Modify Category',
-                                                    onClick: (event, rowData) => handleEdit(rowData)
-                                                },
-                                                {
-                                                    icon: tableIcons.Delete,
-                                                    tooltip: 'Delete Category',
-                                                    onClick: (event, rowData) => handleDelete(rowData)
-                                                }
-                                            ]}
-                                            options={{
-                                                filtering: true
-                                            }}
-                                        />
-                                    </div>
+                            <div className="card-body">
+                                <div className="row">
+                                    <button className="btn btn-warning" onClick={reLoadDataCourse}>Reload</button>
+                                    {/* <button className="btn btn-primary" onClick={handleNew}>New</button> */}
                                 </div>
-                                <div className="card-footer text-muted">
-                                    Footer
-          </div>
+                                <br></br>
+                                <div style={{ maxWidth: '100%' }}>
+                                    <MaterialTable columns={columns} data={store.courses} icons={tableIcons} title={null}
+                                        actions={[
+                                            {
+                                                icon: tableIcons.DetailsIcon,
+                                                tooltip: 'Detail Category',
+                                                onClick: (event, rowData) => handleDetail(rowData)
+                                            },
+                                            {
+                                                icon: tableIcons.Edit,
+                                                tooltip: 'Modify Category',
+                                                onClick: (event, rowData) => handleEdit(rowData)
+                                            },
+                                            {
+                                                icon: tableIcons.Delete,
+                                                tooltip: 'Delete Category',
+                                                onClick: (event, rowData) => handleDelete(rowData)
+                                            }
+                                        ]}
+                                        options={{
+                                            filtering: true
+                                        }}
+                                    />
+                                </div>
                             </div>
+                            <div className="card-footer text-muted">
+                                Footer
+          </div>
                         </div>
                     </div>
                 </div>
-                <Modal show={showModalDetail} onHide={handleCloseModalDetail}>
+            </div>
+            <Modal show={showModalDetail} onHide={handleCloseModalDetail}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Detail Course</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Form>
+                        <Row>
+                            <Col>
+                                <Form.Group >
+                                    <Form.Label>ID</Form.Label>
+                                    <Form.Control type="text" name="id" value={courseTable.id == null ? "" : courseTable.id} readOnly />
+                                </Form.Group>
+                                <Form.Group >
+                                    <Form.Label>Title</Form.Label>
+                                    <Form.Control type="text" name="title" value={courseTable.title == null ? "" : courseTable.title} readOnly />
+                                </Form.Group>
+                                <Form.Group >
+                                    <Form.Label>Description Short</Form.Label>
+                                    <Form.Control type="text" name="descriptionShort" value={courseTable.descriptionShort == null ? "" : courseTable.descriptionShort} readOnly />
+                                </Form.Group>
+                                <Form.Group >
+                                    <Form.Label>Description Long</Form.Label>
+                                    <Form.Control type="text" name="descriptionLong" value={courseTable.descriptionLong == null ? "" : courseTable.descriptionLong} readOnly />
+                                </Form.Group>
+                                <Form.Group >
+                                    <Form.Label>Thumbnail</Form.Label>
+                                    <Form.Control type="text" name="thumbnail" value={courseTable.thumbnail == null ? "" : courseTable.thumbnail} readOnly />
+                                </Form.Group>
+                                <Form.Group >
+                                    <Form.Label>Price</Form.Label>
+                                    <Form.Control type="text" name="price" value={courseTable.price == null ? "" : courseTable.price} readOnly />
+                                </Form.Group>
+                                <Form.Group >
+                                    <Form.Label>Sale</Form.Label>
+                                    <Form.Control type="text" name="sale" value={courseTable.sale == null ? "" : courseTable.sale} readOnly />
+                                </Form.Group>
+                                <Form.Group >
+                                    <Form.Label>Review Point</Form.Label>
+                                    <Form.Control type="text" name="reviewPoint" value={courseTable.reviewPoint == null ? "" : courseTable.reviewPoint} readOnly />
+                                </Form.Group>
+                                <Form.Group >
+                                    <Form.Label>Reviews</Form.Label>
+                                    <Form.Control type="text" name="reviews" value={courseTable.reviews == null ? "" : courseTable.reviews} readOnly />
+                                </Form.Group>
+                            </Col>
+                            <Col>
+                                <Form.Group >
+                                    <Form.Label>Participants</Form.Label>
+                                    <Form.Control type="text" name="participants" value={courseTable.participants == null ? "" : courseTable.participants} readOnly />
+                                </Form.Group>
+                                <Form.Group >
+                                    <Form.Label>Outline</Form.Label>
+                                    <Form.Control type="text" name="outline" value={courseTable.outline == null ? "" : courseTable.outline} readOnly />
+                                </Form.Group>
+                                <Form.Group >
+                                    <Form.Label>Teacher ID</Form.Label>
+                                    <Form.Control type="text" name="teacherId" value={courseTable.teacherId == null ? "" : courseTable.teacherId} readOnly />
+                                </Form.Group>
+                                <Form.Group >
+                                    <Form.Label>Category ID</Form.Label>
+                                    <Form.Control type="text" name="categoryId" value={courseTable.categoryId == null ? "" : courseTable.categoryId} readOnly />
+                                </Form.Group>
+                                <Form.Group >
+                                    <Form.Label>Category Title</Form.Label>
+                                    <Form.Control type="text" value={courseTable.category == null ? "" : courseTable.category} readOnly />
+                                </Form.Group>
+                                <Form.Group >
+                                    <Form.Label>Complete Status</Form.Label>
+                                    <Form.Control type="text" name="isCompleted" value={courseTable.isCompleted == null ? "" : courseTable.isCompleted === 1 ? "Yes" : "No"} readOnly />
+                                </Form.Group>
+                                <Form.Group >
+                                    <Form.Label>Created Date</Form.Label>
+                                    <Form.Control type="text" name="createdDate" value={courseTable.createdDate == null ? "" : courseTable.createdDate} readOnly />
+                                </Form.Group>
+                                <Form.Group >
+                                    <Form.Label>Modified Date</Form.Label>
+                                    <Form.Control type="text" name="modifiedDate" value={courseTable.modifiedDate == null ? "" : courseTable.modifiedDate} readOnly />
+                                </Form.Group>
+                            </Col>
+                        </Row>
+                    </Form>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleCloseModalDetail}>Close</Button>
+                </Modal.Footer>
+            </Modal>
+            <Modal show={showModalEdit} onHide={handleCloseModalEdit}>
+                <Form onSubmit={handleSubmit(onSubmitUpdate)}>
                     <Modal.Header closeButton>
-                        <Modal.Title>Detail Course</Modal.Title>
+                        <Modal.Title>Update Category</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <Form>
-                            <Row>
-                                <Col>
-                                    <Form.Group >
-                                        <Form.Label>ID</Form.Label>
-                                        <Form.Control type="text" name="id" value={courseTable.id == null ? "" : courseTable.id} readOnly />
-                                    </Form.Group>
-                                    <Form.Group >
-                                        <Form.Label>Title</Form.Label>
-                                        <Form.Control type="text" name="title" value={courseTable.title == null ? "" : courseTable.title} readOnly />
-                                    </Form.Group>
-                                    <Form.Group >
-                                        <Form.Label>Description Short</Form.Label>
-                                        <Form.Control type="text" name="descriptionShort" value={courseTable.descriptionShort == null ? "" : courseTable.descriptionShort} readOnly />
-                                    </Form.Group>
-                                    <Form.Group >
-                                        <Form.Label>Description Long</Form.Label>
-                                        <Form.Control type="text" name="descriptionLong" value={courseTable.descriptionLong == null ? "" : courseTable.descriptionLong} readOnly />
-                                    </Form.Group>
-                                    <Form.Group >
-                                        <Form.Label>Thumbnail</Form.Label>
-                                        <Form.Control type="text" name="thumbnail" value={courseTable.thumbnail == null ? "" : courseTable.thumbnail} readOnly />
-                                    </Form.Group>
-                                    <Form.Group >
-                                        <Form.Label>Price</Form.Label>
-                                        <Form.Control type="text" name="price" value={courseTable.price == null ? "" : courseTable.price} readOnly />
-                                    </Form.Group>
-                                    <Form.Group >
-                                        <Form.Label>Sale</Form.Label>
-                                        <Form.Control type="text" name="sale" value={courseTable.sale == null ? "" : courseTable.sale} readOnly />
-                                    </Form.Group>
-                                    <Form.Group >
-                                        <Form.Label>Review Point</Form.Label>
-                                        <Form.Control type="text" name="reviewPoint" value={courseTable.reviewPoint == null ? "" : courseTable.reviewPoint} readOnly />
-                                    </Form.Group>
-                                </Col>
-                                <Col>
-                                    <Form.Group >
-                                        <Form.Label>Reviews</Form.Label>
-                                        <Form.Control type="text" name="reviews" value={courseTable.reviews == null ? "" : courseTable.reviews} readOnly />
-                                    </Form.Group>
-                                    <Form.Group >
-                                        <Form.Label>Participants</Form.Label>
-                                        <Form.Control type="text" name="participants" value={courseTable.participants == null ? "" : courseTable.participants} readOnly />
-                                    </Form.Group>
-                                    <Form.Group >
-                                        <Form.Label>Outline</Form.Label>
-                                        <Form.Control type="text" name="outline" value={courseTable.outline == null ? "" : courseTable.outline} readOnly />
-                                    </Form.Group>
-                                    <Form.Group >
-                                        <Form.Label>Teacher ID</Form.Label>
-                                        <Form.Control type="text" name="teacherId" value={courseTable.teacherId == null ? "" : courseTable.teacherId} readOnly />
-                                    </Form.Group>
-                                    <Form.Group >
-                                        <Form.Label>Category ID</Form.Label>
-                                        <Form.Control type="text" name="categoryId" value={courseTable.categoryId == null ? "" : courseTable.categoryId} readOnly />
-                                    </Form.Group>
-                                    <Form.Group >
-                                        <Form.Label>Complete Status</Form.Label>
-                                        <Form.Control type="text" name="isCompleted" value={courseTable.isCompleted == null ? "" : courseTable.isCompleted === 1 ? "Yes" : "No"} readOnly />
-                                    </Form.Group>
-                                    <Form.Group >
-                                        <Form.Label>Created Date</Form.Label>
-                                        <Form.Control type="text" name="createdDate" value={courseTable.createdDate == null ? "" : courseTable.createdDate} readOnly />
-                                    </Form.Group>
-                                    <Form.Group >
-                                        <Form.Label>Modified Date</Form.Label>
-                                        <Form.Control type="text" name="modifiedDate" value={courseTable.modifiedDate == null ? "" : courseTable.modifiedDate} readOnly />
-                                    </Form.Group>
-                                </Col>
-                            </Row>
-                        </Form>
+                        <Row>
+                            <Col>
+                                <Form.Group >
+                                    <Form.Label>ID</Form.Label>
+                                    <Form.Control type="text" name="id" defaultValue={courseTable.id == null ? "" : courseTable.id} ref={register({ required: false })} readOnly />
+                                </Form.Group>
+                                <Form.Group >
+                                    <Form.Label>Title</Form.Label>
+                                    <Form.Control type="text" name="title" defaultValue={courseTable.title == null ? "" : courseTable.title} ref={register({ required: false })} />
+                                </Form.Group>
+                                <Form.Group >
+                                    <Form.Label>Description Short</Form.Label>
+                                    <Form.Control type="text" name="descriptionShort" defaultValue={courseTable.descriptionShort == null ? "" : courseTable.descriptionShort} ref={register({ required: TrendingUpRounded })} />
+                                </Form.Group>
+                                <Form.Group >
+                                    <Form.Label>Description Long</Form.Label>
+                                    <Form.Control type="text" name="descriptionLong" defaultValue={courseTable.descriptionLong == null ? "" : courseTable.descriptionLong} ref={register({ required: true })} />
+                                </Form.Group>
+                                <Form.Group >
+                                    <Form.Label>Thumbnail</Form.Label>
+                                    <Form.Control type="text" name="thumbnail" defaultValue={courseTable.thumbnail == null ? "" : courseTable.thumbnail} ref={register({ required: false })} />
+                                </Form.Group>
+                            </Col>
+                            <Col>
+                                <Form.Group >
+                                    <Form.Label>Price</Form.Label>
+                                    <Form.Control type="text" name="price" defaultValue={courseTable.price == null ? "" : courseTable.price} ref={register({ required: false })} />
+                                </Form.Group>
+                                <Form.Group >
+                                    <Form.Label>Sale</Form.Label>
+                                    <Form.Control type="text" name="sale" defaultValue={courseTable.sale == null ? "" : courseTable.sale} ref={register({ required: false })} />
+                                </Form.Group>
+                                <Form.Group >
+                                    <Form.Label>Teacher ID</Form.Label>
+                                    <Form.Control type="text" name="teacherId" defaultValue={courseTable.teacherId == null ? "" : courseTable.teacherId} ref={register({ required: false })} />
+                                </Form.Group>
+                                <Form.Group >
+                                    <Form.Label>Category Title</Form.Label>
+                                    <Form.Control as="select" name="categoryId" defaultValue={courseTable.categoryId == null ? "" : courseTable.categoryId} ref={register({ required: false })} >
+                                        {
+                                            store.categories?store.categories.map(item => 
+                                                <option value={item.id}>{item.title}</option>
+                                            ):""
+                                        }
+                                    </Form.Control>
+                                </Form.Group>
+                            </Col>
+                        </Row>
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button variant="secondary" onClick={handleCloseModalDetail}>Close</Button>
+                        <Button variant="primary" type="submit">Update</Button>
+                        <Button variant="secondary" onClick={handleCloseModalEdit}>Close</Button>
                     </Modal.Footer>
-                </Modal>
-                <Modal show={showModalEdit} onHide={handleCloseModalEdit}>
-                    <Form onSubmit={handleSubmit(onSubmitUpdate)}>
-                        <Modal.Header closeButton>
-                            <Modal.Title>Update Category</Modal.Title>
-                        </Modal.Header>
-                        <Modal.Body>
-                            <Row>
-                                <Col>
-                                    <Form.Group >
-                                        <Form.Label>ID</Form.Label>
-                                        <Form.Control type="text" name="id" defaultValue={courseTable.id == null ? "" : courseTable.id} ref={register({ required: false })} readOnly />
-                                    </Form.Group>
-                                    <Form.Group >
-                                        <Form.Label>Title</Form.Label>
-                                        <Form.Control type="text" name="title" defaultValue={courseTable.title == null ? "" : courseTable.title} ref={register({ required: false })} />
-                                    </Form.Group>
-                                    <Form.Group >
-                                        <Form.Label>Description Short</Form.Label>
-                                        <Form.Control type="text" name="descriptionShort" defaultValue={courseTable.descriptionShort == null ? "" : courseTable.descriptionShort} ref={register({ required: TrendingUpRounded })} />
-                                    </Form.Group>
-                                    <Form.Group >
-                                        <Form.Label>Description Long</Form.Label>
-                                        <Form.Control type="text" name="descriptionLong" defaultValue={courseTable.descriptionLong == null ? "" : courseTable.descriptionLong} ref={register({ required: true })} />
-                                    </Form.Group>
-                                    <Form.Group >
-                                        <Form.Label>Thumbnail</Form.Label>
-                                        <Form.Control type="text" name="thumbnail" defaultValue={courseTable.thumbnail == null ? "" : courseTable.thumbnail} ref={register({ required: false })} />
-                                    </Form.Group>
-                                </Col>
-                                <Col>
-                                    <Form.Group >
-                                        <Form.Label>Price</Form.Label>
-                                        <Form.Control type="text" name="price" defaultValue={courseTable.price == null ? "" : courseTable.price} ref={register({ required: false })} />
-                                    </Form.Group>
-                                    <Form.Group >
-                                        <Form.Label>Sale</Form.Label>
-                                        <Form.Control type="text" name="sale" defaultValue={courseTable.sale == null ? "" : courseTable.sale} ref={register({ required: false })} />
-                                    </Form.Group>
-                                    <Form.Group >
-                                        <Form.Label>Teacher ID</Form.Label>
-                                        <Form.Control type="text" name="teacherId" defaultValue={courseTable.teacherId == null ? "" : courseTable.teacherId} ref={register({ required: false })} />
-                                    </Form.Group>
-                                    <Form.Group >
-                                        <Form.Label>Category ID</Form.Label>
-                                        <Form.Control type="text" name="categoryId" defaultValue={courseTable.categoryId == null ? "" : courseTable.categoryId} ref={register({ required: false })} />
-                                    </Form.Group>
-                                </Col>
-                            </Row>
-                        </Modal.Body>
-                        <Modal.Footer>
-                            <Button variant="primary" type="submit">Update</Button>
-                            <Button variant="secondary" onClick={handleCloseModalEdit}>Close</Button>
-                        </Modal.Footer>
-                    </Form>
-                </Modal>
-                <Modal show={showModalDelete} onHide={handleCloseModalDelete}>
-                    <Form onSubmit={handleSubmit(onSubmitDelete)}>
-                        <Modal.Header closeButton>
-                            <Modal.Title>Delete Category</Modal.Title>
-                        </Modal.Header>
-                        <Modal.Body>
-                            <Form.Group >
-                                <Form.Label>ID</Form.Label>
-                                <Form.Control type="text" name="id" defaultValue={courseTable.id == null ? "" : courseTable.id} ref={register({ required: false })} readOnly />
-                            </Form.Group>
-                            <Form.Group >
-                                <Form.Label>Title</Form.Label>
-                                <Form.Control type="text" name="title" value={courseTable.title == null ? "" : courseTable.title} ref={register({ required: false })} readOnly />
-                            </Form.Group>
-                        </Modal.Body>
-                        <Modal.Footer>
-                            <Button variant="danger" type="submit">Delete</Button>
-                            <Button variant="secondary" onClick={handleCloseModalDelete}>Close</Button>
-                        </Modal.Footer>
-                    </Form>
-                </Modal>
-                <Modal show={showModalNew} onHide={handleCloseModalNew}>
-                    <Form onSubmit={handleSubmit(onSubmitNew)}>
-                        <Modal.Header closeButton>
-                            <Modal.Title>New Course</Modal.Title>
-                        </Modal.Header>
-                        <Modal.Body>
-                            <Row>
-                                <Col>
-                                    <Form.Group >
-                                        <Form.Label>Title</Form.Label>
-                                        <Form.Control type="text" name="title" ref={register({ required: false })} />
-                                    </Form.Group>
-                                    <Form.Group >
-                                        <Form.Label>Description Short</Form.Label>
-                                        <Form.Control type="text" name="descriptionShort" ref={register({ required: false })} />
-                                    </Form.Group>
-                                    <Form.Group >
-                                        <Form.Label>Description Long</Form.Label>
-                                        <Form.Control type="text" name="descriptionLong" ref={register({ required: false })} />
-                                    </Form.Group>
-                                    <Form.Group >
-                                        <Form.Label>Thumbnail</Form.Label>
-                                        <Form.Control type="text" name="thumbnail" ref={register({ required: false })} />
-                                    </Form.Group>
-                                    <Form.Group >
-                                        <Form.Label>Price</Form.Label>
-                                        <Form.Control type="text" name="price" ref={register({ required: false })} />
-                                    </Form.Group>
-                                </Col>
-                                <Col>
-                                    <Form.Group >
-                                        <Form.Label>Sale</Form.Label>
-                                        <Form.Control type="text" name="sale" ref={register({ required: false })} />
-                                    </Form.Group>
-                                    <Form.Group >
-                                        <Form.Label>Outline</Form.Label>
-                                        <Form.Control type="text" name="outline" ref={register({ required: false })} />
-                                    </Form.Group>
-                                    <Form.Group >
-                                        <Form.Label>Teacher ID</Form.Label>
-                                        <Form.Control type="text" name="teacherId" ref={register({ required: false })} />
-                                    </Form.Group>
-                                    <Form.Group >
-                                        <Form.Label>Category ID</Form.Label>
-                                        <Form.Control type="text" name="categoryId" ref={register({ required: false })} />
-                                    </Form.Group>
-                                </Col>
-                            </Row>
-                        </Modal.Body>
-                        <Modal.Footer>
-                            <Button variant="success" type="submit">Create</Button>
-                            <Button variant="secondary" onClick={handleCloseModalNew}>Close</Button>
-                        </Modal.Footer>
-                    </Form>
-                </Modal>
-            </AppContext.Provider>
+                </Form>
+            </Modal>
+            <Modal show={showModalDelete} onHide={handleCloseModalDelete}>
+                <Form onSubmit={handleSubmit(onSubmitDelete)}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Delete Category</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <Form.Group >
+                            <Form.Label>ID</Form.Label>
+                            <Form.Control type="text" name="id" defaultValue={courseTable.id == null ? "" : courseTable.id} ref={register({ required: false })} readOnly />
+                        </Form.Group>
+                        <Form.Group >
+                            <Form.Label>Title</Form.Label>
+                            <Form.Control type="text" name="title" value={courseTable.title == null ? "" : courseTable.title} ref={register({ required: false })} readOnly />
+                        </Form.Group>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="danger" type="submit">Delete</Button>
+                        <Button variant="secondary" onClick={handleCloseModalDelete}>Close</Button>
+                    </Modal.Footer>
+                </Form>
+            </Modal>
+            <Modal show={showModalNew} onHide={handleCloseModalNew}>
+                <Form onSubmit={handleSubmit(onSubmitNew)}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>New Course</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <Row>
+                            <Col>
+                                <Form.Group >
+                                    <Form.Label>Title</Form.Label>
+                                    <Form.Control type="text" name="title" ref={register({ required: false })} />
+                                </Form.Group>
+                                <Form.Group >
+                                    <Form.Label>Description Short</Form.Label>
+                                    <Form.Control type="text" name="descriptionShort" ref={register({ required: false })} />
+                                </Form.Group>
+                                <Form.Group >
+                                    <Form.Label>Description Long</Form.Label>
+                                    <Form.Control type="text" name="descriptionLong" ref={register({ required: false })} />
+                                </Form.Group>
+                                <Form.Group >
+                                    <Form.Label>Thumbnail</Form.Label>
+                                    <Form.Control type="text" name="thumbnail" ref={register({ required: false })} />
+                                </Form.Group>
+                                <Form.Group >
+                                    <Form.Label>Price</Form.Label>
+                                    <Form.Control type="text" name="price" ref={register({ required: false })} />
+                                </Form.Group>
+                            </Col>
+                            <Col>
+                                <Form.Group >
+                                    <Form.Label>Sale</Form.Label>
+                                    <Form.Control type="text" name="sale" ref={register({ required: false })} />
+                                </Form.Group>
+                                <Form.Group >
+                                    <Form.Label>Outline</Form.Label>
+                                    <Form.Control type="text" name="outline" ref={register({ required: false })} />
+                                </Form.Group>
+                                <Form.Group >
+                                    <Form.Label>Teacher ID</Form.Label>
+                                    <Form.Control type="text" name="teacherId" ref={register({ required: false })} />
+                                </Form.Group>
+                                <Form.Group >
+                                    <Form.Label>Category ID</Form.Label>
+                                    <Form.Control type="text" name="categoryId" ref={register({ required: false })} />
+                                </Form.Group>
+                            </Col>
+                        </Row>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="success" type="submit">Create</Button>
+                        <Button variant="secondary" onClick={handleCloseModalNew}>Close</Button>
+                    </Modal.Footer>
+                </Form>
+            </Modal>
+            {/* </AppContext.Provider> */}
         </div>
     );
 }

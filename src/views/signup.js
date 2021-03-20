@@ -39,13 +39,20 @@ export default function Signup(props) {
                     else {
                         alert('Invalid login.');
                     }
-                } else if (res.status === 400) {
-                    alert(res.message);
                 } else {
                     alert('Invalid login.');
                 }
             } catch (err) {
-                console.log(err.response.data);
+                if(err.response.status === 400) {
+                    swal({
+                        title: "Signup failed",
+                        text: "Email already exists, please choose another email!",
+                        icon: "error",
+                        button: "OK",                    
+                    })
+                } else {
+                    
+                }
             }
         }
     }

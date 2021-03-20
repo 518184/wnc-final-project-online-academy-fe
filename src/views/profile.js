@@ -19,8 +19,7 @@ export default function Profile(props) {
     const history = useHistory();
     const location = useLocation();
     const { from } = location.state || { from: { pathname: '/' } };
-    const [account, setAccount] = useState();
-    const [payment, setPayment] = useState();
+    const [isActive, setIsActive] = useState();
     const [disablePassword, setDisablePassword] = useState(true);
     const [changeForm, setChangeForm] = useState(false);
     const watchListCourse = [];
@@ -28,22 +27,28 @@ export default function Profile(props) {
 
     useEffect(function () {
         async function loadDataUser() {
-            const res = await axiosInstance.get('/users/' + localStorage.account_userID, { headers: { 'x-access-token': localStorage.account_accessToken } });
-            if (res.status === 200) {
-                res.data.watchlistJS = res.data.watchlist ? JSON.parse(res.data.watchlist).course : [];
-                dispatch({
-                    type: 'setAccount',
-                    payload: {
-                        account: res.data,
-                        query: '',
-                    }
-                });
+            try{
+                const res = await axiosInstance.get('/users/' + localStorage.account_userID, { headers: { 'x-access-token': localStorage.account_accessToken } });
+                if (res.status === 200) {
+                    delete res.data.password;
+                    res.data.watchlistJS = res.data.watchlist ? JSON.parse(res.data.watchlist).course : [];
+                    dispatch({
+                        type: 'setAccount',
+                        payload: {
+                            account: res.data,
+                            query: '',
+                        }
+                    });
+                }
+            } catch (err) {
+                if (err.response.status === 403) {
+                    setIsActive(true);
+                }
             }
         }
         async function loadDataPayment() {
             const res = await axiosInstance.get('/transaction/user/' + localStorage.account_userID, { headers: { 'x-access-token': localStorage.account_accessToken } });
             if (res.status === 200) {
-
                 dispatch({
                     type: 'setPayment',
                     payload: {
@@ -159,7 +164,7 @@ export default function Profile(props) {
 
     const logout = function () {
         localStorage.clear();
-        history.push('/home');
+        history.push('/login');
         window.location.reload();
     }
 
@@ -176,7 +181,6 @@ export default function Profile(props) {
                         button: "OK",
                     }).then((value) => {
                         if (value) {
-                            console.log("hihi");
                             logout();
                         }
                     });
@@ -209,7 +213,7 @@ export default function Profile(props) {
             <Row>
                 <Col>
                     {
-                        !store.account ?
+                        isActive ?
                             <Card>
                                 <Card.Header>
                                     <Card.Title as="h3"><center>Active Account</center></Card.Title>

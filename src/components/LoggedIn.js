@@ -15,7 +15,7 @@ export default function LoggedIn() {
     if (localStorage.account_email) {
         return (
             <React.Fragment>
-                <Link to="/profile" style={{ textDecoration: 'none' }}><div className="login button"><PersonIcon className="icon" /><p>{localStorage.account_email}</p></div></Link>
+                <Link style={{ textDecoration: 'none' }}><div className="login button"><PersonIcon className="icon" /><p>{localStorage.account_email}</p></div></Link>
                 <Link to="/" style={{ textDecoration: 'none' }}><div className="signup button" onClick={logout}><ExitToAppIcon className="icon" /><p>Sign Out</p></div></Link>
             </React.Fragment>);
     }

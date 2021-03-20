@@ -25,7 +25,7 @@ export default function TopRegister() {
             <center><h1>Top Register</h1></center>
             <Carousel>
                 {courseRef.map(i =>
-                    <Carousel.Item>
+                    <Carousel.Item key={i.id}>
                         <Course course={i} />
                     </Carousel.Item>
                 )}

@@ -1,9 +1,8 @@
-import React, { useState, useEffect, useReducer, forwardRef } from 'react'
+import React, { useState, forwardRef, useContext } from 'react'
 import { axiosInstance } from '../../../../utils';
 import { useForm } from 'react-hook-form';
 import { Modal, Button, Form, Col, Row, ToggleButton, ButtonGroup } from 'react-bootstrap';
-import reducer from '../../userReducer';
-import AppContext from '../../userContext';
+import ApppContext from '../../adminContext';
 import swal from 'sweetalert';
 
 import MaterialTable from 'material-table';
@@ -46,28 +45,29 @@ export default function User(props) {
 	const handleShowModelNew = () => setShowModalNew(true);
 	const handleCloseModalNew = () => setShowModalNew(false);
 	const [radioValue, setRadioValue] = useState('1');
-	const initialUserData = { query: '', items: [] }
-	const [store, dispatch] = useReducer(reducer, initialUserData);
+	// const initialUserData = { query: '', items: [] }
+	// const [store, dispatch] = useReducer(reducer, initialUserData);
+	const {store, dispatch} = useContext(ApppContext);
 	const defaulteUser = { id: null, email: null, fullname: null }
 
-	useEffect(function () {
-		async function loadDataUser() {
-			const res = await axiosInstance.get('/users', { headers: { 'x-access-token': localStorage.account_accessToken } });
-			if (res.status === 200) {
-				res.data.map(item => {
-					return item.type===1?item.typeName="Student":item.type===2?item.typeName="Teacher":item.type===3?item.typeName="Admin":""; 
-				});
-				dispatch({
-					type: 'init',
-					payload: {
-						items: res.data,
-						query: ''
-					}
-				});
-			}
-		}
-		loadDataUser();
-	}, []);
+	// useEffect(function () {
+	// 	async function loadDataUser() {
+	// 		const res = await axiosInstance.get('/users', { headers: { 'x-access-token': localStorage.account_accessToken } });
+	// 		if (res.status === 200) {
+	// 			res.data.map(item => {
+	// 				return item.type===1?item.typeName="Student":item.type===2?item.typeName="Teacher":item.type===3?item.typeName="Admin":""; 
+	// 			});
+	// 			dispatch({
+	// 				type: 'initUser',
+	// 				payload: {
+	// 					items: res.data,
+	// 					query: ''
+	// 				}
+	// 			});
+	// 		}
+	// 	}
+	// 	loadDataUser();
+	// }, []);
 	const radios = [
 		{ name: 'Show all account', value: '1' },
 		{ name: 'Show only teacher account', value: '2' },
@@ -107,7 +107,7 @@ export default function User(props) {
 				return item.type===1?item.typeName="Student":item.type===2?item.typeName="Teacher":item.type===3?item.typeName="Admin":""; 
 			});
 			dispatch({
-				type: 'init',
+				type: 'initUser',
 				payload: {
 					items: res.data,
 					query: ''
@@ -122,7 +122,7 @@ export default function User(props) {
 				return item.type===1?item.typeName="Student":item.type===2?item.typeName="Teacher":item.type===3?item.typeName="Admin":""; 
 			});
 			dispatch({
-				type: 'init',
+				type: 'initUser',
 				payload: {
 					items: res.data,
 					query: ''
@@ -137,7 +137,7 @@ export default function User(props) {
 				return item.type===1?item.typeName="Student":item.type===2?item.typeName="Teacher":item.type===3?item.typeName="Admin":""; 
 			});
 			dispatch({
-				type: 'init',
+				type: 'initUser',
 				payload: {
 					items: res.data,
 					query: ''
@@ -169,7 +169,7 @@ export default function User(props) {
 		// if (res.status === 200) {
 		// 	setUserTable(res.data);
 		// }
-		setUserTable((store.items.filter(item => item.id===id))[0]);
+		setUserTable((store.users.filter(item => item.id===id))[0]);
 		handleShowModelDetail();
 	}
 
@@ -180,7 +180,7 @@ export default function User(props) {
 		// if (res.status === 200) {
 		// 	setUserTable(res.data);
 		// }
-		setUserTable((store.items.filter(item => item.id===id))[0]);
+		setUserTable((store.users.filter(item => item.id===id))[0]);
 		handleShowModelEdit();
 	}
 
@@ -191,7 +191,7 @@ export default function User(props) {
 		// if (res.status === 200) {
 		// 	setUserTable(res.data);
 		// }
-		setUserTable((store.items.filter(item => item.id===id))[0]);
+		setUserTable((store.users.filter(item => item.id===id))[0]);
 		handleShowModelDelete();
 	}
 
@@ -304,12 +304,18 @@ export default function User(props) {
 			}
 		} catch (err) {
 			console.log(err.response.data);
+			swal({
+				title: "Failed",
+				text: err.response.data.message,
+				icon: "danger",
+				button: "OK"
+			});
 		}
 	}
 
 	return (
 		<div>
-			<AppContext.Provider value={{ store, dispatch }}>
+			{/* <AppContext.Provider value={{ store, dispatch }}> */}
 				<div className="container mt-3">
 					<div className="row mt-3">
 						<div className="col-sm-12">
@@ -342,7 +348,7 @@ export default function User(props) {
 									</div>
 									<br></br>
 									<div style={{ maxWidth: '100%' }}>
-										<MaterialTable columns={columns} data={store.items} icons={tableIcons} title={null}
+										<MaterialTable columns={columns} data={store.users} icons={tableIcons} title={null}
 											actions={[
 												{
 													icon: tableIcons.DetailsIcon,
@@ -561,7 +567,7 @@ export default function User(props) {
 						</Modal.Footer>
 					</Form>
 				</Modal>
-			</AppContext.Provider>
+			{/* </AppContext.Provider> */}
 		</div>
 	);
 }

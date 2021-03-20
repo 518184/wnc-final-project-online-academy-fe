@@ -1,44 +1,24 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useForm } from 'react-hook-form';
-import { Card, Row, Col, Button, Modal, Carousel, Form, Alert } from 'react-bootstrap';
+import { Card, Row, Col, Button, Modal, Carousel, Form } from 'react-bootstrap';
 import academyApppContext from '../../onlineAcademyAppContext';
 import { axiosInstance, parseJwt } from '../../utils';
 import swal from 'sweetalert';
 import '../homeContent/Course.css';
-import { FaHeart, FaRegHeart } from "react-icons/fa";
 
 export default function Course({ course }) {
   const { store, dispatch } = useContext(academyApppContext);
   const categoryTitle = store.categories ? store.categories.filter(category => category.id === course.categoryId)[0] : [];
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit, watch, errors } = useForm();
   const [show, setShow] = useState(false);
   const [disableButton, setDisableButton] = useState(false);
-  const [like, setLike] = useState(false);
-  const [alertActive, setAlertActive] = useState(false);
+
 
 
   const addWhiteList = async function () {
     try {
       const res = await axiosInstance.post('/users/watchlist/' + course.id, {}, { headers: { 'x-access-token': localStorage.account_accessToken } });
-    } catch (err) {
-      if (err.response.status === 403) {
-        swal({
-          title: "Your account has not been activated",
-          text: "Please activate your account with otp before using this feature!",
-          icon: "error",
-          button: "OK",
-        })
-        setLike(false);
-      } else {
-        console.log(err.response.data);
-      }
-    }
-  }
-
-  const delWhiteList = async function () {
-    try {
-      const res = await axiosInstance.delete('/users/delete/watchlist/' + course.id, { headers: { 'x-access-token': localStorage.account_accessToken } });
     } catch (err) {
       console.log(err.response.data);
     }
@@ -46,23 +26,15 @@ export default function Course({ course }) {
   const handleClose = () => setShow(false);
   const handleShow = async () => {
     setShow(true);
+    addWhiteList();
     if (localStorage.account_accessToken) {
-      try {
-        const res = await axiosInstance.get('/transaction/user/' + localStorage.account_userID, { headers: { 'x-access-token': localStorage.account_accessToken } });
-        if (res.status === 200) {
-          for (var i of res.data) {
-            if (i.courseId === course.id) {
-              setDisableButton(true);
-              break;
-            }
+      const res = await axiosInstance.get('/transaction/user/' + localStorage.account_userID, { headers: { 'x-access-token': localStorage.account_accessToken } });
+      if (res.status === 200) {
+        for (var i of res.data) {
+          if (i.courseId === course.id) {
+            setDisableButton(true);
+            break;
           }
-          store.accountInfo ? JSON.parse(store.accountInfo.watchlist).course.includes(course.id) ? setLike(true) : setLike(false) : setLike(false);
-        }
-      } catch (err) {
-        if (err.response.status === 403) {
-          setAlertActive(true);
-        } else {
-          console.log(err);
         }
       }
     }
@@ -70,7 +42,7 @@ export default function Course({ course }) {
   const sortList = store.courses ? store.courses.filter(i => i.categoryId === course.categoryId).sort((a, b) => a.participants < b.participants ? 1 : -1) : [];
   const courseRef = [];
   for (var i = 0; i < sortList.length; i++) {
-    if (sortList[i].id !== course.id) {
+    if (sortList[i].id != course.id) {
       if (courseRef.length > 5) {
         break;
       }
@@ -78,46 +50,32 @@ export default function Course({ course }) {
     }
   }
   const feedbackList = store.feedback ? store.feedback.filter(i => i.courseId === course.id) : [];
+
   const addCourse = async function (courseId) {
     if (localStorage.account_accessToken) {
       let data = {}
       data.courseId = courseId;
-      try {
-        const res = await axiosInstance.post('/transaction', data, { headers: { 'x-access-token': localStorage.account_accessToken } });
-        if (res.status === 201) {
-          try {
-            const res2 = await axiosInstance.put('/transaction/' + res.data.id + '/payment', data, { headers: { 'x-access-token': localStorage.account_accessToken } });
-            if (res2.status === 200) {
-              swal({
-                title: "Purchase is successful!",
-                icon: "success",
-                button: "OK"
-              });
-              setDisableButton(true);
-              const res1 = await axiosInstance.get("/courses");
-              if (res1.status === 200) {
-                dispatch({
-                  type: 'reloadCourses',
-                  payload: {
-                    courses: res1.data,
-                  }
-                });
-              }
-            }
-          } catch (err) {
-            console.log(err.response.data)
-          }
-        }
-      } catch (err) {
-        if (err.response.status === 403) {
+      const res = await axiosInstance.post('/transaction', data, { headers: { 'x-access-token': localStorage.account_accessToken } });
+      if (res.status === 201) {
+        const res2 = await axiosInstance.put('/transaction/' + res.data.id + '/payment', data, { headers: { 'x-access-token': localStorage.account_accessToken } });
+        console.log(res);
+        console.log(res2);
+        if (res2.status === 200) {
           swal({
-            title: "Your account has not been activated",
-            text: "Please activate your account with otp before using this feature!",
-            icon: "error",
-            button: "OK",
-          })
-        } else {
-          console.log(err.response.data);
+            title: "Purchase is successful!",
+            icon: "success",
+            button: "OK"
+          });
+          setDisableButton(true);
+          const res1 = await axiosInstance.get("/courses");
+          if (res1.status === 200) {
+            dispatch({
+              type: 'reloadCourses',
+              payload: {
+                courses: res1.data,
+              }
+            });
+          }
         }
       }
     } else {
@@ -138,40 +96,36 @@ export default function Course({ course }) {
         "point": parseInt(data.point),
         "content": data.content
       }
-      try{
       const addFeedback = await axiosInstance.post('/feedbacks', dataToPost, { headers: { 'x-access-token': localStorage.account_accessToken } });
-        if (addFeedback.status === 201) {
-          swal({
-            title: "Feedback is successful!",
-            text: "Your comment will be posted later",
-            icon: "success",
-            button: "OK"
+      if (addFeedback.status === 201) {
+        swal({
+          title: "Feedback is successful!",
+          text: "Your comment will be posted later",
+          icon: "success",
+          button: "OK"
+        });
+        const res = await axiosInstance.get('/feedbacks');
+
+        if (res.status === 200) {
+          dispatch({
+            type: 'getFeedback',
+            payload: {
+              feedback: res.data,
+            }
           });
-          const res = await axiosInstance.get('/feedbacks');
-
-          if (res.status === 200) {
-            dispatch({
-              type: 'getFeedback',
-              payload: {
-                feedback: res.data,
-              }
-            });
-            console.log(store.feedback);
-            loadContent();
-          }
-          const res1 = await axiosInstance.get("/courses");
-          if (res1.status === 200) {
-            dispatch({
-              type: 'reloadCourses',
-              payload: {
-                courses: res1.data,
-              }
-            });
-          }
-
+          console.log(store.feedback);
+          loadContent();
         }
-      } catch(err) {
-        console.log(err);
+        const res1 = await axiosInstance.get("/courses");
+        if (res1.status === 200) {
+          dispatch({
+            type: 'reloadCourses',
+            payload: {
+              courses: res1.data,
+            }
+          });
+        }
+
       }
     } else {
       swal({
@@ -182,54 +136,9 @@ export default function Course({ course }) {
     }
   }
 
-  // const watchList = localStorage.account_accessToken ? store.teacher ? store.teacher.filter(i => i.id === +localStorage.account_userID)
-
   function loadContent() {
     return feedbackList.map(i =>
-      store.teacher ? store.teacher.filter(j => j.id === i.userId).map(k => <Card.Text key={k.id}><b><i>{k.fullname} </i></b> : {i.content}</Card.Text>) : <Card.Text></Card.Text>)
-  }
-
-  // if(store.accountInfo){
-  //   console.log(store.accountInfo.watchlist)
-  // }
-  function getFavourist() {
-    if (store.accountInfo) {
-      if (store.accountInfo.watchlist) {
-        const watchListTemp = JSON.parse(store.accountInfo.watchlist).course;
-        for (var i of watchListTemp) {
-          if (i === course.id) {
-            setLike(true);
-            return;
-          }
-        }
-      }
-    }
-  }
-  //getFavourist();
-  Date.prototype.getWeekNumber = function () {
-    var d = new Date(Date.UTC(this.getFullYear(), this.getMonth(), this.getDate()));
-    var dayNum = d.getUTCDay() || 7;
-    d.setUTCDate(d.getUTCDate() + 4 - dayNum);
-    var yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
-    return Math.ceil((((d - yearStart) / 86400000) + 1) / 7)
-  };
-  var hotCourses = [];
-
-  if (store.courses != null) {
-    let currWeek = new Date().getWeekNumber();
-    const sortList = [].concat(store.courses.filter(it => (currWeek - new Date(it.createdDate).getWeekNumber() === 1) && (it.participants !== 0) && (it.reviewPoint >= 7)));
-    const sortList2 = sortList ? sortList.sort((a, b) => a.participants < b.participants ? 1 : -1) : [];
-    hotCourses = sortList2.splice(0, 3);
-  }
-
-  const likeClicked = function () {
-    if (like) {
-      delWhiteList();
-      setLike(false);
-    } else {
-      addWhiteList();
-      setLike(true);
-    }
+      store.teacher ? store.teacher.filter(j => j.id === i.userId).map(k => <Card.Text><b><i>{k.fullname} </i></b> : {i.content}</Card.Text>) : <Card.Text></Card.Text>)
   }
 
   return (
@@ -237,16 +146,16 @@ export default function Course({ course }) {
       {(() => {
         if (course.sale) {
           return (
-            <Card style={{ boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)' }}>
+            <Card>
               <img src={require('../../img/java.jpg').default} />
-              <Card.Body style={{ height: 350 }}>
-                <img src={require('../../img/icon/sale.png').default} style={{ width: 150, zIndex: 1, position: 'absolute', right: 2, top: '50%' }} />
+              <Card.Body>
+                <img src={require('../../img/icon/sale.png').default} style={{ width: 150, zIndex: 2, position: 'absolute', right: 2, top: '50%' }} />
                 <Card.Title as="h4" className="my-2"><center>{course.title}</center></Card.Title>
                 <hr></hr>
                 <Card.Text>Category: {categoryTitle ? categoryTitle.title ? categoryTitle.title : "" : ""}</Card.Text>
                 {
                   store.teacher ? store.teacher.filter(i => i.id === course.teacherId).map(j =>
-                    <Card.Text key={j.id}>Teacher: {j.fullname}</Card.Text>
+                    <Card.Text>Teacher: {j.fullname}</Card.Text>
                   ) : <Card.Text></Card.Text>
                 }
 
@@ -256,58 +165,23 @@ export default function Course({ course }) {
                 <Card.Text>Sale: {course.sale}</Card.Text>
                 <Card.Text>{course.descriptionShort}</Card.Text>
                 <br></br>
-              </Card.Body>
-              <Card.Footer style={{ borderTop: 'none' }}>
                 <center>
                   <Button variant="primary" size="lg" onClick={handleShow}>Detail</Button>
                 </center>
-              </Card.Footer>
+              </Card.Body>
             </Card>
           )
         } else {
-          if (hotCourses) {
-            for (var i of hotCourses) {
-              if (i.id === course.id) {
-                return (
-                  <Card style={{ boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)' }}>
-                    <Card.Img src={require('../../img/icon/hot.png').default} style={{ width: 70, zIndex: 1, position: 'absolute', right: 0 }}></Card.Img>
-                    <img src={require('../../img/java.jpg').default} />
-                    <Card.Body style={{ height: 350 }}>
-                      <Card.Title as="h4" className="my-2"><center>{course.title}</center></Card.Title>
-                      <hr></hr>
-                      <Card.Text>Category: {categoryTitle ? categoryTitle.title ? categoryTitle.title : "" : ""}</Card.Text>
-                      {
-                        store.teacher ? store.teacher.filter(i => i.id === course.teacherId).map(j =>
-                          <Card.Text key={j.id}>Teacher: {j.fullname}</Card.Text>
-                        ) : <Card.Text></Card.Text>
-                      }
-                      <Card.Text>Review Point: {course.reviewPoint}</Card.Text>
-                      <Card.Text>Reviews: {course.reviews}</Card.Text>
-
-                      <Card.Text>Price: {course.price}</Card.Text>
-                      <Card.Text>{course.descriptionShort}</Card.Text>
-                      <br></br>
-                    </Card.Body>
-                    <Card.Footer style={{ borderTop: 'none' }}>
-                      <center>
-                        <Button variant="primary" size="lg" onClick={handleShow}>Detail</Button>
-                      </center>
-                    </Card.Footer>
-                  </Card>
-                )
-              }
-            }
-          }
           return (
-            <Card style={{ boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)' }}>
+            <Card>
               <img src={require('../../img/java.jpg').default} />
-              <Card.Body style={{ height: 350 }}>
+              <Card.Body>
                 <Card.Title as="h4" className="my-2"><center>{course.title}</center></Card.Title>
                 <hr></hr>
                 <Card.Text>Category: {categoryTitle ? categoryTitle.title ? categoryTitle.title : "" : ""}</Card.Text>
                 {
                   store.teacher ? store.teacher.filter(i => i.id === course.teacherId).map(j =>
-                    <Card.Text key={j.id}>Teacher: {j.fullname}</Card.Text>
+                    <Card.Text>Teacher: {j.fullname}</Card.Text>
                   ) : <Card.Text></Card.Text>
                 }
                 <Card.Text>Review Point: {course.reviewPoint}</Card.Text>
@@ -316,12 +190,10 @@ export default function Course({ course }) {
                 <Card.Text>Price: {course.price}</Card.Text>
                 <Card.Text>{course.descriptionShort}</Card.Text>
                 <br></br>
-              </Card.Body>
-              <Card.Footer style={{ borderTop: 'none' }}>
                 <center>
                   <Button variant="primary" size="lg" onClick={handleShow}>Detail</Button>
                 </center>
-              </Card.Footer>
+              </Card.Body>
             </Card>
           )
         }
@@ -332,13 +204,6 @@ export default function Course({ course }) {
           <Modal.Title>{course.title}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Alert variant="danger" show={alertActive} onClose={() => setAlertActive(false)} dismissible>
-            <Alert.Heading>Your Account Is Not Active!</Alert.Heading>
-            <p>
-              Your account is not active by otp code, please get it in your mail
-              and confirm in your profile!
-                    </p>
-          </Alert>
           <Row>
             <Col>
               <Card>
@@ -348,16 +213,15 @@ export default function Course({ course }) {
                     src={axiosInstance.get("/courses/" + course.id + "/resources/" + JSON.parse(course.outline).uploadFilenames[0])}
                   /> */}
 
-                  <iframe
+                  {/* <iframe
                     title="Mohamad Alaloush's Story"
                     allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
                     allowfullscreen=""
                     src={"http://localhost:3001/resources/" + JSON.parse(course.outline).uploadDir + JSON.parse(course.outline).uploadFilenames[0]}
-                    // src={"http://localhost:3001/resources/" + '\\08f60dae-3572-48ba-8d6f-fa8c23fbf1b7\\Kalinka.mp4'}
                     width="100%"
                     height="400px"
                     frameborder="0"
-                  ></iframe>
+                  ></iframe> */}
                   {/* <Player
       playsInline
       poster={require("../../img/java.jpg").default}
@@ -419,19 +283,8 @@ export default function Course({ course }) {
                   <Card.Text><b>Modified Date: </b>{course.modifiedDate}</Card.Text>
 
                   {store.teacher ? store.teacher.filter(i => i.id === course.teacherId).map(j =>
-                    <Card.Text key={j.id}><b>Teacher: </b>{j.fullname}</Card.Text>) : <Card.Text></Card.Text>
+                    <Card.Text><b>Teacher: </b>{j.fullname}</Card.Text>) : <Card.Text></Card.Text>
                   }
-                  {/* {
-                    store.accountInfo ? JSON.parse(store.accountInfo.watchlist).course.filter(i => i === course.id) ? setLike(true) : setLike(false) : setLike(false)
-                  } */}
-                  {(() => {
-
-                    if (!like) {
-                      return <Card.Text style={{ color: 'red', fontSize: 25 }} onClick={() => likeClicked()}><FaRegHeart /></Card.Text>
-                    } else {
-                      return <Card.Text style={{ color: 'red', fontSize: 25 }} onClick={() => likeClicked()}><FaHeart /></Card.Text>
-                    }
-                  })()}
                 </Card.Body>
               </Card>
             </Col>
@@ -485,7 +338,7 @@ export default function Course({ course }) {
             <Col xs={5}>
               <Carousel>
                 {courseRef.map(i =>
-                  <Carousel.Item key={i.id}>
+                  <Carousel.Item>
                     <Card>
                       <Card.Img src={require('../../img/java.jpg').default} />
                       <Card.Body>

@@ -54,7 +54,8 @@ function HeaderPrimary() {
 				</React.Fragment>);
 		}
 		return (
-			<React.Fragment><Link to="/login" style={{ textDecoration: 'none' }}><div className="login button">Log In</div></Link>
+			<React.Fragment>
+				<Link to="/login" style={{ textDecoration: 'none' }}><div className="login button">Log In</div></Link>
 				<Link to="/signup" style={{ textDecoration: 'none' }}><div className="signup button">Sign Up</div></Link>
 			</React.Fragment>);
 	}
@@ -97,14 +98,14 @@ function HeaderPrimary() {
 				{/* <div className="categoriesDiv">
           <span className="categories">Categories</span>
         </div> */}
-				<NavDropdownMenu title="Categories">
+				<NavDropdownMenu title="Categories" id="categories">
 					{
 						categories1 ? categories1.map(i => i.own.length > 0 ?
-							<DropdownSubmenu title={i.lv1.title}>
-								<NavDropdown.Item onClick={() => changeView(i.own.map(it => it.id))}>All courses</NavDropdown.Item>
-								{i.own.map(j => <NavDropdown.Item onClick={() => changeView(j.id)}>{j.title}</NavDropdown.Item>)}
+							<DropdownSubmenu key={i.lv1.id} title={i.lv1.title}>
+								<NavDropdown.Item key={'all'} onClick={() => changeView(i.own.map(it => it.id))}>All courses</NavDropdown.Item>
+								{i.own.map(j => <NavDropdown.Item key={j.id} onClick={() => changeView(j.id)}>{j.title}</NavDropdown.Item>)}
 							</DropdownSubmenu>
-							: <NavDropdown.Item>{i.lv1.title}</NavDropdown.Item>) : <NavDropdown.Item></NavDropdown.Item>
+							: <NavDropdown.Item key={i.lv1.id}>{i.lv1.title}</NavDropdown.Item>) : <NavDropdown.Item></NavDropdown.Item>
 					}
 				</NavDropdownMenu>
 
