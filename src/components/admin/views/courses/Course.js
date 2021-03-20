@@ -374,41 +374,49 @@ export default function Course(props) {
                                 </Form.Group>
                                 <Form.Group >
                                     <Form.Label>Price</Form.Label>
-                                    <Form.Control type="text" name="price" value={courseTable.price == null ? "" : courseTable.price} readOnly />
+                                    <Form.Control type="number" name="price" value={courseTable.price == null ? "" : courseTable.price} readOnly />
                                 </Form.Group>
                                 <Form.Group >
                                     <Form.Label>Sale</Form.Label>
-                                    <Form.Control type="text" name="sale" value={courseTable.sale == null ? "" : courseTable.sale} readOnly />
+                                    <Form.Control type="number" name="sale" value={courseTable.sale == null ? "" : courseTable.sale} readOnly />
                                 </Form.Group>
                                 <Form.Group >
                                     <Form.Label>Review Point</Form.Label>
-                                    <Form.Control type="text" name="reviewPoint" value={courseTable.reviewPoint == null ? "" : courseTable.reviewPoint} readOnly />
-                                </Form.Group>
-                                <Form.Group >
-                                    <Form.Label>Reviews</Form.Label>
-                                    <Form.Control type="text" name="reviews" value={courseTable.reviews == null ? "" : courseTable.reviews} readOnly />
+                                    <Form.Control type="number" name="reviewPoint" value={courseTable.reviewPoint == null ? "" : courseTable.reviewPoint} readOnly />
                                 </Form.Group>
                             </Col>
                             <Col>
+                            <Form.Group >
+                                    <Form.Label>Reviews</Form.Label>
+                                    <Form.Control type="number" name="reviews" value={courseTable.reviews == null ? "" : courseTable.reviews} readOnly />
+                                </Form.Group>
                                 <Form.Group >
                                     <Form.Label>Participants</Form.Label>
-                                    <Form.Control type="text" name="participants" value={courseTable.participants == null ? "" : courseTable.participants} readOnly />
+                                    <Form.Control type="number" name="participants" value={courseTable.participants == null ? "" : courseTable.participants} readOnly />
                                 </Form.Group>
                                 <Form.Group >
                                     <Form.Label>Outline</Form.Label>
                                     <Form.Control type="text" name="outline" value={courseTable.outline == null ? "" : courseTable.outline} readOnly />
                                 </Form.Group>
                                 <Form.Group >
-                                    <Form.Label>Teacher ID</Form.Label>
-                                    <Form.Control type="text" name="teacherId" value={courseTable.teacherId == null ? "" : courseTable.teacherId} readOnly />
-                                </Form.Group>
-                                <Form.Group >
-                                    <Form.Label>Category ID</Form.Label>
-                                    <Form.Control type="text" name="categoryId" value={courseTable.categoryId == null ? "" : courseTable.categoryId} readOnly />
+                                    <Form.Label>Teacher</Form.Label>
+                                    <Form.Control as="select" name="teacherId" defaultValue={courseTable.teacherId == null ? "" : courseTable.teacherId} ref={register({ required: false })} readOnly>
+                                        {
+                                            store.users?store.users.filter(it => it.type===2).map(item => 
+                                                <option value={item.id}>{item.email}</option>
+                                            ):""
+                                        }
+                                    </Form.Control>
                                 </Form.Group>
                                 <Form.Group >
                                     <Form.Label>Category Title</Form.Label>
-                                    <Form.Control type="text" value={courseTable.category == null ? "" : courseTable.category} readOnly />
+                                    <Form.Control as="select" name="categoryId" defaultValue={courseTable.categoryId == null ? "" : courseTable.categoryId} ref={register({ required: false })} readOnly>
+                                        {
+                                            store.categories?store.categories.map(item => 
+                                                <option value={item.id}>{item.title}</option>
+                                            ):""
+                                        }
+                                    </Form.Control>
                                 </Form.Group>
                                 <Form.Group >
                                     <Form.Label>Complete Status</Form.Label>
@@ -462,15 +470,21 @@ export default function Course(props) {
                             <Col>
                                 <Form.Group >
                                     <Form.Label>Price</Form.Label>
-                                    <Form.Control type="text" name="price" defaultValue={courseTable.price == null ? "" : courseTable.price} ref={register({ required: false })} />
+                                    <Form.Control type="number" name="price" defaultValue={courseTable.price == null ? "" : courseTable.price} ref={register({ required: false })} />
                                 </Form.Group>
                                 <Form.Group >
                                     <Form.Label>Sale</Form.Label>
-                                    <Form.Control type="text" name="sale" defaultValue={courseTable.sale == null ? "" : courseTable.sale} ref={register({ required: false })} />
+                                    <Form.Control type="number" name="sale" defaultValue={courseTable.sale == null ? "" : courseTable.sale} ref={register({ required: false })} />
                                 </Form.Group>
                                 <Form.Group >
-                                    <Form.Label>Teacher ID</Form.Label>
-                                    <Form.Control type="text" name="teacherId" defaultValue={courseTable.teacherId == null ? "" : courseTable.teacherId} ref={register({ required: false })} />
+                                    <Form.Label>Teacher</Form.Label>
+                                    <Form.Control as="select" name="teacherId" defaultValue={courseTable.teacherId == null ? "" : courseTable.teacherId} ref={register({ required: false })} >
+                                        {
+                                            store.users?store.users.filter(it => it.type===2).map(item => 
+                                                <option value={item.id}>{item.email}</option>
+                                            ):""
+                                        }
+                                    </Form.Control>
                                 </Form.Group>
                                 <Form.Group >
                                     <Form.Label>Category Title</Form.Label>
@@ -538,25 +552,37 @@ export default function Course(props) {
                                 </Form.Group>
                                 <Form.Group >
                                     <Form.Label>Price</Form.Label>
-                                    <Form.Control type="text" name="price" ref={register({ required: false })} />
+                                    <Form.Control type="number" name="price" ref={register({ required: false })} />
                                 </Form.Group>
                             </Col>
                             <Col>
                                 <Form.Group >
                                     <Form.Label>Sale</Form.Label>
-                                    <Form.Control type="text" name="sale" ref={register({ required: false })} />
+                                    <Form.Control type="number" name="sale" ref={register({ required: false })} />
                                 </Form.Group>
                                 <Form.Group >
                                     <Form.Label>Outline</Form.Label>
                                     <Form.Control type="text" name="outline" ref={register({ required: false })} />
                                 </Form.Group>
                                 <Form.Group >
-                                    <Form.Label>Teacher ID</Form.Label>
-                                    <Form.Control type="text" name="teacherId" ref={register({ required: false })} />
+                                    <Form.Label>Teacher</Form.Label>
+                                    <Form.Control as="select" name="teacherId" defaultValue={courseTable.teacherId == null ? "" : courseTable.teacherId} ref={register({ required: false })} >
+                                        {
+                                            store.users?store.users.filter(it => it.type===2).map(item => 
+                                                <option value={item.id}>{item.email}</option>
+                                            ):""
+                                        }
+                                    </Form.Control>
                                 </Form.Group>
                                 <Form.Group >
-                                    <Form.Label>Category ID</Form.Label>
-                                    <Form.Control type="text" name="categoryId" ref={register({ required: false })} />
+                                    <Form.Label>Category Title</Form.Label>
+                                    <Form.Control as="select" name="categoryId" defaultValue={courseTable.categoryId == null ? "" : courseTable.categoryId} ref={register({ required: false })} >
+                                        {
+                                            store.categories?store.categories.map(item => 
+                                                <option value={item.id}>{item.title}</option>
+                                            ):""
+                                        }
+                                    </Form.Control>
                                 </Form.Group>
                             </Col>
                         </Row>

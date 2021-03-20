@@ -334,11 +334,11 @@ export default function Category(props) {
 									</Form.Group>
 									<Form.Group >
 										<Form.Label>Level</Form.Label>
-										<Form.Control type="text" name="level" value={categoryTable?categoryTable.level:""} readOnly />
+										<Form.Control type="number" name="level" value={categoryTable?categoryTable.level:""} readOnly />
 									</Form.Group>
 									<Form.Group >
 										<Form.Label>Owned</Form.Label>
-										<Form.Control type="text" name="owned" value={categoryTable?categoryTable.owned:""} readOnly />
+										<Form.Control type="number" name="owned" value={categoryTable?categoryTable.owned:""} readOnly />
 									</Form.Group>
 								</Col>
 								<Col>
@@ -378,11 +378,11 @@ export default function Category(props) {
 							</Form.Group>
 							<Form.Group >
 								<Form.Label>Level</Form.Label>
-								<Form.Control type="text" name="level" defaultValue={categoryTable?categoryTable.level:""} ref={register({ required: true })} />
+								<Form.Control type="number" name="level" defaultValue={categoryTable?categoryTable.level:""} ref={register({ required: true })} />
 							</Form.Group>
 							<Form.Group >
 								<Form.Label>Owned</Form.Label>
-								<Form.Control type="text" name="owned" defaultValue={categoryTable?categoryTable.owned:""} ref={register({ required: true })} />
+								<Form.Control type="number" name="owned" defaultValue={categoryTable?categoryTable.owned:""} ref={register({ required: true })} />
 							</Form.Group>
 						</Modal.Body>
 						<Modal.Footer>
@@ -413,11 +413,11 @@ export default function Category(props) {
 									</Form.Group>
 									<Form.Group >
 										<Form.Label>Level</Form.Label>
-										<Form.Control type="text" name="level" defaultValue={categoryTable?categoryTable.level:""} readOnly />
+										<Form.Control type="number" name="level" defaultValue={categoryTable?categoryTable.level:""} readOnly />
 									</Form.Group>
 									<Form.Group >
 										<Form.Label>Owned</Form.Label>
-										<Form.Control type="text" name="owned" defaultValue={categoryTable?categoryTable.owned:""} readOnly />
+										<Form.Control type="number" name="owned" defaultValue={categoryTable?categoryTable.owned:""} readOnly />
 									</Form.Group>
 								</Col>
 								<Col>
@@ -455,11 +455,11 @@ export default function Category(props) {
 							</Form.Group>
 							<Form.Group id="newLevle">
 								<Form.Label>Level</Form.Label>
-								<Form.Control type="text" name="level" ref={register({ required: true })} />
+								<Form.Control type="number" name="level" ref={register({ required: true })} />
 							</Form.Group>
 							<Form.Group id="newOwn">
 								<Form.Label>Owned</Form.Label>
-								<Form.Control type="text" name="owned" ref={register({ required: true })} />
+								<Form.Control type="number" name="owned" ref={register({ required: true })} />
 							</Form.Group>
 						</Modal.Body>
 						<Modal.Footer>

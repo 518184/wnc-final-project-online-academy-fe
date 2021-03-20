@@ -1,12 +1,14 @@
-import React from 'react'
+import React, {useState} from 'react'
 import { useForm } from 'react-hook-form';
 import { useHistory, useLocation } from 'react-router-dom';
 import { axiosInstance, parseJwt } from '../utils';
 import { Link } from 'react-router-dom';
 import { Container, Row, Col, Card, Form, Button, DropdownButton, Dropdown } from 'react-bootstrap';
+import swal from 'sweetalert';
 
 export default function Login(props) {
 	const { register, handleSubmit, watch, errors } = useForm();
+	const [validated, setValidated] = useState(false);
 	const history = useHistory();
 	const location = useLocation();
 	const { from, toAdmin } = location.state || { from: { pathname: '/home' } || { toAdmin: { pathname: '/admin' } } };
@@ -28,7 +30,12 @@ export default function Login(props) {
 					history.replace(from);
 				}
 			} else {
-				alert('Invalid login.');
+				swal({
+					title: "Invalid Login",
+					text: "Please try again",
+					icon: "warning",
+					button: "OK"
+				});
 			}
 		} catch (err) {
 			console.log(err.response.data);
@@ -44,7 +51,7 @@ export default function Login(props) {
 			<Row>
 				<Col></Col>
 				<Col xs={6} className="mt-4">
-					<Form onSubmit={handleSubmit(onSubmit)}>
+					<Form onSubmit={handleSubmit(onSubmit)} validated={validated}>
 						<Card>
 							<Card.Body>
 								<Card.Title as="h3"><center>Log In</center></Card.Title>
