@@ -1,13 +1,8 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { useForm } from 'react-hook-form';
-import { Card, Row, Col, Button, Modal, Carousel, Form } from 'react-bootstrap';
-import swal from 'sweetalert';
+import { Carousel } from 'react-bootstrap';
 import Course from "../components/homeContent/Course";
 import academyApppContext from '../onlineAcademyAppContext';
-import { axiosInstance } from '../utils';
-import { _ } from "core-js";
-//import images from '../../views/images';
 
 export default function TopNew() {
     const { store } = useContext(academyApppContext);

@@ -1,13 +1,7 @@
 import React, { useContext, useEffect, useState, Modal } from 'react';
-import AdImage from "../components/homeContent/adImage";
-import Feature1 from "../components/homeContent/featureDiv/featureDiv1";
-import Feature2 from "../components/homeContent/featureDiv/featureDiv2";
-import Recommendations from "../components/homeContent/recommendations/recommendations";
-import TopCategories from "../components/homeContent/topCategories/topCategories";
 import BecomeInstructor from "../components/homeContent/becomeInstructor";
 import TrustedCompanies from "../components/homeContent/trustedCompanies";
 import UdemyForBusiness from "../components/homeContent/udemyForBusiness";
-import VideoAdDiv from "../components/homeContent/videoAdDiv";
 import ListCourses from "./homeContent/ListCourses";
 import SearchCourse from "./homeContent/searchCourse";
 import CustomPagination from "./homeContent/CustomPagination";
@@ -17,7 +11,7 @@ import TopWatchList from '../views/topWatchList';
 import TopNew from '../views/topNew';
 import TopRegister from '../views/topRegister';
 
-import { Row, Col, InputGroup, Button, FormControl, Card } from "react-bootstrap";
+import { Row, Col, Card } from "react-bootstrap";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Select from 'react-select';
 

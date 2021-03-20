@@ -10,7 +10,7 @@ function UdemyForBusiness() {
         <p className="about">
           Get unlimited access to 4,000+ of Online Academy's top courses for your team.
         </p>
-        <div className="startTeching button">Get Online Academy for Business</div>
+        <div className="startTeaching button">Get Online Academy for Business</div>
       </div>
       <img
         src="https://s.udemycdn.com/home/non-student-cta/udlite-lohp-promo-ufb.jpg"
