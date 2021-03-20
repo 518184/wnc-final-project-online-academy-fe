@@ -17,7 +17,7 @@ export default function TopNew() {
             <center><h1>Top New Course</h1></center>
             <Carousel>
                 {courseRef.map(i =>
-                    <Carousel.Item key={i.id}>
+                    <Carousel.Item key={i.id+'topnew'}>
                         <Course course={i} />
                     </Carousel.Item>
                 )}

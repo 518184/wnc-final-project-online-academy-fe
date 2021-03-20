@@ -351,12 +351,12 @@ export default function Course({ course }) {
 									<iframe
 										title="Mohamad Alaloush's Story"
 										allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-										allowfullscreen=""
-										src={"http://localhost:3001/resources/" + JSON.parse(course.outline).uploadDir + JSON.parse(course.outline).uploadFilenames[0]}
+										allowFullScreen={false}
+										//src={"http://localhost:3001/resources/" + JSON.parse(course.outline).uploadDir + JSON.parse(course.outline).uploadFilenames[0]}
 										// src={"http://localhost:3001/resources/" + '\\08f60dae-3572-48ba-8d6f-fa8c23fbf1b7\\Kalinka.mp4'}
 										width="100%"
 										height="400px"
-										frameborder="0"
+										frameBorder="0"
 									></iframe>
 									{/* <Player
       playsInline
