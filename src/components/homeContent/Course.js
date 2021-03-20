@@ -26,7 +26,7 @@ export default function Course({ course }) {
 				swal({
 					title: "Your account has not been activated",
 					text: "Please activate your account with otp before using this feature!",
-					icon: "error",
+					icon: "warning",
 					button: "OK",
 				})
 				setLike(false);
@@ -113,7 +113,7 @@ export default function Course({ course }) {
 					swal({
 						title: "Your account has not been activated",
 						text: "Please activate your account with otp before using this feature!",
-						icon: "error",
+						icon: "warning",
 						button: "OK",
 					})
 				} else {
@@ -171,7 +171,16 @@ export default function Course({ course }) {
 
 				}
 			} catch (err) {
-				console.log(err);
+				if (err.response.status === 403) {
+					swal({
+						title: "Your account has not been activated",
+						text: "Please activate your account with otp before using this feature!",
+						icon: "warning",
+						button: "OK",
+					})
+				} else {
+					console.log(err.response.data);
+				}
 			}
 		} else {
 			swal({
@@ -236,6 +245,40 @@ export default function Course({ course }) {
 		<div>
 			{(() => {
 				if (course.sale) {
+					if (hotCourses) {
+						for (var i of hotCourses) {
+							if (i.id === course.id) {
+								return (
+									<Card style={{ boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)' }}>
+										<Card.Img src={require('../../img/icon/hot.png').default} style={{ width: 70, zIndex: 1, position: 'absolute', right: 0 }}></Card.Img>
+										<img src={require('../../img/icon/sale.png').default} style={{ width: 150, zIndex: 1, position: 'absolute', right: 2, top: '50%' }} />
+										<img src={require('../../img/java.jpg').default} />
+										<Card.Body style={{ height: 350 }}>
+											<Card.Title as="h4" className="my-2"><center>{course.title}</center></Card.Title>
+											<hr></hr>
+											<Card.Text>Category: {categoryTitle ? categoryTitle.title ? categoryTitle.title : "" : ""}</Card.Text>
+											{
+												store.teacher ? store.teacher.filter(i => i.id === course.teacherId).map(j =>
+													<Card.Text key={j.id}>Teacher: {j.fullname}</Card.Text>
+												) : <Card.Text></Card.Text>
+											}
+											<Card.Text>Review Point: {course.reviewPoint}</Card.Text>
+											<Card.Text>Reviews: {course.reviews}</Card.Text>
+
+											<Card.Text>Price: {course.price}</Card.Text>
+											<Card.Text>{course.descriptionShort}</Card.Text>
+											<br></br>
+										</Card.Body>
+										<Card.Footer style={{ borderTop: 'none' }}>
+											<center>
+												<Button variant="primary" size="lg" onClick={handleShow}>Detail</Button>
+											</center>
+										</Card.Footer>
+									</Card>
+								)
+							}
+						}
+					}
 					return (
 						<Card style={{ boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)' }}>
 							<img src={require('../../img/java.jpg').default} />
@@ -264,6 +307,7 @@ export default function Course({ course }) {
 							</Card.Footer>
 						</Card>
 					)
+
 				} else {
 					if (hotCourses) {
 						for (var i of hotCourses) {

@@ -133,7 +133,7 @@ export default function OnlineAcademy() {
         <div>
             <ApppContext.Provider value={{ store, dispatch }}>
                 <Header />
-                <Alert variant="danger" show={show} onClose={() => setShow(false)} dismissible>
+                <Alert variant="danger" show={show} onClose={() => setShow(false)}>
                         <Alert.Heading>Your Account Is Not Active!</Alert.Heading>
                         <p>
                             Your account is not active by otp code, please get it in your mail

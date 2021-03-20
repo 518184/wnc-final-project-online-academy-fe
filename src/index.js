@@ -19,9 +19,9 @@ import store from './components/admin/store'
 React.icons = icons
 
 ReactDOM.render(
-  <React.StrictMode >
+  <div >
     <App/>
-  </React.StrictMode>,
+  </div>,
   document.getElementById('root')
 );
 
