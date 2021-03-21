@@ -118,27 +118,27 @@ export default function Signup(props) {
                                 <hr></hr>
                                 <Form.Group controlId="formBasicFullName">
                                     <Form.Label>Fullname</Form.Label>
-                                    <Form.Control type="text" name="fullname" placeholder="Enter fullname" ref={register({ required: true })} />
+                                    <Form.Control type="text" name="fullname" placeholder="Enter fullname" ref={register} required/>
                                 </Form.Group>
 
                                 <Form.Group controlId="formBasicEmail">
                                     <Form.Label>Email</Form.Label>
-                                    <Form.Control type="email" name="email" placeholder="Enter email" ref={register({ required: true })} />
+                                    <Form.Control type="email" name="email" placeholder="Enter email" ref={register} required />
                                 </Form.Group>
 
                                 <Form.Group controlId="formBasicPassword">
                                     <Form.Label>Password</Form.Label>
-                                    <Form.Control type="password" name="password" placeholder="Password" ref={register({ required: true })} />
+                                    <Form.Control type="password" name="password" placeholder="Password" ref={register} required />
                                 </Form.Group>
 
                                 <Form.Group controlId="formBasicConfirmPassword">
                                     <Form.Label>Confirm Password</Form.Label>
-                                    <Form.Control type="password" name="confirmPassword" placeholder="Confirm Password" ref={register({ required: true })} />
+                                    <Form.Control type="password" name="confirmPassword" placeholder="Confirm Password" ref={register} required />
                                 </Form.Group>
 
                                 <Form.Group controlId="formBasicType">
                                     <Form.Label>Account Type</Form.Label>
-                                    <Form.Control as="select" name="type" ref={register({ required: true })} >
+                                    <Form.Control as="select" name="type" ref={register} required >
                                         <option value="1">Student</option>
                                     </Form.Control>
                                 </Form.Group>      
@@ -160,7 +160,7 @@ export default function Signup(props) {
                             <Form onSubmit={handleSubmit(onSubmitOTPConfirm)}>
                                 <Form.Group controlId="formBasicOTP">
                                     <Form.Label>Please confirm code to active account</Form.Label>
-                                    <Form.Control type="text" name="otp" placeholder="Enter Confirm Code" ref={register({ required: true })} autoFocus />
+                                    <Form.Control type="text" name="otp" placeholder="Enter Confirm Code" ref={register} required autoFocus />
                                 </Form.Group>
                                 <Button variant="primary" type="submit">Confirm</Button>
                                 <Button variant="secondary" onClick={cancelButton_Clicked}>Later</Button>

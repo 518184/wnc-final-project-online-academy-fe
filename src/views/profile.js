@@ -222,7 +222,7 @@ export default function Profile(props) {
                                     <Form onSubmit={handleSubmit(onSubmitOTPConfirm)}>
                                         <Form.Group controlId="formBasicOTP">
                                             <Form.Label>Please confirm code in mail or contact admin to active account </Form.Label>
-                                            <Form.Control type="text" name="otp" placeholder="Enter Confirm Code" ref={register({ required: true })} autoFocus />
+                                            <Form.Control type="text" name="otp" placeholder="Enter Confirm Code" ref={register} required autoFocus />
                                         </Form.Group>
                                         <Button id="otp" variant="primary" type="submit">Confirm</Button>
                                     </Form>
@@ -246,24 +246,24 @@ export default function Profile(props) {
                                 <Card.Body style={{ overflowY: 'auto' }}>
                                     <Form.Group controlId="formBasicFullName">
                                         <Form.Label>Fullname</Form.Label>
-                                        <Form.Control type="text" name="fullname" defaultValue={store.account ? store.account.fullname : ""} placeholder="Enter fullname" ref={register({ required: true })} />
+                                        <Form.Control type="text" name="fullname" defaultValue={store.account ? store.account.fullname : ""} placeholder="Enter fullname" ref={register} required />
                                     </Form.Group>
                                     <br></br>
                                     <Form.Group controlId="formBasicEmail">
                                         <Form.Label>Email</Form.Label>
-                                        <Form.Control type="email" name="email" defaultValue={store.account ? store.account.email : ""} placeholder="Enter email" ref={register({ required: true })} readOnly />
+                                        <Form.Control type="email" name="email" defaultValue={store.account ? store.account.email : ""} placeholder="Enter email" ref={register} required readOnly />
                                     </Form.Group>
 
-                                    <Form.Check type="switch" name="switchPass" id="custom-switch" label="Change password" onChange={changePassword} ref={register({ required: false })} />
+                                    <Form.Check type="switch" name="switchPass" id="custom-switch" label="Change password" onChange={changePassword} ref={register} />
                                     <br></br>
                                     <Form.Group controlId="formBasicPassword">
                                         <Form.Label>New Password</Form.Label>
-                                        <Form.Control type="password" name="password" placeholder="Password" ref={register({ required: false })} disabled={disablePassword} />
+                                        <Form.Control type="password" name="password" placeholder="Password" ref={register} disabled={disablePassword} />
                                     </Form.Group>
                                     <br></br>
                                     <Form.Group controlId="formBasicConfirmPassword">
                                         <Form.Label>Confirm New Password</Form.Label>
-                                        <Form.Control type="password" name="confirmPassword" placeholder="Confirm Password" ref={register({ required: false })} disabled={disablePassword} />
+                                        <Form.Control type="password" name="confirmPassword" placeholder="Confirm Password" ref={register} disabled={disablePassword} />
                                     </Form.Group>
                                 </Card.Body>
                                 <Card.Footer>

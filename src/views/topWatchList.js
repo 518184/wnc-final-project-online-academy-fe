@@ -23,7 +23,7 @@ export default function TopWatchList() {
             <center><h1>Top Wacth</h1></center>
             <Carousel>
                 {courseRef.map(i =>
-                    <Carousel.Item key={i.id}>
+                    <Carousel.Item key={i.id+'watchlist'}>
                         <Course course={i} />
                     </Carousel.Item>
                 )}

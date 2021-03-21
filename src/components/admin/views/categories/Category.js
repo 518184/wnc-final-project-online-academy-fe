@@ -366,23 +366,23 @@ export default function Category(props) {
 						<Modal.Body>
 							<Form.Group >
 								<Form.Label>ID</Form.Label>
-								<Form.Control type="text" name="id" value={categoryTable?categoryTable.id:""} ref={register({ required: true })} readOnly />
+								<Form.Control type="text" name="id" value={categoryTable?categoryTable.id:""} ref={register} required readOnly />
 							</Form.Group>
 							<Form.Group >
 								<Form.Label>Title</Form.Label>
-								<Form.Control type="text" name="title" defaultValue={categoryTable?categoryTable.title:""} ref={register({ required: true })} autoFocus />
+								<Form.Control type="text" name="title" defaultValue={categoryTable?categoryTable.title:""} ref={register} required autoFocus />
 							</Form.Group>
 							<Form.Group >
 								<Form.Label>Description</Form.Label>
-								<Form.Control type="text" name="description" defaultValue={categoryTable?categoryTable.description:""} ref={register({ required: true })} />
+								<Form.Control type="text" name="description" defaultValue={categoryTable?categoryTable.description:""} ref={register} required />
 							</Form.Group>
 							<Form.Group >
 								<Form.Label>Level</Form.Label>
-								<Form.Control type="number" name="level" defaultValue={categoryTable?categoryTable.level:""} ref={register({ required: true })} />
+								<Form.Control type="number" name="level" defaultValue={categoryTable?categoryTable.level:""} ref={register} required />
 							</Form.Group>
 							<Form.Group >
 								<Form.Label>Owned</Form.Label>
-								<Form.Control type="number" name="owned" defaultValue={categoryTable?categoryTable.owned:""} ref={register({ required: true })} />
+								<Form.Control type="number" name="owned" defaultValue={categoryTable?categoryTable.owned:""} ref={register} required />
 							</Form.Group>
 						</Modal.Body>
 						<Modal.Footer>
@@ -401,7 +401,7 @@ export default function Category(props) {
 								<Col>
 									<Form.Group >
 										<Form.Label>ID</Form.Label>
-										<Form.Control type="text" name="id" defaultValue={categoryTable?categoryTable.id:""} ref={register({ required: false })} readOnly />
+										<Form.Control type="text" name="id" defaultValue={categoryTable?categoryTable.id:""} ref={register} readOnly />
 									</Form.Group>
 									<Form.Group >
 										<Form.Label>Title</Form.Label>
@@ -447,19 +447,19 @@ export default function Category(props) {
 						<Modal.Body>
 							<Form.Group id="newTitle">
 								<Form.Label>Title</Form.Label>
-								<Form.Control type="text" name="title" ref={register({ required: true })} autoFocus />
+								<Form.Control type="text" name="title" ref={register} required autoFocus />
 							</Form.Group>
 							<Form.Group id="newdes">
 								<Form.Label>Description</Form.Label>
-								<Form.Control type="text" name="description" ref={register({ required: true })} />
+								<Form.Control type="text" name="description" ref={register} required />
 							</Form.Group>
 							<Form.Group id="newLevle">
 								<Form.Label>Level</Form.Label>
-								<Form.Control type="number" name="level" ref={register({ required: true })} />
+								<Form.Control type="number" name="level" ref={register} required />
 							</Form.Group>
 							<Form.Group id="newOwn">
 								<Form.Label>Owned</Form.Label>
-								<Form.Control type="number" name="owned" ref={register({ required: true })} />
+								<Form.Control type="number" name="owned" ref={register} required />
 							</Form.Group>
 						</Modal.Body>
 						<Modal.Footer>

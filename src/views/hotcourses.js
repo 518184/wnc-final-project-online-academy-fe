@@ -32,7 +32,7 @@ export default function HotCourses() {
             <center><h1>Hot Course</h1></center>
             <Carousel nextIcon={<span aria-hidden="true" className="carousel-control-next-icon" style={{color: 'red'}} />}>
                 {courseRef.map(i =>
-                    <Carousel.Item key={i.id}>
+                    <Carousel.Item key={i.id+'hotcourse'}>
                         <Course course={i} />
                     </Carousel.Item>
                 )}

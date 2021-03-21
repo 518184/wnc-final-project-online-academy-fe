@@ -58,12 +58,12 @@ export default function Login(props) {
 								<hr></hr>
 								<Form.Group controlId="formBasicEmail">
 									<Form.Label>Email:</Form.Label>
-									<Form.Control type="email" name="email" placeholder="Enter email" ref={register({ required: true })} autoFocus />
+									<Form.Control type="email" name="email" placeholder="Enter email" ref={register} autoFocus  required/>
 								</Form.Group>
 
 								<Form.Group controlId="formBasicPassword">
 									<Form.Label>Password</Form.Label>
-									<Form.Control type="password" name="password" placeholder="Password" ref={register({ required: true })} />
+									<Form.Control type="password" name="password" placeholder="Password" ref={register} required/>
 								</Form.Group>
 
 							</Card.Body>

@@ -434,11 +434,11 @@ export default function User(props) {
 						<Modal.Body>
 							<Form.Group >
 								<Form.Label>ID</Form.Label>
-								<Form.Control type="text" name="id" value={userTable.id == null ? "" : userTable.id} ref={register({ required: true })} readOnly />
+								<Form.Control type="text" name="id" value={userTable.id == null ? "" : userTable.id} ref={register} required readOnly />
 							</Form.Group>
 							<Form.Group >
 								<Form.Label>Fullname</Form.Label>
-								<Form.Control type="text" name="fullname" defaultValue={userTable.fullname == null ? "" : userTable.fullname} ref={register({ required: true })} autoFocus />
+								<Form.Control type="text" name="fullname" defaultValue={userTable.fullname == null ? "" : userTable.fullname} ref={register} required autoFocus />
 							</Form.Group>
 							{/* <Form.Group >
 								<Form.Check type="switch" id="custom-switch" label="Change password" onChange={handleDisableChangePassword}/>
@@ -447,11 +447,11 @@ export default function User(props) {
 							</Form.Group> */}
 							<Form.Group >
 								<Form.Label>Email</Form.Label>
-								<Form.Control type="email" name="email" defaultValue={userTable.email == null ? "" : userTable.email} ref={register({ required: true })} readOnly />
+								<Form.Control type="email" name="email" defaultValue={userTable.email == null ? "" : userTable.email} ref={register} required readOnly />
 							</Form.Group>
 							<Form.Group>
 								<Form.Label>Type</Form.Label>
-								<Form.Control as="select" name="type" defaultValue={userTable.id == null ? -1 : userTable.type == null ? "" : userTable.type === 1 ? 1 : userTable.type === 2 ? 2 : 3} ref={register({ required: true })} >
+								<Form.Control as="select" name="type" defaultValue={userTable.id == null ? -1 : userTable.type == null ? "" : userTable.type === 1 ? 1 : userTable.type === 2 ? 2 : 3} ref={register} required >
 									<option value="1">Student</option>
 									<option value="2">Teacher</option>
 									<option value="3">Admin</option>
@@ -459,7 +459,7 @@ export default function User(props) {
 							</Form.Group>
 							<Form.Group>
 								<Form.Label>Active</Form.Label>
-								<Form.Control as="select" name="isActive" defaultValue={userTable.id == null ? "" : userTable.isActive == null ? "" : userTable.isActive === 1 ? 1 : 0} ref={register({ required: true })} >
+								<Form.Control as="select" name="isActive" defaultValue={userTable.id == null ? "" : userTable.isActive == null ? "" : userTable.isActive === 1 ? 1 : 0} ref={register} required >
 									<option value="1">Yes</option>
 									<option value="0">No</option>
 								</Form.Control>
@@ -474,7 +474,7 @@ export default function User(props) {
 							</Form.Group> */}
 							{/* <Form.Group >
 								<Form.Label>Watch List</Form.Label>
-								<Form.Control type="text" name="watchlist" defaultValue={userTable.watchlist == null ? "" : userTable.watchlist} ref={register({ required: false })} />
+								<Form.Control type="text" name="watchlist" defaultValue={userTable.watchlist == null ? "" : userTable.watchlist} ref={register} />
 							</Form.Group> */}
 						</Modal.Body>
 						<Modal.Footer>
@@ -493,7 +493,7 @@ export default function User(props) {
 								<Col>
 									<Form.Group >
 										<Form.Label>ID</Form.Label>
-										<Form.Control type="text" name="id" defaultValue={userTable.id == null ? "" : userTable.id} ref={register({ required: false })} readOnly />
+										<Form.Control type="text" name="id" defaultValue={userTable.id == null ? "" : userTable.id} ref={register} readOnly />
 									</Form.Group>
 									<Form.Group >
 										<Form.Label>Fullname</Form.Label>
@@ -543,19 +543,19 @@ export default function User(props) {
 						<Modal.Body>
 							<Form.Group >
 								<Form.Label>Fullname</Form.Label>
-								<Form.Control type="text" name="fullname" ref={register({ required: true })} autoFocus />
+								<Form.Control type="text" name="fullname" ref={register} required autoFocus />
 							</Form.Group>
 							<Form.Group >
 								<Form.Label>Email</Form.Label>
-								<Form.Control type="email" name="email" ref={register({ required: true })} />
+								<Form.Control type="email" name="email" ref={register} required />
 							</Form.Group>
 							<Form.Group >
 								<Form.Label>Password</Form.Label>
-								<Form.Control type="password" name="password" ref={register({ required: true })} />
+								<Form.Control type="password" name="password" ref={register} required />
 							</Form.Group>
 							<Form.Group>
 								<Form.Label>Type</Form.Label>
-								<Form.Control as="select" name="type" ref={register({ required: true })} >
+								<Form.Control as="select" name="type" ref={register} required >
 									<option value="2">Teacher</option>
 									<option value="3">Admin</option>
 								</Form.Control>
