@@ -9,6 +9,9 @@ import swal from 'sweetalert';
 import { Container, Row, Col, Card, Form, Button } from 'react-bootstrap';
 import academyApppContext from '../onlineAcademyAppContext'
 import "../components/header/headerPrimary.css"
+// import VideoUploadForm from './VideoForm';
+
+
 export default function UploadCourse() {
 
   const { register, handleSubmit } = useForm();
@@ -125,6 +128,29 @@ export default function UploadCourse() {
     }
   }
 
+  const VideoUploadForm = () => {
+    return (
+      <Card>
+        <Card.Body>
+          <div {...getRootProps({ className: 'dropzone' })}>
+            <input {...getInputProps()} />
+            <p>Drag 'n' drop some files here or open the dialog</p>
+            <Button type="button" variant="outline-dark" onClick={open}>
+              Open File Dialog
+            </Button>
+          </div>
+          <aside style={thumbsContainer}>
+            {thumb(0)}
+          </aside>
+          <Form.Label><b>Outline</b></Form.Label>
+          <ReactQuill theme="snow" value={value} onChange={setValue} />
+        </Card.Body>
+      </Card>
+    )
+  }
+
+  var [addMoreUpload, setAddMoreUpload] = useState(1);
+
   return (
     <Container className="course">
       <Row>
@@ -157,48 +183,11 @@ export default function UploadCourse() {
             </Card>
           </Form>
         </Col>
-        <Col xs={6} className="mt-4" style={{ border: '5px solid #a8cef3' }}>
-          <div {...getRootProps({ className: 'dropzone' })}>
-            <input {...getInputProps()} />
-            <p>Drag 'n' drop some files here or open the dialog</p>
-            <button type="button" onClick={open}>
-              Open File Dialog
-          </button>
-          </div>
-          <aside style={thumbsContainer}>
-            {thumb(0)}
-          </aside>
-          <Form.Label>Outline</Form.Label>
-          <ReactQuill theme="snow" value={value} onChange={setValue} />
-          <hr style={{ border: '2px solid black' }} />
-          <div {...getRootProps({ className: 'dropzone' })}>
-            <input {...getInputProps()} />
-            <p>Drag 'n' drop some files here or open the dialog</p>
-            <button type="button" onClick={open}>
-              Open File Dialog
-          </button>
-          </div>
-          <aside style={thumbsContainer}>
-            {thumb(1)}
-          </aside>
-          <Form.Label>Outline</Form.Label>
-          <ReactQuill theme="snow" value={value} onChange={setValue} />
-          <hr style={{ border: '2px solid black' }} />
-          <div {...getRootProps({ className: 'dropzone' })}>
-            <input {...getInputProps()} />
-            <p>Drag 'n' drop some files here or open the dialog</p>
-            <button type="button" onClick={open}>
-              Open File Dialog
-          </button>
-          </div>
-          <aside style={thumbsContainer}>
-            {thumb(2)}
-          </aside>
-          <Form.Label>Outline</Form.Label>
-          <ReactQuill theme="snow" value={value} onChange={setValue} />
+        <Col xs={6} className="mt-4">
+          {[...Array(addMoreUpload)].map((_, i) => <VideoUploadForm key={i}/>)}
         </Col>
         <Col xs={6} className="mt-4">
-          <button className="button" style={{ float: "right" }}>Add more outline</button>
+          <button className="button" onClick={()=>setAddMoreUpload(addMoreUpload + 1)} style={{ float: "right" }}>Add more outline</button>
         </Col>
       </Row>
     </Container >
