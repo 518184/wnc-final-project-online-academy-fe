@@ -2,3 +2,8 @@
     width: 90%;
     max-width: none!important;
 }
+
+.accordion .card-header:hover {
+    background-color: #ff9999;
+    cursor: pointer;
+}

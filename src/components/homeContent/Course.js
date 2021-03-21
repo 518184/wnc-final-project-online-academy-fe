@@ -1,7 +1,8 @@
 import React, { useContext, useState } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useForm } from 'react-hook-form';
-import { Card, Row, Col, Button, Modal, Carousel, Form, Alert } from 'react-bootstrap';
+import { Card, Row, Col, Button, Modal, Carousel, Form, Alert, Accordion, AccordionContext } from 'react-bootstrap';
+import { useAccordionToggle } from 'react-bootstrap/AccordionToggle';
 import academyApppContext from '../../onlineAcademyAppContext';
 import { axiosInstance, parseJwt } from '../../utils';
 import swal from 'sweetalert';
@@ -16,8 +17,10 @@ export default function Course({ course }) {
 	const [disableButton, setDisableButton] = useState(false);
 	const [like, setLike] = useState(false);
 	const [alertActive, setAlertActive] = useState(false);
-
-
+	var outline = [];
+	if (course.outline) {
+		outline = JSON.parse(course.outline).data;
+	}
 	const addWhiteList = async function () {
 		try {
 			const res = await axiosInstance.post('/users/watchlist/' + course.id, {}, { headers: { 'x-access-token': localStorage.account_accessToken } });
@@ -56,7 +59,7 @@ export default function Course({ course }) {
 							break;
 						}
 					}
-					store.accountInfo ? JSON.parse(store.accountInfo.watchlist).course.includes(course.id) ? setLike(true) : setLike(false) : setLike(false);
+					store.accountInfo ? JSON.parse(store.accountInfo.watchlist) ? JSON.parse(store.accountInfo.watchlist).course.includes(course.id) ? setLike(true) : setLike(false) : setLike(false) : setLike(false);
 				}
 			} catch (err) {
 				if (err.response.status === 403) {
@@ -241,6 +244,25 @@ export default function Course({ course }) {
 		}
 	}
 
+	//const decoratedOnClick = useAccordionToggle(eventKey, onClick);
+	const ContextAwareToggle = function ({ children, eventKey, callback }) {
+		const currentEventKey = useContext(AccordionContext);
+		const decoratedOnClick = useAccordionToggle(
+			eventKey,
+			() => callback && callback(eventKey),
+		);
+		const isCurrentEventKey = currentEventKey === eventKey;
+		return (
+			<Card.Header
+				
+				style={{ backgroundColor: isCurrentEventKey ? '#cc0000' : '', color: isCurrentEventKey ? 'white' : '' }}
+				onClick={decoratedOnClick}
+			>
+				{children}
+			</Card.Header>
+		)
+	}
+
 	return (
 		<div>
 			{(() => {
@@ -392,31 +414,28 @@ export default function Course({ course }) {
                     src={axiosInstance.get("/courses/" + course.id + "/resources/" + JSON.parse(course.outline).uploadFilenames[0])}
                   /> */}
 
-									<iframe
-										title="Mohamad Alaloush's Story"
-										allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-										allowFullScreen={false}
-										//src={"http://localhost:3001/resources/" + JSON.parse(course.outline).uploadDir + JSON.parse(course.outline).uploadFilenames[0]}
-										// src={"http://localhost:3001/resources/" + '\\08f60dae-3572-48ba-8d6f-fa8c23fbf1b7\\Kalinka.mp4'}
-										width="100%"
-										height="400px"
-										frameBorder="0"
-									></iframe>
 									{/* <Player
       playsInline
       poster={require("../../img/java.jpg").default}
       src={video}
     /> */}
 
-									{/* {
-        (() => {
-          const outline = JSON.parse(course.outline);
-          if(outline){
-            return <video controls poster={require('../../img/java.jpg').default} width='100%' height='400px'><source src={require(outline.uploadDir + '\\' + outline.uploadFilenames[0]).default} type="video/mp4"/></video>
-          }
-          
-        })()
-      } */}
+									{/* {(() => {
+										if (course.outline) {
+											const outline = JSON.parse(course.outline);
+											return (
+												<iframe
+													title={course.title}
+													allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+													allowFullScreen={false}
+													src={"http://localhost:3001/resources/" + outline.uploadDir + outline.uploadFilenames[0]}
+													// src={"http://localhost:3001/resources/" + '\\08f60dae-3572-48ba-8d6f-fa8c23fbf1b7\\Kalinka.mp4'}
+													width="100%"
+													height="400px"
+													frameBorder="0"
+												></iframe>)
+										}
+									})()} */}
 								</Card.Header>
 								<Card.Body>
 									{
@@ -465,9 +484,6 @@ export default function Course({ course }) {
 									{store.teacher ? store.teacher.filter(i => i.id === course.teacherId).map(j =>
 										<Card.Text key={j.id}><b>Teacher: </b>{j.fullname}</Card.Text>) : <Card.Text></Card.Text>
 									}
-									{/* {
-                    store.accountInfo ? JSON.parse(store.accountInfo.watchlist).course.filter(i => i === course.id) ? setLike(true) : setLike(false) : setLike(false)
-                  } */}
 									{(() => {
 
 										if (!like) {
@@ -479,15 +495,36 @@ export default function Course({ course }) {
 								</Card.Body>
 							</Card>
 						</Col>
-						<Col>
-							<Card.Text><b>Outline: </b>
-								{/* {(()=>{
-                if(course.outline) {
-                  const outline = JSON.parse(course.outline);
-                  return <Card.Text>{outline}</Card.Text>;
-                }
-              })()} */}
-							</Card.Text>
+						<Col >
+							<Card.Text><b>Outline: </b></Card.Text>
+							<div style={{ height: 400, overflowY: 'auto' }}>
+								<Accordion>
+									{outline ? outline.map((i, index) =>
+									(<Card key={'sup' + index} className="mb-0">
+										{/* <Accordion.Toggle as={Card.Header} variant="link" eventKey={index+1}>
+														<p dangerouslySetInnerHTML={{ __html: i.content }} />
+												</Accordion.Toggle> */}
+										{/* <Card.Header> */}
+											<ContextAwareToggle eventKey={index + 1}><h4 dangerouslySetInnerHTML={{ __html: i.content }} /></ContextAwareToggle>
+										{/* </Card.Header> */}
+										<Accordion.Collapse eventKey={index + 1}>
+											<Card.Body>
+												<iframe
+													title={course.title}
+													allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+													allowFullScreen={false}
+													src={"http://localhost:3001/resources/" + i.uploadDir + i.uploadFilenames[0]}
+													width="100%"
+													height="400px"
+													frameBorder="0"
+												></iframe>
+											</Card.Body>
+										</Accordion.Collapse>
+									</Card>)
+									) : <Card></Card>
+									}
+								</Accordion>
+							</div>
 						</Col>
 					</Row>
 					<Row>
