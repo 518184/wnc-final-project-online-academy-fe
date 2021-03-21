@@ -85,6 +85,21 @@ export default function reducer(state, action) {
 				...state,
 				accountInfo: action.payload.accountInfo
 			}
+		case 'initLocalFile':
+			return {
+				...state,
+				localFiles: []
+			}
+		case 'addLocalFile':
+			return {
+				...state,
+				localFiles: [...state.localFiles, action.payload]
+			}
+		case 'clearLocalFiles':
+			return {
+				...state,
+				localFiles: []
+			}
 		//   case 'add_item':
 		//     return {
 		//       ...state,

@@ -85,6 +85,40 @@
   
 }
 
+.outline .button {
+  padding: 15px;
+  border-radius: 5px;
+  font-size: 15px;
+  font-weight: bold;
+  border: 1px solid;
+  height: 36px;
+  width: fit-content;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  word-wrap: break-word;
+  white-space: nowrap;
+  
+}
+
+.course .button {
+  padding: 15px;
+  border-radius: 5px;
+  font-size: 15px;
+  font-weight: bold;
+  border: 1px solid;
+  height: 36px;
+  width: fit-content;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  word-wrap: break-word;
+  white-space: nowrap;
+  
+}
+
 .headerPrimary .login {
   background-color: white;
   color: #0f7c90;

@@ -408,7 +408,7 @@ export default function Course({ course }) {
 					<Row>
 						<Col>
 							<Card>
-								<Card.Header>
+								{/* <Card.Header> */}
 									{/* <Player
                     playsInline
                     src={axiosInstance.get("/courses/" + course.id + "/resources/" + JSON.parse(course.outline).uploadFilenames[0])}
@@ -436,7 +436,7 @@ export default function Course({ course }) {
 												></iframe>)
 										}
 									})()} */}
-								</Card.Header>
+								{/* </Card.Header> */}
 								<Card.Body>
 									{
 										// store.payment ? store.account ? store.payment.filter(i => i.courseId === course.id && i.userId === store.account.id).map(
@@ -512,7 +512,7 @@ export default function Course({ course }) {
 												<iframe
 													title={course.title}
 													allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-													allowFullScreen={false}
+													allowFullScreen={true}
 													src={"http://localhost:3001/resources/" + i.uploadDir + i.uploadFilenames[0]}
 													width="100%"
 													height="400px"
