@@ -9,7 +9,6 @@ import swal from 'sweetalert';
 import { Container, Row, Col, Card, Form, Button } from 'react-bootstrap';
 import academyApppContext from '../onlineAcademyAppContext'
 import "../components/header/headerPrimary.css"
-// import VideoUploadForm from './VideoForm';
 
 
 export default function UploadCourse() {
@@ -59,25 +58,6 @@ export default function UploadCourse() {
   };
 
   const [state, setState] = useState({ files: [] });
-  const [value, setValue] = useState([]);
-
-  const { getRootProps, getInputProps, open } = useDropzone({
-    accept: 'video/*',
-    noClick: true,
-    noKeyboard: true,
-    multiple: false,
-    onDrop: (acceptedFiles) => {
-      setState((oldState) => ({
-        files: [...oldState.files, acceptedFiles.map(file => Object.assign(file, {
-          preview: URL.createObjectURL(file),
-          userId: localStorage.account_userID
-        })).map(file => dispatch({
-          type: 'addLocalFile',
-          payload: file
-        }))]
-      }));
-    }
-  });
 
   function thumb(id) {
     if (store.localFiles && store.localFiles.length && store.localFiles.filter(f => f.userId === localStorage.account_userID)[id]) {
@@ -107,7 +87,6 @@ export default function UploadCourse() {
     store.localFiles.forEach(file => body.append("videos", file));
 
     body.append("metadata", JSON.stringify({
-      outline: value,
       categoryId: form.category,
       title: form.title,
       descriptionShort: form.description,
@@ -127,8 +106,27 @@ export default function UploadCourse() {
       })
     }
   }
+  
+  const VideoUploadForm = (props) => {
+    const [value, setValue] = useState('');
+    const { getRootProps, getInputProps, open } = useDropzone({
+      accept: 'video/*',
+      noClick: true,
+      noKeyboard: true,
+      multiple: false,
+      onDrop: (acceptedFiles) => {
+        setState((oldState) => ({
+          files: [...oldState.files, acceptedFiles.map(file => Object.assign(file, {
+            preview: URL.createObjectURL(file),
+            userId: localStorage.account_userID
+          })).map(file => dispatch({
+            type: 'addLocalFile',
+            payload: file
+          }))]
+        }));
+      }
+    });
 
-  const VideoUploadForm = () => {
     return (
       <Card>
         <Card.Body>
@@ -140,7 +138,7 @@ export default function UploadCourse() {
             </Button>
           </div>
           <aside style={thumbsContainer}>
-            {thumb(0)}
+            {thumb(props.count)}
           </aside>
           <Form.Label><b>Outline</b></Form.Label>
           <ReactQuill theme="snow" value={value} onChange={setValue} />
@@ -184,10 +182,8 @@ export default function UploadCourse() {
           </Form>
         </Col>
         <Col xs={6} className="mt-4">
-          {[...Array(addMoreUpload)].map((_, i) => <VideoUploadForm key={i}/>)}
-        </Col>
-        <Col xs={6} className="mt-4">
-          <button className="button" onClick={()=>setAddMoreUpload(addMoreUpload + 1)} style={{ float: "right" }}>Add more outline</button>
+          {[...Array(addMoreUpload)].map((_, i) => <VideoUploadForm key={i} count={i} />)}
+          <button className="button" onClick={() => setAddMoreUpload(addMoreUpload + 1)} style={{ float: "right" }}>Add more outline</button>
         </Col>
       </Row>
     </Container >
