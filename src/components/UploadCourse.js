@@ -57,7 +57,6 @@ export default function UploadCourse() {
     height: '100%'
   };
 
-  const [state, setState] = useState({ files: [] });
 
   function thumb(id) {
     if (store.localFiles && store.localFiles.length && store.localFiles.filter(f => f.userId === localStorage.account_userID)[id]) {
@@ -108,6 +107,8 @@ export default function UploadCourse() {
   }
   
   const VideoUploadForm = (props) => {
+    const [state, setState] = useState({ files: [] });
+
     const [value, setValue] = useState('');
     const { getRootProps, getInputProps, open } = useDropzone({
       accept: 'video/*',
