@@ -10,8 +10,10 @@ import {
     Form,
     Button,
     Container,
-    Modal
+    Modal,
+    Accordion, AccordionContext
 } from 'react-bootstrap';
+import { useAccordionToggle } from 'react-bootstrap/AccordionToggle';
 import academyApppContext from '../onlineAcademyAppContext';
 import Course from '../components/homeContent/Course';
 import UploadCourse from '../components/UploadCourse';
@@ -35,7 +37,9 @@ export default function Profile(props) {
     const handleShowModelNew = () => setShowModalNew(true);
     const handleCloseModalNew = () => setShowModalNew(false);
     const [currentCourseUpdate, setCurrentCourseUpdate] = useState({});
-    var [addMoreUpload, setAddMoreUpload] = useState(1);
+    var [addMoreUpload, setAddMoreUpload] = useState(0);
+    var [outlineArray, setOutlineArray] = useState([]);
+
 
     useEffect(function () {
         async function loadDataUser() {
@@ -83,6 +87,10 @@ export default function Profile(props) {
                 });
             }
         }
+        dispatch({
+            type: 'initLocalFile',
+            payload: []
+        });
         loadDataUser();
         loadDataPayment();
         loadDataTeacherCourse();
@@ -264,12 +272,48 @@ export default function Profile(props) {
         width: 'auto',
         height: '100%'
     };
+    const ContextAwareToggle = function ({ children, eventKey, callback }) {
+        const currentEventKey = useContext(AccordionContext);
+        const decoratedOnClick = useAccordionToggle(
+            eventKey,
+            () => callback && callback(eventKey),
+        );
+        const isCurrentEventKey = currentEventKey === eventKey;
+        return (
+            <Card.Header
+
+                style={{ backgroundColor: isCurrentEventKey ? '#cc0000' : '', color: isCurrentEventKey ? 'white' : '' }}
+                onClick={decoratedOnClick}
+            >
+                {children}
+            </Card.Header>
+        )
+    }
+    const changeView = function (mode) {
+        async function initCoursesList() {
+            const res = await axiosInstance.get("/courses");
+            if (res.status === 200) {
+                dispatch({
+                    type: 'initCoursesList',
+                    payload: {
+                        courses: res.data,
+                        query: '',
+                        mode: 'default'
+                    }
+                });
+            }
+        }
+        dispatch({
+            type: 'changeMode',
+            payload: {
+                mode
+            }
+        })
+    }
     const updateCourse = function (course) {
         handleShowModelNew();
-        var outline = JSON.parse(course.outline);
-        console.log(outline.data[0].content);
-        var count = outline.data[0].content.length;
-        setAddMoreUpload(count);
+        setOutlineArray(JSON.parse(course.outline).data);
+        console.log('outlineArray', outlineArray);
         setCurrentCourseUpdate(course);
     }
     function thumb(id) {
@@ -293,6 +337,10 @@ export default function Profile(props) {
         if (store.localFiles && store.localFiles.length > 0 && value !== '') {
             if (store.localFiles[props.count] !== undefined) {
                 store.localFiles[props.count].outline = value;
+            }
+        } else if (store.localFiles && store.localFiles.length > 0 && value === '') {
+            if (store.localFiles[props.count] !== undefined && store.localFiles[props.count].outline !== '') {
+                setValue(store.localFiles[props.count].outline);
             }
         }
 
@@ -328,11 +376,54 @@ export default function Profile(props) {
                     <aside style={thumbsContainer}>
                         {thumb(props.count)}
                     </aside>
-                    <Form.Label><b>Outline</b></Form.Label>
-                    <ReactQuill theme="snow" value={value} onChange={setValue} />
+                    <b>Outline</b>
+                    <ReactQuill theme="snow" value={value} onChange={setValue} required />
                 </Card.Body>
             </Card>
         )
+    }
+
+    const uploadOldCourse = async (form) => {
+        const body = new FormData();
+        var outline = [];
+        store.localFiles.forEach(file => (body.append("videos", file), outline.push(file.outline)));
+
+        body.append("metadata", JSON.stringify({
+            categoryId: form.category,
+            outline: outline,
+            title: form.title,
+            descriptionShort: form.description,
+            descriptionLong: form.description,
+            isCompleted: form.isCompleted,
+        }));
+
+        const res = await axiosInstance.put("/courses/"+currentCourseUpdate.id, body, { headers: { 'x-access-token': localStorage.account_accessToken } });
+        if (res.status === 200) {
+            swal({
+                title: "Course uploaded",
+                text: "Course uploaded with id: " + JSON.stringify(res.data.id),
+                icon: "success",
+            });
+            setAddMoreUpload(0);
+            async function initCoursesList() {
+                const res = await axiosInstance.get("/courses");
+                if (res.status === 200) {
+                    dispatch({
+                        type: 'initCoursesList',
+                        payload: {
+                            courses: res.data,
+                            query: '',
+                            mode: 'default',
+                        }
+                    });
+                }
+            }
+            initCoursesList();
+            changeView("default")
+            dispatch({
+                type: 'clearLocalFiles'
+            })
+        }
     }
 
     return (
@@ -509,57 +600,71 @@ export default function Profile(props) {
                         </Col>
                         <Col>
                             <Modal show={showModalNew} onHide={handleCloseModalNew} dialogClassName="modal-90w" >
-                                <Form onSubmit={handleSubmit()} id="newForm">
-                                    <Modal.Header closeButton>
-                                        <Modal.Title>Update Course</Modal.Title>
-                                    </Modal.Header>
-                                    <Modal.Body>
+                                <Modal.Header closeButton>
+                                    <Modal.Title>Update Course</Modal.Title>
+                                </Modal.Header>
+                                <Modal.Body>
 
 
-                                        <Row>
-                                            <Col xs={6} className="mt-4">
-                                                <Form onSubmit={handleSubmit()}>
-                                                    <Card>
+                                    <Row>
+                                        <Col xs={6} className="mt-4">
+                                            <Form onSubmit={handleSubmit(uploadOldCourse)}>
+                                                <Card>
+                                                    <Card.Body>
+                                                        <Card.Title as="h3"><center>Course upload</center></Card.Title>
+                                                        <hr></hr>
+                                                        <Form.Group controlId="title">
+                                                            <Form.Label>Title</Form.Label>
+                                                            <Form.Control type="text" defaultValue={currentCourseUpdate.title == null ? "" : currentCourseUpdate.title} name="title" placeholder="Course title" ref={FaRegGrinSquintTears} required />
+                                                        </Form.Group>
+
+                                                        <Form.Group controlId="description">
+                                                            <Form.Label>Description</Form.Label>
+                                                            <Form.Control type="text" defaultValue={currentCourseUpdate.descriptionShort == null ? "" : currentCourseUpdate.descriptionShort} name="description" placeholder="Course description" ref={register} required />
+                                                        </Form.Group>
+
+                                                        <Form.Group controlId="category">
+                                                            <Form.Label>Category</Form.Label>
+                                                            <Form.Control as="select" defaultValue={currentCourseUpdate.categoryId == null ? "" : currentCourseUpdate.categoryId} name="category" ref={register} required >
+                                                                {store.categories.map(c => <option key={c.id} value={c.id}> {c.title}</option>)}
+                                                            </Form.Control>
+                                                        </Form.Group>
+                                                        <Form.Check type="switch" defaultChecked={currentCourseUpdate.isCompleted == null ? "" : currentCourseUpdate.isCompleted} name="isCompleted" id={currentCourseUpdate.id} label="Complete Course" ref={register} />
+                                                    </Card.Body>
+                                                    <Card.Footer>
+                                                        <Button className="float-right py-2" variant="primary" type="submit">Upload</Button>
+                                                    </Card.Footer>
+                                                </Card>
+                                            </Form>
+                                        </Col>
+                                        <Col xs={6} className="mt-4">
+                                            <Accordion>
+                                                {console.log('outline2', outlineArray)}
+                                                {outlineArray.map((i, index) =>
+                                                (<Card key={'supp' + index} className="mb-0">
+                                                    <ContextAwareToggle eventKey={index + 1}><h4 dangerouslySetInnerHTML={{ __html: i.content }} /></ContextAwareToggle>
+
+                                                    <Accordion.Collapse eventKey={index + 1}>
                                                         <Card.Body>
-                                                            <Card.Title as="h3"><center>Course upload</center></Card.Title>
-                                                            <hr></hr>
-                                                            <Form.Group controlId="title">
-                                                                <Form.Label>Title</Form.Label>
-                                                                <Form.Control type="text" defaultValue={currentCourseUpdate.title == null ? "" : currentCourseUpdate.title} name="title" placeholder="Course title" ref={FaRegGrinSquintTears} required />
-                                                            </Form.Group>
-
-                                                            <Form.Group controlId="description">
-                                                                <Form.Label>Description</Form.Label>
-                                                                <Form.Control type="text" defaultValue={currentCourseUpdate.descriptionShort == null ? "" : currentCourseUpdate.descriptionShort} name="description" placeholder="Course description" ref={register} required />
-                                                            </Form.Group>
-
-                                                            <Form.Group controlId="category">
-                                                                <Form.Label>Category</Form.Label>
-                                                                <Form.Control as="select" defaultValue={currentCourseUpdate.categoryId == null ? "" : currentCourseUpdate.categoryId} name="category" ref={register} required >
-                                                                    {store.categories.map(c => <option key={c.id} value={c.id}> {c.title}</option>)}
-                                                                </Form.Control>
-                                                            </Form.Group>
-                                                            <Form.Check type="switch" defaultChecked={currentCourseUpdate.isCompleted == null ? "" : currentCourseUpdate.isCompleted} name="isCompleted" id={currentCourseUpdate.id} label="Complete Course" ref={register} />
+                                                            <video width="100%" height="400px" controls>
+                                                                <source src={"http://localhost:3001/resources/" + i.uploadDir + i.uploadFilename} type="video/mp4" autoplay="false" />
+                                                            </video>
                                                         </Card.Body>
-                                                        {/* <Card.Footer>
-                                                            <Button className="float-right py-2" variant="primary" type="submit">Upload</Button>
-                                                        </Card.Footer> */}
-                                                    </Card>
-                                                </Form>
-                                            </Col>
-                                            <Col xs={6} className="mt-4">
-                                                {[...Array(addMoreUpload)].map((_, i) => <VideoUploadForm key={'update' + currentCourseUpdate.id} count={i} />)}
-                                                <button className="button" onClick={() => setAddMoreUpload(addMoreUpload + 1)} style={{ float: "right" }}>Add more outline</button>
-                                            </Col>
-                                        </Row>
+                                                    </Accordion.Collapse>
+                                                </Card>))
+                                                }
+                                            </Accordion>
+                                            {[...Array(addMoreUpload)].map((_, i) => <VideoUploadForm key={'update' + i} count={i} />)}
+                                            <button className="button" onClick={() => setAddMoreUpload(addMoreUpload + 1)} style={{ float: "right" }}>Add more outline</button>
+                                        </Col>
+                                    </Row>
 
 
-                                    </Modal.Body>
-                                    <Modal.Footer>
-                                        <Button variant="primary" type="submit" id="newFormSub">Update</Button>
-                                        <Button variant="secondary" onClick={handleCloseModalNew}>Close</Button>
-                                    </Modal.Footer>
-                                </Form>
+                                </Modal.Body>
+                                <Modal.Footer>
+                                    <Button variant="primary" type="submit" id="newFormSub">Update</Button>
+                                    <Button variant="secondary" onClick={handleCloseModalNew}>Close</Button>
+                                </Modal.Footer>
                             </Modal>
                         </Col>
                     </Row>
