@@ -110,25 +110,25 @@ export default function OnlineAcademy() {
         //         });
         //     }
         // }
-        // async function loadDataPayment() {
-        //     const res = await axiosInstance.get('/transaction/user/' + localStorage.account_userID, { headers: { 'x-access-token': localStorage.account_accessToken } });
-        //     if (res.status === 200) {
-        //         dispatch({
-        //             type: 'setPayment',
-        //             payload: {
-        //                 payment: res.data,
-        //                 query: '',
-        //             }
-        //         });
-        //     }
-        // }
+        async function loadDataPayment() {
+            const res = await axiosInstance.get('/transaction/user/' + localStorage.account_userID, { headers: { 'x-access-token': localStorage.account_accessToken } });
+            if (res.status === 200) {
+                dispatch({
+                    type: 'setPayment',
+                    payload: {
+                        payment: res.data,
+                        query: '',
+                    }
+                });
+            }
+        }
         initCoursesList();
         getCategory();
         getTeacher();
         getFeedback();
-        // if(localStorage.account_accessToken){
-        //     loadDataPayment();
-        // }
+        if(localStorage.account_accessToken){
+            loadDataPayment();
+        }
     }, [eventRefresh]);
 
     return (

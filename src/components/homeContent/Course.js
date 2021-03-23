@@ -21,6 +21,7 @@ export default function Course({ course }) {
 	if (course.outline) {
 		outline = JSON.parse(course.outline).data;
 	}
+	var previewOutline = outline.slice(0, 2);
 	const addWhiteList = async function () {
 		try {
 			const res = await axiosInstance.post('/users/watchlist/' + course.id, {}, { headers: { 'x-access-token': localStorage.account_accessToken } });
@@ -103,6 +104,16 @@ export default function Course({ course }) {
 									type: 'reloadCourses',
 									payload: {
 										courses: res1.data,
+									}
+								});
+							}
+							const res2 = await axiosInstance.get('/transaction/user/' + localStorage.account_userID, { headers: { 'x-access-token': localStorage.account_accessToken } });
+							if (res2.status === 200) {
+								dispatch({
+									type: 'setPayment',
+									payload: {
+										payment: res2.data,
+										query: '',
 									}
 								});
 							}
@@ -217,6 +228,20 @@ export default function Course({ course }) {
 			}
 		}
 	}
+
+	const checkPurchase = () => {
+		if (store.payment) {
+			if (parseInt(store.accountInfo.type) !== 1) {
+				return true;
+			}
+			for (var i of store.payment) {
+				if ((i.userId === store.accountInfo.id && i.courseId === course.id)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 	//getFavourist();
 	Date.prototype.getWeekNumber = function () {
 		var d = new Date(Date.UTC(this.getFullYear(), this.getMonth(), this.getDate()));
@@ -254,7 +279,7 @@ export default function Course({ course }) {
 		const isCurrentEventKey = currentEventKey === eventKey;
 		return (
 			<Card.Header
-				
+
 				style={{ backgroundColor: isCurrentEventKey ? '#cc0000' : '', color: isCurrentEventKey ? 'white' : '' }}
 				onClick={decoratedOnClick}
 			>
@@ -409,18 +434,18 @@ export default function Course({ course }) {
 						<Col>
 							<Card>
 								{/* <Card.Header> */}
-									{/* <Player
+								{/* <Player
                     playsInline
                     src={axiosInstance.get("/courses/" + course.id + "/resources/" + JSON.parse(course.outline).uploadFilenames[0])}
                   /> */}
 
-									{/* <Player
+								{/* <Player
       playsInline
       poster={require("../../img/java.jpg").default}
       src={video}
     /> */}
 
-									{/* {(() => {
+								{/* {(() => {
 										if (course.outline) {
 											const outline = JSON.parse(course.outline);
 											return (
@@ -499,13 +524,13 @@ export default function Course({ course }) {
 							<Card.Text><b>Outline: </b></Card.Text>
 							<div style={{ height: 400, overflowY: 'auto' }}>
 								<Accordion>
-									{outline ? outline.map((i, index) =>
+									{checkPurchase() ? (outline ? outline.map((i, index) =>
 									(<Card key={'sup' + index} className="mb-0">
 										{/* <Accordion.Toggle as={Card.Header} variant="link" eventKey={index+1}>
 														<p dangerouslySetInnerHTML={{ __html: i.content }} />
 												</Accordion.Toggle> */}
 										{/* <Card.Header> */}
-											<ContextAwareToggle eventKey={index + 1}><h4 dangerouslySetInnerHTML={{ __html: i.content }} /></ContextAwareToggle>
+										<ContextAwareToggle eventKey={index + 1}><h4 dangerouslySetInnerHTML={{ __html: i.content }} /></ContextAwareToggle>
 										{/* </Card.Header> */}
 										<Accordion.Collapse eventKey={index + 1}>
 											<Card.Body>
@@ -525,8 +550,35 @@ export default function Course({ course }) {
 											</Card.Body>
 										</Accordion.Collapse>
 									</Card>)
-									) : <Card></Card>
+									) : <Card></Card>) : (previewOutline ? previewOutline.map((i, index) =>
+									(<Card key={'sup' + index} className="mb-0">
+										{/* <Accordion.Toggle as={Card.Header} variant="link" eventKey={index+1}>
+														<p dangerouslySetInnerHTML={{ __html: i.content }} />
+												</Accordion.Toggle> */}
+										{/* <Card.Header> */}
+										<ContextAwareToggle eventKey={index + 1}><h4 dangerouslySetInnerHTML={{ __html: i.content }} /></ContextAwareToggle>
+										{/* </Card.Header> */}
+										<Accordion.Collapse eventKey={index + 1}>
+											<Card.Body>
+												{/* <iframe
+													title={course.title}
+													allow="accelerometer; encrypted-media; gyroscope; picture-in-picture"
+													allowFullScreen={true}
+													src={"http://localhost:3001/resources/" + i.uploadDir + i.uploadFilename}
+													width="100%"
+													height="400px"
+													frameBorder="0"
+													autoPlay="false"
+												></iframe> */}
+												<video width="100%" height="400px" controls>
+													<source src={"http://localhost:3001/resources/" + i.uploadDir + i.uploadFilename} type="video/mp4" autoplay="false" />
+												</video>
+											</Card.Body>
+										</Accordion.Collapse>
+									</Card>)
+									) : <Card></Card>)
 									}
+
 								</Accordion>
 							</div>
 						</Col>
