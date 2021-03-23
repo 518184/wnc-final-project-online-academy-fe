@@ -83,13 +83,16 @@ export default function UploadCourse() {
 
   const upload = async (form) => {
     const body = new FormData();
-    store.localFiles.forEach(file => body.append("videos", file));
+    var outline=[];
+    store.localFiles.forEach(file => (body.append("videos", file), outline.push(file.outline)));
 
     body.append("metadata", JSON.stringify({
       categoryId: form.category,
+      outline: outline,
       title: form.title,
       descriptionShort: form.description,
       descriptionLong: form.description,
+      isCompleted: form.isCompleted,
     }));
 
     const res = await axiosInstance.post("/courses", body, { headers: { 'x-access-token': localStorage.account_accessToken } });
@@ -108,8 +111,13 @@ export default function UploadCourse() {
   
   const VideoUploadForm = (props) => {
     const [state, setState] = useState({ files: [] });
+    var [value, setValue] = useState('');
+    if (store.localFiles && store.localFiles.length>0 && value!=='') {
+      if (store.localFiles[props.count]!==undefined) {
+        store.localFiles[props.count].outline=value;
+      }
+    }
 
-    const [value, setValue] = useState('');
     const { getRootProps, getInputProps, open } = useDropzone({
       accept: 'video/*',
       noClick: true,
@@ -119,7 +127,8 @@ export default function UploadCourse() {
         setState((oldState) => ({
           files: [...oldState.files, acceptedFiles.map(file => Object.assign(file, {
             preview: URL.createObjectURL(file),
-            userId: localStorage.account_userID
+            userId: localStorage.account_userID,
+            outline: value
           })).map(file => dispatch({
             type: 'addLocalFile',
             payload: file
@@ -161,20 +170,21 @@ export default function UploadCourse() {
                 <hr></hr>
                 <Form.Group controlId="title">
                   <Form.Label>Title</Form.Label>
-                  <Form.Control type="text" name="title" placeholder="Course title" ref={register({ required: true })} />
+                  <Form.Control type="text" name="title" placeholder="Course title" ref={register} required />
                 </Form.Group>
 
                 <Form.Group controlId="description">
                   <Form.Label>Description</Form.Label>
-                  <Form.Control type="text" name="description" placeholder="Course description" ref={register({ required: true })} />
+                  <Form.Control type="text" name="description" placeholder="Course description" ref={register} required />
                 </Form.Group>
 
                 <Form.Group controlId="category">
                   <Form.Label>Category</Form.Label>
-                  <Form.Control as="select" name="category" ref={register({ required: true })} >
+                  <Form.Control as="select" name="category" ref={register} required >
                     {store.categories.map(c => <option key={c.id} value={c.id}> {c.title}</option>)}
                   </Form.Control>
                 </Form.Group>
+                <Form.Check type="switch" name="isCompleted" id="custom-switch" label="Complete Course" ref={register} />
               </Card.Body>
               <Card.Footer>
                 <Button className="float-right py-2" variant="primary" type="submit">Upload</Button>

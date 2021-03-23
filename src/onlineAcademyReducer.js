@@ -62,6 +62,13 @@ export default function reducer(state, action) {
 				query: action.payload.query
 			}
 
+		case 'setTeacherCourse':
+			return {
+				...state,
+				teacherCourse: action.payload.teacherCourse,
+				query: action.payload.query
+			}
+
 		case 'getTeacher':
 			return {
 				...state,
