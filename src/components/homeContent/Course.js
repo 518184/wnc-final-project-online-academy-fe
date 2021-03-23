@@ -509,15 +509,19 @@ export default function Course({ course }) {
 										{/* </Card.Header> */}
 										<Accordion.Collapse eventKey={index + 1}>
 											<Card.Body>
-												<iframe
+												{/* <iframe
 													title={course.title}
-													allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+													allow="accelerometer; encrypted-media; gyroscope; picture-in-picture"
 													allowFullScreen={true}
 													src={"http://localhost:3001/resources/" + i.uploadDir + i.uploadFilename}
 													width="100%"
 													height="400px"
 													frameBorder="0"
-												></iframe>
+													autoPlay="false"
+												></iframe> */}
+												<video width="100%" height="400px" controls>
+													<source src={"http://localhost:3001/resources/" + i.uploadDir + i.uploadFilename} type="video/mp4" autoplay="false" />
+												</video>
 											</Card.Body>
 										</Accordion.Collapse>
 									</Card>)

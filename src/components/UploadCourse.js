@@ -8,7 +8,7 @@ import "../App.css"
 import swal from 'sweetalert';
 import { Container, Row, Col, Card, Form, Button } from 'react-bootstrap';
 import academyApppContext from '../onlineAcademyAppContext'
-import "../components/header/headerPrimary.css"
+import "../components/header/headerPrimary.css";
 
 
 export default function UploadCourse() {
@@ -18,6 +18,19 @@ export default function UploadCourse() {
   const { store, dispatch } = useContext(academyApppContext);
 
   const changeView = function (mode) {
+    async function initCoursesList() {
+      const res = await axiosInstance.get("/courses");
+      if (res.status === 200) {
+          dispatch({
+              type: 'initCoursesList',
+              payload: {
+                  courses: res.data,
+                  query: '',
+                  mode: 'default'
+              }
+          });
+      }
+  }
     dispatch({
       type: 'changeMode',
       payload: {

@@ -22,10 +22,13 @@ export default function OnlineAcademy() {
     };
 
     const [store, dispatch] = useReducer(reducer, initialAppState);
+    var [eventRefresh, setEventRefresh] = useState(0);
+    //const [moded, setModed] = useState(false);
 
     useEffect(function () {
         async function initCoursesList() {
             const res = await axiosInstance.get("/courses");
+            setEventRefresh(res.data.length);
             if (res.status === 200) {
                 dispatch({
                     type: 'initCoursesList',
@@ -126,8 +129,7 @@ export default function OnlineAcademy() {
         // if(localStorage.account_accessToken){
         //     loadDataPayment();
         // }
-    }, []);
-
+    }, [eventRefresh]);
 
     return (
         <div>
