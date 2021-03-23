@@ -21,16 +21,16 @@ export default function UploadCourse() {
     async function initCoursesList() {
       const res = await axiosInstance.get("/courses");
       if (res.status === 200) {
-          dispatch({
-              type: 'initCoursesList',
-              payload: {
-                  courses: res.data,
-                  query: '',
-                  mode: 'default'
-              }
-          });
+        dispatch({
+          type: 'initCoursesList',
+          payload: {
+            courses: res.data,
+            query: '',
+            mode: 'default'
+          }
+        });
       }
-  }
+    }
     dispatch({
       type: 'changeMode',
       payload: {
@@ -103,8 +103,9 @@ export default function UploadCourse() {
       categoryId: form.category,
       outline: outline,
       title: form.title,
-      descriptionShort: form.description,
-      descriptionLong: form.description,
+      descriptionShort: form.descriptionShort,
+      descriptionLong: form.descriptionLong,
+      thumbnail: btoa(form.thumbnail[0].name),
       isCompleted: form.isCompleted,
     }));
 
@@ -204,9 +205,18 @@ export default function UploadCourse() {
                   <Form.Control type="text" name="title" placeholder="Course title" ref={register} required />
                 </Form.Group>
 
-                <Form.Group controlId="description">
-                  <Form.Label>Description</Form.Label>
-                  <Form.Control type="text" name="description" placeholder="Course description" ref={register} required />
+                <Form.Group controlId="descriptionShort">
+                  <Form.Label>Description Short</Form.Label>
+                  <Form.Control type="text" name="descriptionShort" placeholder="Course description short" ref={register} required />
+                </Form.Group>
+
+                <Form.Group controlId="descriptionLong">
+                  <Form.Label>Description Long</Form.Label>
+                  <Form.Control type="text" name="descriptionLong" placeholder="Course description long" ref={register} required />
+                </Form.Group>
+
+                <Form.Group controlId="thumbnail">
+                  <Form.File name="thumbnail" label="Example file input" ref={register} required />
                 </Form.Group>
 
                 <Form.Group controlId="category">
