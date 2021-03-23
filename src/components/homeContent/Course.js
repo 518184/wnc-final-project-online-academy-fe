@@ -513,7 +513,7 @@ export default function Course({ course }) {
 													title={course.title}
 													allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
 													allowFullScreen={true}
-													src={"http://localhost:3001/resources/" + i.uploadDir + i.uploadFilenames[0]}
+													src={"http://localhost:3001/resources/" + i.uploadDir + i.uploadFilename}
 													width="100%"
 													height="400px"
 													frameBorder="0"
