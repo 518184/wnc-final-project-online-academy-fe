@@ -116,6 +116,10 @@ export default function UploadCourse() {
       if (store.localFiles[props.count]!==undefined) {
         store.localFiles[props.count].outline=value;
       }
+    } else if (store.localFiles && store.localFiles.length>0 && value==='') {
+      if (store.localFiles[props.count]!==undefined && store.localFiles[props.count].outline!=='') {
+        setValue(store.localFiles[props.count].outline);
+      }
     }
 
     const { getRootProps, getInputProps, open } = useDropzone({
@@ -151,7 +155,7 @@ export default function UploadCourse() {
             {thumb(props.count)}
           </aside>
           <Form.Label><b>Outline</b></Form.Label>
-          <ReactQuill theme="snow" value={value} onChange={setValue} />
+          <ReactQuill theme="snow" value={value} onChange={setValue} required/>
         </Card.Body>
       </Card>
     )

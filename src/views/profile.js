@@ -239,9 +239,9 @@ export default function Profile(props) {
         flexDirection: 'row',
         flexWrap: 'wrap',
         marginTop: 16
-      };
-    
-      const thumbStyle = {
+    };
+
+    const thumbStyle = {
         display: 'inline-flex',
         borderRadius: 2,
         border: '1px solid #eaeaea',
@@ -251,19 +251,19 @@ export default function Profile(props) {
         height: 100,
         padding: 4,
         boxSizing: 'border-box'
-      };
-    
-      const thumbInner = {
+    };
+
+    const thumbInner = {
         display: 'flex',
         minWidth: 0,
         overflow: 'hidden'
-      };
-    
-      const imgStyle = {
+    };
+
+    const imgStyle = {
         display: 'block',
         width: 'auto',
         height: '100%'
-      };
+    };
     const updateCourse = function (course) {
         handleShowModelNew();
         var outline = JSON.parse(course.outline);
@@ -274,66 +274,66 @@ export default function Profile(props) {
     }
     function thumb(id) {
         if (store.localFiles && store.localFiles.length && store.localFiles.filter(f => f.userId === localStorage.account_userID)[id]) {
-          return (
-            <div style={thumbStyle} key={store.localFiles.filter(f => f.userId === localStorage.account_userID)[id].name}>
-              <div style={thumbInner}>
-                <video
-                  src={store.localFiles.filter(f => f.userId === localStorage.account_userID)[id].preview}
-                  style={imgStyle}
-                />
-              </div>
-            </div>
-          )
+            return (
+                <div style={thumbStyle} key={store.localFiles.filter(f => f.userId === localStorage.account_userID)[id].name}>
+                    <div style={thumbInner}>
+                        <video
+                            src={store.localFiles.filter(f => f.userId === localStorage.account_userID)[id].preview}
+                            style={imgStyle}
+                        />
+                    </div>
+                </div>
+            )
         }
         return null;
-      }
+    }
     const VideoUploadForm = (props) => {
         const [state, setState] = useState({ files: [] });
         var [value, setValue] = useState('');
-        if (store.localFiles && store.localFiles.length>0 && value!=='') {
-          if (store.localFiles[props.count]!==undefined) {
-            store.localFiles[props.count].outline=value;
-          }
+        if (store.localFiles && store.localFiles.length > 0 && value !== '') {
+            if (store.localFiles[props.count] !== undefined) {
+                store.localFiles[props.count].outline = value;
+            }
         }
-    
+
         const { getRootProps, getInputProps, open } = useDropzone({
-          accept: 'video/*',
-          noClick: true,
-          noKeyboard: true,
-          multiple: false,
-          onDrop: (acceptedFiles) => {
-            setState((oldState) => ({
-              files: [...oldState.files, acceptedFiles.map(file => Object.assign(file, {
-                preview: URL.createObjectURL(file),
-                userId: localStorage.account_userID,
-                outline: value
-              })).map(file => dispatch({
-                type: 'addLocalFile',
-                payload: file
-              }))]
-            }));
-          }
+            accept: 'video/*',
+            noClick: true,
+            noKeyboard: true,
+            multiple: false,
+            onDrop: (acceptedFiles) => {
+                setState((oldState) => ({
+                    files: [...oldState.files, acceptedFiles.map(file => Object.assign(file, {
+                        preview: URL.createObjectURL(file),
+                        userId: localStorage.account_userID,
+                        outline: value
+                    })).map(file => dispatch({
+                        type: 'addLocalFile',
+                        payload: file
+                    }))]
+                }));
+            }
         });
-    
+
         return (
-          <Card>
-            <Card.Body>
-              <div {...getRootProps({ className: 'dropzone' })}>
-                <input {...getInputProps()} />
-                <p>Drag 'n' drop some files here or open the dialog</p>
-                <Button type="button" variant="outline-dark" onClick={open}>
-                  Open File Dialog
+            <Card>
+                <Card.Body>
+                    <div {...getRootProps({ className: 'dropzone' })}>
+                        <input {...getInputProps()} />
+                        <p>Drag 'n' drop some files here or open the dialog</p>
+                        <Button type="button" variant="outline-dark" onClick={open}>
+                            Open File Dialog
                 </Button>
-              </div>
-              <aside style={thumbsContainer}>
-                {thumb(props.count)}
-              </aside>
-              <Form.Label><b>Outline</b></Form.Label>
-              <ReactQuill theme="snow" value={value} onChange={setValue} />
-            </Card.Body>
-          </Card>
+                    </div>
+                    <aside style={thumbsContainer}>
+                        {thumb(props.count)}
+                    </aside>
+                    <Form.Label><b>Outline</b></Form.Label>
+                    <ReactQuill theme="snow" value={value} onChange={setValue} />
+                </Card.Body>
+            </Card>
         )
-      }
+    }
 
     return (
         <>
@@ -525,12 +525,12 @@ export default function Profile(props) {
                                                             <hr></hr>
                                                             <Form.Group controlId="title">
                                                                 <Form.Label>Title</Form.Label>
-                                                                <Form.Control type="text" defaultValue={currentCourseUpdate.title == null ? "" : currentCourseUpdate.title} name="title" placeholder="Course title" ref={FaRegGrinSquintTears} required/>
+                                                                <Form.Control type="text" defaultValue={currentCourseUpdate.title == null ? "" : currentCourseUpdate.title} name="title" placeholder="Course title" ref={FaRegGrinSquintTears} required />
                                                             </Form.Group>
 
                                                             <Form.Group controlId="description">
                                                                 <Form.Label>Description</Form.Label>
-                                                                <Form.Control type="text" defaultValue={currentCourseUpdate.descriptionShort == null ? "" : currentCourseUpdate.descriptionShort} name="description" placeholder="Course description" ref={register} required/>
+                                                                <Form.Control type="text" defaultValue={currentCourseUpdate.descriptionShort == null ? "" : currentCourseUpdate.descriptionShort} name="description" placeholder="Course description" ref={register} required />
                                                             </Form.Group>
 
                                                             <Form.Group controlId="category">
@@ -548,7 +548,7 @@ export default function Profile(props) {
                                                 </Form>
                                             </Col>
                                             <Col xs={6} className="mt-4">
-                                                {[...Array(addMoreUpload)].map((_, i) => <VideoUploadForm key={'update'+currentCourseUpdate.id} count={i} />)}
+                                                {[...Array(addMoreUpload)].map((_, i) => <VideoUploadForm key={'update' + currentCourseUpdate.id} count={i} />)}
                                                 <button className="button" onClick={() => setAddMoreUpload(addMoreUpload + 1)} style={{ float: "right" }}>Add more outline</button>
                                             </Col>
                                         </Row>
