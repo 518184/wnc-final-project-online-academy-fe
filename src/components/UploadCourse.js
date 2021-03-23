@@ -96,7 +96,7 @@ export default function UploadCourse() {
 
   const upload = async (form) => {
     const body = new FormData();
-    var outline=[];
+    var outline = [];
     store.localFiles.forEach(file => (body.append("videos", file), outline.push(file.outline)));
 
     body.append("metadata", JSON.stringify({
@@ -115,22 +115,36 @@ export default function UploadCourse() {
         text: "Course uploaded with id: " + JSON.stringify(res.data.id),
         icon: "success",
       })
+      async function initCoursesList() {
+        const res = await axiosInstance.get("/courses");
+        if (res.status === 200) {
+          dispatch({
+            type: 'initCoursesList',
+            payload: {
+              courses: res.data,
+              query: '',
+              mode: 'default',
+            }
+          });
+        }
+      }
+      initCoursesList();
       changeView("default")
       dispatch({
         type: 'clearLocalFiles'
       })
     }
   }
-  
+
   const VideoUploadForm = (props) => {
     const [state, setState] = useState({ files: [] });
     var [value, setValue] = useState('');
-    if (store.localFiles && store.localFiles.length>0 && value!=='') {
-      if (store.localFiles[props.count]!==undefined) {
-        store.localFiles[props.count].outline=value;
+    if (store.localFiles && store.localFiles.length > 0 && value !== '') {
+      if (store.localFiles[props.count] !== undefined) {
+        store.localFiles[props.count].outline = value;
       }
-    } else if (store.localFiles && store.localFiles.length>0 && value==='') {
-      if (store.localFiles[props.count]!==undefined && store.localFiles[props.count].outline!=='') {
+    } else if (store.localFiles && store.localFiles.length > 0 && value === '') {
+      if (store.localFiles[props.count] !== undefined && store.localFiles[props.count].outline !== '') {
         setValue(store.localFiles[props.count].outline);
       }
     }
@@ -168,7 +182,7 @@ export default function UploadCourse() {
             {thumb(props.count)}
           </aside>
           <Form.Label><b>Outline</b></Form.Label>
-          <ReactQuill theme="snow" value={value} onChange={setValue} required/>
+          <ReactQuill theme="snow" value={value} onChange={setValue} required />
         </Card.Body>
       </Card>
     )
