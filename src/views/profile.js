@@ -90,7 +90,10 @@ export default function Profile(props) {
         });
         loadDataUser();
         loadDataPayment();
-        loadDataTeacherCourse();
+        if (store && (store.accountInfo.type!=1 || localStorage.account_type!=1)) {
+            loadDataTeacherCourse();
+        }
+        
     }, [changeForm]);
 
     const onSubmit = async function (data) {
