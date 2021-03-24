@@ -32,6 +32,7 @@
     "react-dom": "^17.0.1",
     "react-dropzone": "^11.3.1",
     "react-dropzone-uploader": "^2.11.0",
+    "react-file-base64": "^1.0.3",
     "react-hook-form": "^6.15.3",
     "react-icons": "^4.2.0",
     "react-player": "^2.9.0",
@@ -69,5 +70,7 @@
       "last 1 safari version"
     ]
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "js-base64": "^3.6.0"
+  }
 }

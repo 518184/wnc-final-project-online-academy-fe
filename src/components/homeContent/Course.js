@@ -8,6 +8,7 @@ import { axiosInstance, parseJwt } from '../../utils';
 import swal from 'sweetalert';
 import '../homeContent/Course.css';
 import { FaHeart, FaRegHeart } from "react-icons/fa";
+import { Base64 } from 'js-base64';
 
 export default function Course({ course }) {
 	const { store, dispatch } = useContext(academyApppContext);
@@ -21,7 +22,10 @@ export default function Course({ course }) {
 	if (course.outline) {
 		outline = JSON.parse(course.outline).data;
 	}
-	var previewOutline = outline.slice(0, 2);
+	var previewOutline = [];
+	if(outline){
+		previewOutline = outline.slice(0, 2);
+	}
 	const addWhiteList = async function () {
 		try {
 			const res = await axiosInstance.post('/users/watchlist/' + course.id, {}, { headers: { 'x-access-token': localStorage.account_accessToken } });
@@ -299,7 +303,7 @@ export default function Course({ course }) {
 									<Card style={{ boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)' }}>
 										<Card.Img src={require('../../img/icon/hot.png').default} style={{ width: 70, zIndex: 1, position: 'absolute', right: 0 }}></Card.Img>
 										<img src={require('../../img/icon/sale.png').default} style={{ width: 150, zIndex: 1, position: 'absolute', right: 2, top: '50%' }} />
-										<img src={require('../../img/java.jpg').default} />
+										<img src={''} />
 										<Card.Body style={{ height: 350 }}>
 											<Card.Title as="h4" className="my-2"><center>{course.title}</center></Card.Title>
 											<hr></hr>
@@ -391,7 +395,7 @@ export default function Course({ course }) {
 					}
 					return (
 						<Card style={{ boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)' }}>
-							<img src={require('../../img/java.jpg').default} />
+							<img src={`${course.thumbnail}`} />
 							<Card.Body style={{ height: 350 }}>
 								<Card.Title as="h4" className="my-2"><center>{course.title}</center></Card.Title>
 								<hr></hr>

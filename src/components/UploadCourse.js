@@ -9,6 +9,7 @@ import swal from 'sweetalert';
 import { Container, Row, Col, Card, Form, Button } from 'react-bootstrap';
 import academyApppContext from '../onlineAcademyAppContext'
 import "../components/header/headerPrimary.css";
+import FileBase64 from 'react-file-base64';
 
 
 export default function UploadCourse() {
@@ -94,18 +95,36 @@ export default function UploadCourse() {
     })
   }, []);
 
+  const getBase64 = async function(file, cb) {
+    let reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = async function () {
+        cb(reader.result)
+    };
+    reader.onerror = function (error) {
+        console.log('Error: ', error);
+    };
+  }
+  
   const upload = async (form) => {
+    
     const body = new FormData();
     var outline = [];
     store.localFiles.forEach(file => (body.append("videos", file), outline.push(file.outline)));
-
+    var idCardBase64 = '';
+    idCardBase64 = getBase64(form.thumbnail[0],  async (result) => {
+      // console.log(typeof(result));
+      // console.log(result);
+      // idCardBase64 = result;
+    
+    //console.log(idCardBase64);
     body.append("metadata", JSON.stringify({
       categoryId: form.category,
       outline: outline,
       title: form.title,
       descriptionShort: form.descriptionShort,
       descriptionLong: form.descriptionLong,
-      thumbnail: btoa(form.thumbnail[0].name),
+      thumbnail:result,
       isCompleted: form.isCompleted,
     }));
 
@@ -135,7 +154,7 @@ export default function UploadCourse() {
         type: 'clearLocalFiles'
       })
     }
-  }
+  })}
 
   const VideoUploadForm = (props) => {
     const [state, setState] = useState({ files: [] });
@@ -216,7 +235,8 @@ export default function UploadCourse() {
                 </Form.Group>
 
                 <Form.Group controlId="thumbnail">
-                  <Form.File name="thumbnail" label="Example file input" ref={register} required />
+                  <Form.File type="url" id="thumbnail" name="thumbnail" label="Example file input" ref={register} required />
+                  {/* <input type="file" onChange={encodeImageFileAsURL(this)} /> */}
                 </Form.Group>
 
                 <Form.Group controlId="category">
