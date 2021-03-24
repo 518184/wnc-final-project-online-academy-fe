@@ -90,10 +90,10 @@ export default function Profile(props) {
         });
         loadDataUser();
         loadDataPayment();
-        if (store && (store.accountInfo.type!=1 || localStorage.account_type!=1)) {
+        if (store && (store.accountInfo.type != 1 || localStorage.account_type != 1)) {
             loadDataTeacherCourse();
         }
-        
+
     }, [changeForm]);
 
     const onSubmit = async function (data) {
@@ -392,13 +392,13 @@ export default function Profile(props) {
             categoryId: form.category,
             outline: outline,
             title: form.title,
-            descriptionShort: form.description,
-            descriptionLong: form.description,
+            descriptionShort: form.descriptionShort,
+            descriptionLong: form.descriptionLong,
             isCompleted: form.isCompleted,
         }));
-        
 
-        const res = await axiosInstance.put("/courses/"+currentCourseUpdate.id, body, { headers: { 'x-access-token': localStorage.account_accessToken } });
+
+        const res = await axiosInstance.put("/courses/" + currentCourseUpdate.id, body, { headers: { 'x-access-token': localStorage.account_accessToken } });
         if (res.status === 200) {
             swal({
                 title: "Course uploaded",
@@ -470,10 +470,9 @@ export default function Profile(props) {
                                         <Form.Label>Confirm New Password</Form.Label>
                                         <Form.Control type="password" name="confirmPassword" placeholder="Confirm Password" ref={register} disabled={disablePassword} />
                                     </Form.Group>
-                                </Card.Body>
-                                <Card.Footer>
+                                    <br></br>
                                     <Button id="saveProfile" className="float-right py-2" variant="primary" type="submit" size="lg">Save</Button>
-                                </Card.Footer>
+                                </Card.Body> 
                             </Card>
                         </Form>
                     </Col>
@@ -483,7 +482,7 @@ export default function Profile(props) {
                                 <Card.Title as="h3"><center>My Courses</center></Card.Title>
                             </Card.Header>
 
-                            <Card.Body style={{ height: 600, overflowX: 'auto', overflowY: 'hidden' }}>
+                            <Card.Body style={{ height: 750, overflowX: 'auto', overflowY: 'hidden' }}>
                                 <Container fluid>
                                     <Row className="row flex-row flex-nowrap" >
                                         {store.payment ? store.payment.map(item =>
@@ -530,7 +529,7 @@ export default function Profile(props) {
                     <Row>
                         <Col xs={6} className="mt-1">
                             <Form onSubmit={handleSubmit(onSubmit)} >
-                                <Card style={{ height: 700 }}>
+                                <Card style={{ height: 750 }}>
                                     <Card.Header>
                                         <Card.Title as="h3"><center>Profile</center></Card.Title>
                                     </Card.Header>
@@ -556,26 +555,26 @@ export default function Profile(props) {
                                             <Form.Label>Confirm New Password</Form.Label>
                                             <Form.Control type="password" name="confirmPassword" placeholder="Confirm Password" ref={register} disabled={disablePassword} />
                                         </Form.Group>
-                                    </Card.Body>
-                                    <Card.Footer>
+                                        <br></br>
                                         <Button id="saveProfile" className="float-right py-2" variant="primary" type="submit" size="lg">Save</Button>
-                                    </Card.Footer>
+                                    </Card.Body>
+
                                 </Card>
                             </Form>
                         </Col>
                         <Col xs={6} className="mt-1" >
-                            <Card style={{ height: 700 }}>
+                            <Card style={{ height: 750 }}>
                                 <Card.Header>
                                     <Card.Title as="h3"><center>My Courses</center></Card.Title>
                                 </Card.Header>
 
-                                <Card.Body style={{ height: 600, overflowX: 'auto', overflowY: 'hidden' }}>
+                                <Card.Body style={{ height: 'auto', overflowX: 'auto', overflowY: 'hidden' }}>
                                     <Container fluid>
                                         <Row className="row flex-row flex-nowrap" >
                                             {store.teacherCourse ? store.teacherCourse.map(item =>
                                                 <Col sm={5} style={{ height: 'auto' }}>
                                                     <Course course={item} />
-                                                    <b style={{ position: 'absolute', bottom: 0, fontSize: 20 }}>{item.isCompleted ? <center style={{ color: 'green' }}>completed</center> : <center style={{ color: 'blue' }}>processing...</center>}</b>
+                                                    <b style={{ position: 'absolute', bottom: 35, fontSize: 20 }}>{item.isCompleted ? <center style={{ color: 'green' }}>completed</center> : <center style={{ color: 'blue' }}>processing...</center>}</b>
                                                     <Button variant="warning" style={{ width: '100%' }} onClick={() => updateCourse(item)}>Update</Button>
                                                 </Col>
                                             ) : ""
@@ -605,9 +604,14 @@ export default function Profile(props) {
                                                             <Form.Control type="text" defaultValue={currentCourseUpdate.title == null ? "" : currentCourseUpdate.title} name="title" placeholder="Course title" ref={register} required />
                                                         </Form.Group>
 
-                                                        <Form.Group controlId="description">
-                                                            <Form.Label>Description</Form.Label>
-                                                            <Form.Control type="text" defaultValue={currentCourseUpdate.descriptionShort == null ? "" : currentCourseUpdate.descriptionShort} name="description" placeholder="Course description" ref={register} required />
+                                                        <Form.Group controlId="descriptionShort">
+                                                            <Form.Label>Description Short</Form.Label>
+                                                            <Form.Control type="text" defaultValue={currentCourseUpdate.descriptionShort == null ? "" : currentCourseUpdate.descriptionShort} name="descriptionShort" placeholder="Course description short" ref={register} required />
+                                                        </Form.Group>
+
+                                                        <Form.Group controlId="descriptionLong">
+                                                            <Form.Label>Description Long</Form.Label>
+                                                            <Form.Control type="text" defaultValue={currentCourseUpdate.descriptionLong == null ? "" : currentCourseUpdate.descriptionLong} name="descriptionLong" placeholder="Course description long" ref={register} required />
                                                         </Form.Group>
 
                                                         <Form.Group controlId="category">
@@ -641,14 +645,15 @@ export default function Profile(props) {
                                                 }
                                             </Accordion>
                                             {[...Array(addMoreUpload)].map((_, i) => <VideoUploadForm key={'update' + i} count={i} />)}
-                                            <button className="button" onClick={() => setAddMoreUpload(addMoreUpload + 1)} style={{ float: "right" }}>Add more outline</button>
+                                            <div style={{textAlign: 'center'}}>
+                                                <Button variant="outline-dark" className="button my-3" onClick={() => setAddMoreUpload(addMoreUpload + 1)}>Add more outline</Button>
+                                            </div>
                                         </Col>
                                     </Row>
 
 
                                 </Modal.Body>
                                 <Modal.Footer>
-                                    <Button variant="primary" type="submit" id="newFormSub">Update</Button>
                                     <Button variant="secondary" onClick={handleCloseModalNew}>Close</Button>
                                 </Modal.Footer>
                             </Modal>

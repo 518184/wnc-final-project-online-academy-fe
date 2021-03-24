@@ -8,13 +8,9 @@ import { axiosInstance, parseJwt } from '../../utils';
 import swal from 'sweetalert';
 import '../homeContent/Course.css';
 import { FaHeart, FaRegHeart } from "react-icons/fa";
-<<<<<<< HEAD
-import { Base64 } from 'js-base64';
-=======
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { useDropzone } from 'react-dropzone';
->>>>>>> 8f72e45ad536d78d5ce3cc7a3c78bb16b4f2d46a
 
 export default function Course({ course }) {
 	const { store, dispatch } = useContext(academyApppContext);
@@ -37,7 +33,7 @@ export default function Course({ course }) {
 		outline = JSON.parse(course.outline).data;
 	}
 	var previewOutline = [];
-	if(outline){
+	if (outline) {
 		previewOutline = outline.slice(0, 2);
 	}
 	const addWhiteList = async function () {
@@ -298,7 +294,7 @@ export default function Course({ course }) {
 		return (
 			<Card.Header
 
-				style={{ backgroundColor: isCurrentEventKey ? '#cc0000' : '', color: isCurrentEventKey ? 'white' : '' }}
+				style={{ backgroundColor: isCurrentEventKey ? '#0066ff' : '', color: isCurrentEventKey ? 'white' : '' }}
 				onClick={decoratedOnClick}
 			>
 				{children}
@@ -436,8 +432,8 @@ export default function Course({ course }) {
 			categoryId: form.category,
 			outline: outline,
 			title: form.title,
-			descriptionShort: form.description,
-			descriptionLong: form.description,
+			descriptionShort: form.descriptionShort,
+			descriptionLong: form.descriptionLong,
 			isCompleted: form.isCompleted,
 		}));
 
@@ -468,7 +464,7 @@ export default function Course({ course }) {
 									<Card style={{ boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)' }}>
 										<Card.Img src={require('../../img/icon/hot.png').default} style={{ width: 70, zIndex: 1, position: 'absolute', right: 0 }}></Card.Img>
 										<img src={require('../../img/icon/sale.png').default} style={{ width: 150, zIndex: 1, position: 'absolute', right: 2, top: '50%' }} />
-										<img src={''} />
+										<img src={`${course.thumbnail}`} width="100%" height="150px" />
 										<Card.Body style={{ height: 350 }}>
 											<Card.Title as="h4" className="my-2"><center>{course.title}</center></Card.Title>
 											<hr></hr>
@@ -497,7 +493,7 @@ export default function Course({ course }) {
 					}
 					return (
 						<Card style={{ boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)' }}>
-							<img src={require('../../img/java.jpg').default} />
+							<img src={`${course.thumbnail}`} width="100%" height="150px" />
 							<Card.Body style={{ height: 350 }}>
 								<img src={require('../../img/icon/sale.png').default} style={{ width: 150, zIndex: 1, position: 'absolute', right: 2, top: '50%' }} />
 								<Card.Title as="h4" className="my-2"><center>{course.title}</center></Card.Title>
@@ -531,7 +527,7 @@ export default function Course({ course }) {
 								return (
 									<Card style={{ boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)' }}>
 										<Card.Img src={require('../../img/icon/hot.png').default} style={{ width: 70, zIndex: 1, position: 'absolute', right: 0 }}></Card.Img>
-										<img src={require('../../img/java.jpg').default} />
+										<img src={`${course.thumbnail}`} width="100%" height="150px" />
 										<Card.Body style={{ height: 350 }}>
 											<Card.Title as="h4" className="my-2"><center>{course.title}</center></Card.Title>
 											<hr></hr>
@@ -560,7 +556,7 @@ export default function Course({ course }) {
 					}
 					return (
 						<Card style={{ boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)' }}>
-							<img src={`${course.thumbnail}`} />
+							<img src={`${course.thumbnail}`} width="100%" height="150px" />
 							<Card.Body style={{ height: 350 }}>
 								<Card.Title as="h4" className="my-2"><center>{course.title}</center></Card.Title>
 								<hr></hr>
@@ -692,18 +688,20 @@ export default function Course({ course }) {
 						<Col >
 							<Card.Text><b>Outline: </b></Card.Text>
 							<div style={{ height: 400, overflowY: 'auto' }}>
-								<Accordion>
-									{checkPurchase() ? (outline ? outline.map((i, index) =>
-									(<Card key={'sup' + index} className="mb-0">
-										{/* <Accordion.Toggle as={Card.Header} variant="link" eventKey={index+1}>
+								<Row>
+									<Col>
+										<Accordion>
+											{checkPurchase() ? (outline ? outline.map((i, index) =>
+											(<Card key={'sup' + index} className="mb-0">
+												{/* <Accordion.Toggle as={Card.Header} variant="link" eventKey={index+1}>
 														<p dangerouslySetInnerHTML={{ __html: i.content }} />
 												</Accordion.Toggle> */}
-										{/* <Card.Header> */}
-										<ContextAwareToggle eventKey={index + 1}><h4 dangerouslySetInnerHTML={{ __html: i.content }} /></ContextAwareToggle>
-										{/* </Card.Header> */}
-										<Accordion.Collapse eventKey={index + 1}>
-											<Card.Body>
-												{/* <iframe
+												{/* <Card.Header> */}
+												<ContextAwareToggle eventKey={index + 1}><h4 dangerouslySetInnerHTML={{ __html: i.content }} /></ContextAwareToggle>
+												{/* </Card.Header> */}
+												<Accordion.Collapse eventKey={index + 1}>
+													<Card.Body>
+														{/* <iframe
 													title={course.title}
 													allow="accelerometer; encrypted-media; gyroscope; picture-in-picture"
 													allowFullScreen={true}
@@ -713,23 +711,23 @@ export default function Course({ course }) {
 													frameBorder="0"
 													autoPlay="false"
 												></iframe> */}
-												<video width="100%" height="400px" controls>
-													<source src={"http://localhost:3001/resources/" + i.uploadDir + i.uploadFilename} type="video/mp4" autoPlay={false} />
-												</video>
-											</Card.Body>
-										</Accordion.Collapse>
-									</Card>)
-									) : <Card></Card>) : (previewOutline ? previewOutline.map((i, index) =>
-									(<Card key={'sup' + index} className="mb-0">
-										{/* <Accordion.Toggle as={Card.Header} variant="link" eventKey={index+1}>
+														<video width="100%" height="400px" controls>
+															<source src={"http://localhost:3001/resources/" + i.uploadDir + i.uploadFilename} type="video/mp4" autoPlay={false} />
+														</video>
+													</Card.Body>
+												</Accordion.Collapse>
+											</Card>)
+											) : <Card></Card>) : (previewOutline ? previewOutline.map((i, index) =>
+											(<Card key={'sup' + index} className="mb-0">
+												{/* <Accordion.Toggle as={Card.Header} variant="link" eventKey={index+1}>
 														<p dangerouslySetInnerHTML={{ __html: i.content }} />
 												</Accordion.Toggle> */}
-										{/* <Card.Header> */}
-										<ContextAwareToggle eventKey={index + 1}><h4 dangerouslySetInnerHTML={{ __html: i.content }} /></ContextAwareToggle>
-										{/* </Card.Header> */}
-										<Accordion.Collapse eventKey={index + 1}>
-											<Card.Body>
-												{/* <iframe
+												{/* <Card.Header> */}
+												<ContextAwareToggle eventKey={index + 1}><h4 dangerouslySetInnerHTML={{ __html: i.content }} /></ContextAwareToggle>
+												{/* </Card.Header> */}
+												<Accordion.Collapse eventKey={index + 1}>
+													<Card.Body>
+														{/* <iframe
 													title={course.title}
 													allow="accelerometer; encrypted-media; gyroscope; picture-in-picture"
 													allowFullScreen={true}
@@ -739,21 +737,31 @@ export default function Course({ course }) {
 													frameBorder="0"
 													autoPlay="false"
 												></iframe> */}
-												<video width="100%" height="400px" controls>
-													<source src={"http://localhost:3001/resources/" + i.uploadDir + i.uploadFilename} type="video/mp4" autoPlay={false} />
-												</video>
-											</Card.Body>
-										</Accordion.Collapse>
-									</Card>)
-									) : <Card></Card>)
-									}
+														<video width="100%" height="400px" controls>
+															<source src={"http://localhost:3001/resources/" + i.uploadDir + i.uploadFilename} type="video/mp4" autoPlay={false} />
+														</video>
+													</Card.Body>
+												</Accordion.Collapse>
+											</Card>)
+											) : <Card></Card>)
+											}
 
-								</Accordion>
-								{store.accountInfo ? store.accountInfo.type !== 1 ? [...Array(addMoreUpload)].map((_, i) => <VideoUploadForm key={'updatea' + i} count={i} />) : "" : ""}
-								{store.accountInfo ? store.accountInfo.type !== 1 ? <button className="button" onClick={() => setAddMoreUpload(addMoreUpload + 1)} style={{ float: "right" }}>Add more outline</button> : "" : ""}
-								{store.accountInfo ? store.accountInfo.type !== 1 ?
-									<Row>
-										<Col xs={6} className="mt-4">
+										</Accordion>
+									</Col>
+								</Row>
+								<Row>
+									<Col>
+										{store.accountInfo ? store.accountInfo.type !== 1 ? [...Array(addMoreUpload)].map((_, i) => <VideoUploadForm key={'updatea' + i} count={i} />) : "" : ""}
+									</Col>
+								</Row>
+								<Row>
+									<Col className="d-flex justify-content-center">
+										{store.accountInfo ? store.accountInfo.type !== 1 ? <Button variant="outline-dark" className="button my-1 mx-auto" onClick={() => setAddMoreUpload(addMoreUpload + 1)} style={{ float: "right" }}>Add more outline</Button> : "" : ""}
+									</Col>
+								</Row>
+								<Row className="my-4">
+									<Col>
+										{store.accountInfo ? store.accountInfo.type !== 1 ?
 											<Form onSubmit={handleSubmit(uploadOldCourse)}>
 												<Card>
 													<Card.Body>
@@ -764,9 +772,14 @@ export default function Course({ course }) {
 															<Form.Control type="text" defaultValue={course.title == null ? "" : course.title} name="title" placeholder="Course title" ref={register} required />
 														</Form.Group>
 
-														<Form.Group controlId="description">
-															<Form.Label>Description</Form.Label>
-															<Form.Control type="text" defaultValue={course.descriptionShort == null ? "" : course.descriptionShort} name="description" placeholder="Course description" ref={register} required />
+														<Form.Group controlId="descriptionShort">
+															<Form.Label>Description Short</Form.Label>
+															<Form.Control type="text" defaultValue={course.descriptionShort == null ? "" : course.descriptionShort} name="descriptionShort" placeholder="Course description short" ref={register} required />
+														</Form.Group>
+
+														<Form.Group controlId="descriptionLong">
+															<Form.Label>Description Long</Form.Label>
+															<Form.Control type="text" defaultValue={course.descriptionLong == null ? "" : course.descriptionLong} name="descriptionLong" placeholder="Course description long" ref={register} required />
 														</Form.Group>
 
 														<Form.Group controlId="category">
@@ -781,10 +794,10 @@ export default function Course({ course }) {
 														<Button className="float-right py-2" variant="primary" type="submit">Upload</Button>
 													</Card.Footer>
 												</Card>
-											</Form>
-										</Col>
-									</Row> : "" : ""
-								}
+											</Form> : "" : ""
+										}
+									</Col>
+								</Row>
 							</div>
 						</Col>
 					</Row>
