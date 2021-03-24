@@ -105,7 +105,7 @@ export default function UploadCourse() {
       title: form.title,
       descriptionShort: form.descriptionShort,
       descriptionLong: form.descriptionLong,
-      thumbnail: btoa(form.thumbnail[0].name),
+      thumbnail: btoa(form.thumbnail),
       isCompleted: form.isCompleted,
     }));
 
@@ -216,7 +216,7 @@ export default function UploadCourse() {
                 </Form.Group>
 
                 <Form.Group controlId="thumbnail">
-                  <Form.File name="thumbnail" label="Example file input" ref={register} required />
+                  <Form.File name="thumbnail" label="Example file input" ref={register} />
                 </Form.Group>
 
                 <Form.Group controlId="category">

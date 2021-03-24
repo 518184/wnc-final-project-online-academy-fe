@@ -16,7 +16,6 @@ import {
 import { useAccordionToggle } from 'react-bootstrap/AccordionToggle';
 import academyApppContext from '../onlineAcademyAppContext';
 import Course from '../components/homeContent/Course';
-import UploadCourse from '../components/UploadCourse';
 import { FaRegGrinSquintTears } from 'react-icons/fa';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import ReactQuill from 'react-quill';
@@ -24,14 +23,13 @@ import 'react-quill/dist/quill.snow.css';
 import { useDropzone } from 'react-dropzone';
 
 export default function Profile(props) {
-    const { register, handleSubmit, watch, errors } = useForm();
+    const { register, handleSubmit } = useForm();
     const history = useHistory();
     const location = useLocation();
     const { from } = location.state || { from: { pathname: '/' } };
     const [isActive, setIsActive] = useState();
     const [disablePassword, setDisablePassword] = useState(true);
     const [changeForm, setChangeForm] = useState(false);
-    const watchListCourse = [];
     const { store, dispatch } = useContext(academyApppContext);
     const [showModalNew, setShowModalNew] = useState(false);
     const handleShowModelNew = () => setShowModalNew(true);
@@ -77,7 +75,6 @@ export default function Profile(props) {
         async function loadDataTeacherCourse() {
             const res = await axiosInstance.get('/courses/teacher/' + localStorage.account_userID, { headers: { 'x-access-token': localStorage.account_accessToken } });
             if (res.status === 200) {
-                console.log(res.data);
                 dispatch({
                     type: 'setTeacherCourse',
                     payload: {
@@ -303,6 +300,7 @@ export default function Profile(props) {
                 });
             }
         }
+        initCoursesList();
         dispatch({
             type: 'changeMode',
             payload: {
@@ -313,7 +311,6 @@ export default function Profile(props) {
     const updateCourse = function (course) {
         handleShowModelNew();
         setOutlineArray(JSON.parse(course.outline).data);
-        console.log('outlineArray', outlineArray);
         setCurrentCourseUpdate(course);
     }
     function thumb(id) {
@@ -396,29 +393,16 @@ export default function Profile(props) {
             descriptionLong: form.description,
             isCompleted: form.isCompleted,
         }));
+        
 
         const res = await axiosInstance.put("/courses/"+currentCourseUpdate.id, body, { headers: { 'x-access-token': localStorage.account_accessToken } });
         if (res.status === 200) {
             swal({
                 title: "Course uploaded",
-                text: "Course uploaded with id: " + JSON.stringify(res.data.id),
+                text: "Course uploaded",
                 icon: "success",
             });
             setAddMoreUpload(0);
-            async function initCoursesList() {
-                const res = await axiosInstance.get("/courses");
-                if (res.status === 200) {
-                    dispatch({
-                        type: 'initCoursesList',
-                        payload: {
-                            courses: res.data,
-                            query: '',
-                            mode: 'default',
-                        }
-                    });
-                }
-            }
-            initCoursesList();
             changeView("default")
             dispatch({
                 type: 'clearLocalFiles'
@@ -615,7 +599,7 @@ export default function Profile(props) {
                                                         <hr></hr>
                                                         <Form.Group controlId="title">
                                                             <Form.Label>Title</Form.Label>
-                                                            <Form.Control type="text" defaultValue={currentCourseUpdate.title == null ? "" : currentCourseUpdate.title} name="title" placeholder="Course title" ref={FaRegGrinSquintTears} required />
+                                                            <Form.Control type="text" defaultValue={currentCourseUpdate.title == null ? "" : currentCourseUpdate.title} name="title" placeholder="Course title" ref={register} required />
                                                         </Form.Group>
 
                                                         <Form.Group controlId="description">
@@ -639,7 +623,6 @@ export default function Profile(props) {
                                         </Col>
                                         <Col xs={6} className="mt-4">
                                             <Accordion>
-                                                {console.log('outline2', outlineArray)}
                                                 {outlineArray.map((i, index) =>
                                                 (<Card key={'supp' + index} className="mb-0">
                                                     <ContextAwareToggle eventKey={index + 1}><h4 dangerouslySetInnerHTML={{ __html: i.content }} /></ContextAwareToggle>
@@ -647,7 +630,7 @@ export default function Profile(props) {
                                                     <Accordion.Collapse eventKey={index + 1}>
                                                         <Card.Body>
                                                             <video width="100%" height="400px" controls>
-                                                                <source src={"http://localhost:3001/resources/" + i.uploadDir + i.uploadFilename} type="video/mp4" autoplay="false" />
+                                                                <source src={"http://localhost:3001/resources/" + i.uploadDir + i.uploadFilename} type="video/mp4" autoPlay={false} />
                                                             </video>
                                                         </Card.Body>
                                                     </Accordion.Collapse>

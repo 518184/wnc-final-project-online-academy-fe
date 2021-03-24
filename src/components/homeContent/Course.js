@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useForm } from 'react-hook-form';
 import { Card, Row, Col, Button, Modal, Carousel, Form, Alert, Accordion, AccordionContext } from 'react-bootstrap';
@@ -8,6 +8,9 @@ import { axiosInstance, parseJwt } from '../../utils';
 import swal from 'sweetalert';
 import '../homeContent/Course.css';
 import { FaHeart, FaRegHeart } from "react-icons/fa";
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
+import { useDropzone } from 'react-dropzone';
 
 export default function Course({ course }) {
 	const { store, dispatch } = useContext(academyApppContext);
@@ -18,6 +21,14 @@ export default function Course({ course }) {
 	const [like, setLike] = useState(false);
 	const [alertActive, setAlertActive] = useState(false);
 	var outline = [];
+
+	useEffect(function () {
+		dispatch({
+			type: 'initLocalFile',
+			payload: []
+		});
+	}, []);
+
 	if (course.outline) {
 		outline = JSON.parse(course.outline).data;
 	}
@@ -288,6 +299,157 @@ export default function Course({ course }) {
 		)
 	}
 
+	/*================================================== UPDATE COURSE ===============================================*/
+	var [addMoreUpload, setAddMoreUpload] = useState(0);
+	const thumbsContainer = {
+		display: 'flex',
+		flexDirection: 'row',
+		flexWrap: 'wrap',
+		marginTop: 16
+	};
+
+	const thumbStyle = {
+		display: 'inline-flex',
+		borderRadius: 2,
+		border: '1px solid #eaeaea',
+		marginBottom: 8,
+		marginRight: 8,
+		width: 100,
+		height: 100,
+		padding: 4,
+		boxSizing: 'border-box'
+	};
+
+	const thumbInner = {
+		display: 'flex',
+		minWidth: 0,
+		overflow: 'hidden'
+	};
+
+	const imgStyle = {
+		display: 'block',
+		width: 'auto',
+		height: '100%'
+	};
+	const changeView = function (mode) {
+		async function initCoursesList() {
+			const res = await axiosInstance.get("/courses");
+			if (res.status === 200) {
+				dispatch({
+					type: 'initCoursesList',
+					payload: {
+						courses: res.data,
+						query: '',
+						mode: 'default'
+					}
+				});
+			}
+		}
+		initCoursesList();
+		dispatch({
+			type: 'changeMode',
+			payload: {
+				mode
+			}
+		})
+	}
+	function thumb(id) {
+		if (store.localFiles && store.localFiles.length && store.localFiles.filter(f => f.userId === localStorage.account_userID)[id]) {
+			return (
+				<div style={thumbStyle} key={store.localFiles.filter(f => f.userId === localStorage.account_userID)[id].name}>
+					<div style={thumbInner}>
+						<video
+							src={store.localFiles.filter(f => f.userId === localStorage.account_userID)[id].preview}
+							style={imgStyle}
+						/>
+					</div>
+				</div>
+			)
+		}
+		return null;
+	}
+	const VideoUploadForm = (props) => {
+		const [state, setState] = useState({ files: [] });
+		var [value, setValue] = useState('');
+		if (store.localFiles && store.localFiles.length > 0 && value !== '') {
+			if (store.localFiles[props.count] !== undefined) {
+				store.localFiles[props.count].outline = value;
+			}
+		} else if (store.localFiles && store.localFiles.length > 0 && value === '') {
+			if (store.localFiles[props.count] !== undefined && store.localFiles[props.count].outline !== '') {
+				setValue(store.localFiles[props.count].outline);
+			}
+		}
+
+		const { getRootProps, getInputProps, open } = useDropzone({
+			accept: 'video/*',
+			noClick: true,
+			noKeyboard: true,
+			multiple: false,
+			onDrop: (acceptedFiles) => {
+				setState((oldState) => ({
+					files: [...oldState.files, acceptedFiles.map(file => Object.assign(file, {
+						preview: URL.createObjectURL(file),
+						userId: localStorage.account_userID,
+						outline: value
+					})).map(file => dispatch({
+						type: 'addLocalFile',
+						payload: file
+					}))]
+				}));
+			}
+		});
+
+		return (
+			<Card>
+				<Card.Body>
+					<div {...getRootProps({ className: 'dropzone' })}>
+						<input {...getInputProps()} />
+						<p>Drag 'n' drop some files here or open the dialog</p>
+						<Button type="button" variant="outline-dark" onClick={open}>
+							Open File Dialog
+                </Button>
+					</div>
+					<aside style={thumbsContainer}>
+						{thumb(props.count)}
+					</aside>
+					<b>Outline</b>
+					<ReactQuill theme="snow" value={value} onChange={setValue} required />
+				</Card.Body>
+			</Card>
+		)
+	}
+
+	const uploadOldCourse = async (form) => {
+		const body = new FormData();
+		var outline = [];
+		store.localFiles.forEach(file => (body.append("videos", file), outline.push(file.outline)));
+
+		body.append("metadata", JSON.stringify({
+			categoryId: form.category,
+			outline: outline,
+			title: form.title,
+			descriptionShort: form.description,
+			descriptionLong: form.description,
+			isCompleted: form.isCompleted,
+		}));
+
+		const res = await axiosInstance.put("/courses/" + course.id, body, { headers: { 'x-access-token': localStorage.account_accessToken } });
+		if (res.status === 200) {
+			swal({
+				title: "Course uploaded",
+				text: "Course uploaded",
+				icon: "success",
+			});
+			setAddMoreUpload(0);
+			changeView("default")
+			dispatch({
+				type: 'clearLocalFiles'
+			})
+		}
+	}
+	/*==============================================================================================================*/
+
 	return (
 		<div>
 			{(() => {
@@ -545,7 +707,7 @@ export default function Course({ course }) {
 													autoPlay="false"
 												></iframe> */}
 												<video width="100%" height="400px" controls>
-													<source src={"http://localhost:3001/resources/" + i.uploadDir + i.uploadFilename} type="video/mp4" autoplay="false" />
+													<source src={"http://localhost:3001/resources/" + i.uploadDir + i.uploadFilename} type="video/mp4" autoPlay={false} />
 												</video>
 											</Card.Body>
 										</Accordion.Collapse>
@@ -571,7 +733,7 @@ export default function Course({ course }) {
 													autoPlay="false"
 												></iframe> */}
 												<video width="100%" height="400px" controls>
-													<source src={"http://localhost:3001/resources/" + i.uploadDir + i.uploadFilename} type="video/mp4" autoplay="false" />
+													<source src={"http://localhost:3001/resources/" + i.uploadDir + i.uploadFilename} type="video/mp4" autoPlay={false} />
 												</video>
 											</Card.Body>
 										</Accordion.Collapse>
@@ -580,6 +742,42 @@ export default function Course({ course }) {
 									}
 
 								</Accordion>
+								{store.accountInfo ? store.accountInfo.type !== 1 ? [...Array(addMoreUpload)].map((_, i) => <VideoUploadForm key={'updatea' + i} count={i} />) : "" : ""}
+								{store.accountInfo ? store.accountInfo.type !== 1 ? <button className="button" onClick={() => setAddMoreUpload(addMoreUpload + 1)} style={{ float: "right" }}>Add more outline</button> : "" : ""}
+								{store.accountInfo ? store.accountInfo.type !== 1 ?
+									<Row>
+										<Col xs={6} className="mt-4">
+											<Form onSubmit={handleSubmit(uploadOldCourse)}>
+												<Card>
+													<Card.Body>
+														<Card.Title as="h3"><center>Course upload</center></Card.Title>
+														<hr></hr>
+														<Form.Group controlId="title">
+															<Form.Label>Title</Form.Label>
+															<Form.Control type="text" defaultValue={course.title == null ? "" : course.title} name="title" placeholder="Course title" ref={register} required />
+														</Form.Group>
+
+														<Form.Group controlId="description">
+															<Form.Label>Description</Form.Label>
+															<Form.Control type="text" defaultValue={course.descriptionShort == null ? "" : course.descriptionShort} name="description" placeholder="Course description" ref={register} required />
+														</Form.Group>
+
+														<Form.Group controlId="category">
+															<Form.Label>Category</Form.Label>
+															<Form.Control as="select" defaultValue={course.categoryId == null ? "" : course.categoryId} name="category" ref={register} required >
+																{store.categories.map(c => <option key={c.id} value={c.id}> {c.title}</option>)}
+															</Form.Control>
+														</Form.Group>
+														<Form.Check type="switch" defaultChecked={course.isCompleted == null ? "" : course.isCompleted} name="isCompleted" id={course.id + "updaated"} label="Complete Course" ref={register} />
+													</Card.Body>
+													<Card.Footer>
+														<Button className="float-right py-2" variant="primary" type="submit">Upload</Button>
+													</Card.Footer>
+												</Card>
+											</Form>
+										</Col>
+									</Row> : "" : ""
+								}
 							</div>
 						</Col>
 					</Row>
@@ -646,6 +844,6 @@ export default function Course({ course }) {
           </Button>
 				</Modal.Footer>
 			</Modal>
-		</div>
+		</div >
 	)
 }
