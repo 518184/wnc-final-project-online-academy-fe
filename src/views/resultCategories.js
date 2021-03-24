@@ -1,5 +1,5 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { Row, Col, InputGroup, Button, FormControl } from "react-bootstrap";
+import React, { useContext, useState } from 'react';
+import { Row, Col } from "react-bootstrap";
 import ListCourses from "../components/homeContent/ListCourses";
 import SearchCourse from "../components/homeContent/searchCourse";
 import CustomPagination from "../components/homeContent/CustomPagination";

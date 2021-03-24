@@ -124,7 +124,11 @@ export default function UploadCourse() {
       title: form.title,
       descriptionShort: form.descriptionShort,
       descriptionLong: form.descriptionLong,
+<<<<<<< HEAD
       thumbnail:result,
+=======
+      thumbnail: btoa(form.thumbnail),
+>>>>>>> 8f72e45ad536d78d5ce3cc7a3c78bb16b4f2d46a
       isCompleted: form.isCompleted,
     }));
 
@@ -235,8 +239,12 @@ export default function UploadCourse() {
                 </Form.Group>
 
                 <Form.Group controlId="thumbnail">
+<<<<<<< HEAD
                   <Form.File type="url" id="thumbnail" name="thumbnail" label="Example file input" ref={register} required />
                   {/* <input type="file" onChange={encodeImageFileAsURL(this)} /> */}
+=======
+                  <Form.File name="thumbnail" label="Example file input" ref={register} />
+>>>>>>> 8f72e45ad536d78d5ce3cc7a3c78bb16b4f2d46a
                 </Form.Group>
 
                 <Form.Group controlId="category">
