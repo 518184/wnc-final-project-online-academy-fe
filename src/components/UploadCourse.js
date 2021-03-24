@@ -235,7 +235,7 @@ export default function UploadCourse() {
                 </Form.Group>
 
                 <Form.Group controlId="thumbnail">
-                  <Form.File name="thumbnail" label="Example file input" ref={register} />
+                  <Form.File name="thumbnail" label="Thumbnail" ref={register} />
                 </Form.Group>
 
                 <Form.Group controlId="category">

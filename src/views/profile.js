@@ -90,7 +90,7 @@ export default function Profile(props) {
         });
         loadDataUser();
         loadDataPayment();
-        if (store && (store.accountInfo.type != 1 || localStorage.account_type != 1)) {
+        if (store && localStorage.account_type != 1) {
             loadDataTeacherCourse();
         }
 

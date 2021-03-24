@@ -245,7 +245,7 @@ export default function Course({ course }) {
 
 	const checkPurchase = () => {
 		if (store.payment) {
-			if (parseInt(store.accountInfo.type) !== 1) {
+			if (parseInt(localStorage.account_type) !== 1) {
 				return true;
 			}
 			for (var i of store.payment) {
@@ -751,17 +751,17 @@ export default function Course({ course }) {
 								</Row>
 								<Row>
 									<Col>
-										{store.accountInfo ? store.accountInfo.type !== 1 ? [...Array(addMoreUpload)].map((_, i) => <VideoUploadForm key={'updatea' + i} count={i} />) : "" : ""}
+										{store.accountInfo ? localStorage.account_type !== 1 ? [...Array(addMoreUpload)].map((_, i) => <VideoUploadForm key={'updatea' + i} count={i} />) : "" : ""}
 									</Col>
 								</Row>
 								<Row>
 									<Col className="d-flex justify-content-center">
-										{store.accountInfo ? store.accountInfo.type !== 1 ? <Button variant="outline-dark" className="button my-1 mx-auto" onClick={() => setAddMoreUpload(addMoreUpload + 1)} style={{ float: "right" }}>Add more outline</Button> : "" : ""}
+										{store.accountInfo ? localStorage.account_type !== 1 ? <Button variant="outline-dark" className="button my-1 mx-auto" onClick={() => setAddMoreUpload(addMoreUpload + 1)} style={{ float: "right" }}>Add more outline</Button> : "" : ""}
 									</Col>
 								</Row>
 								<Row className="my-4">
 									<Col>
-										{store.accountInfo ? store.accountInfo.type !== 1 ?
+										{store.accountInfo ? localStorage.account_type !== 1 ?
 											<Form onSubmit={handleSubmit(uploadOldCourse)}>
 												<Card>
 													<Card.Body>
